@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import pt.ulisboa.tecnico.cmov.airdesk.adapter.ViewPagerAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.util.AirdeskDataHolder;
 import pt.ulisboa.tecnico.cmov.airdesk.view.SlidingTabLayout;
 

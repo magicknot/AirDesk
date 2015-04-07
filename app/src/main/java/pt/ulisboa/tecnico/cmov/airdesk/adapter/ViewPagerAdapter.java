@@ -1,8 +1,11 @@
-package pt.ulisboa.tecnico.cmov.airdesk;
+package pt.ulisboa.tecnico.cmov.airdesk.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+
+import pt.ulisboa.tecnico.cmov.airdesk.Tab1;
+import pt.ulisboa.tecnico.cmov.airdesk.Tab2;
 
 /**
  * Created by oliveira on 31/03/15.
