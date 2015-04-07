@@ -1,10 +1,10 @@
 package pt.ulisboa.tecnico.cmov.airdesk;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +20,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.workspace.Workspace;
  */
 public class Tab1 extends Fragment  implements AdapterView.OnItemClickListener{
 
+    private static final int ACTIVITY_WORKSPACE_FILES = 2;
     private static final String TAG = "AirDesk[Tab1]";
 
 //    private MeatAdapter mAdapter;
@@ -54,35 +55,10 @@ public class Tab1 extends Fragment  implements AdapterView.OnItemClickListener{
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Workspace w = mAdapter.getItem(position);
+        Log.i(TAG, w.getName() + " clicked. Creating WorkFilesActivity " + w.toString());
 
-        FragmentManager fm = getActivity().getSupportFragmentManager();
-        CreateWorkspaceFragment dFragment = new CreateWorkspaceFragment();
-
-
-        Log.i(TAG, w.getName() + " clicked. Replacing fragment.");
-
-        // We start the fragment transaction here. It is just an ordinary fragment transaction.
-
-//        fragmentManager.beginTransaction().replace(R.id.container, WorkspaceFragment.newInstance()).commit();
-
-        // Show DialogFragment
-        dFragment.show(fm, "Dialog Fragment");
-/*
-        getActivity().getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.tabs, CreateWorkspaceFragment.newInstance()).commit();
-*/
-
-//                )
-//                        DetailFragment.newInstance(meat.resourceId, meat.title,
-//                                (int) view.getX(), (int) view.getY(),
-//                                view.getWidth(), view.getHeight())
-//                )
-                        // We push the fragment transaction to back stack. User can go back to the
-                        // previous fragment by pressing back button.
-//                .addToBackStack("detail")
-//                .commit();
-
+        Intent intent = new Intent(getActivity(), WorkspaceFilesActivity.class);
+        getActivity().startActivityForResult(intent, ACTIVITY_WORKSPACE_FILES);
     }
 }
 
