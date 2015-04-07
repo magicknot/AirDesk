@@ -100,6 +100,9 @@ public class TagsAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    public ArrayList<WorkspaceTag> getListWorkspacesTags(){
+        return mListWorkspacesTags;
+    }
 
     public void init(){
         WorkspaceTag t = new WorkspaceTag("xxxxx");

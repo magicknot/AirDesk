@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.cmov.airdesk;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
@@ -15,12 +16,14 @@ import android.widget.ListView;
 import android.widget.Switch;
 
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.TagsAdapter;
+import pt.ulisboa.tecnico.cmov.airdesk.util.AirdeskDataHolder;
 import pt.ulisboa.tecnico.cmov.airdesk.workspace.LocalWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.workspace.WorkspaceTag;
 
 
 public class CreateWorkspaceFragment extends DialogFragment {
 
+    public static final String PREFS_NAME = "MyPrefsFile";
     private static final String TAG = "CreateWorkspaceFragment";
 
     private EditText tName, tQuota, tTag;
@@ -69,7 +72,7 @@ public class CreateWorkspaceFragment extends DialogFragment {
                 if (isChecked) {
                     // The toggle is enabled
                     Log.i(TAG, "[onCheckedChanged] Checked");
-                    mTagListAdapter.init();
+//                    mTagListAdapter.init();
                     setWorkspacePublic();
                 } else {
                     // The toggle is disabled
@@ -105,11 +108,12 @@ public class CreateWorkspaceFragment extends DialogFragment {
             public void onClick(View v) {
                 // Do something in response to button click
                 Log.i(TAG, "[onCheckedChanged] Create");
-                //AirdeskDataHolder dataholder = new LocalWorkspace(owner,name, quota, listofTags);
-
+                SharedPreferences myPrefs = getActivity().getSharedPreferences(PREFS_NAME, 0);
+                String email = myPrefs.getString("userEmail", "userEmail");
+                AirdeskDataHolder.getInstance().addLocalWorkspace(email, tName.getText().toString().trim(), Integer.valueOf(tQuota.getText().toString()), sPrivacy.isChecked(), mTagListAdapter.getListWorkspacesTags());
+                dismiss();
             }
         });
-
         return rootView;
     }
 

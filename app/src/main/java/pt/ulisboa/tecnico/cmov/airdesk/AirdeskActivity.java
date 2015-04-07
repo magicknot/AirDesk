@@ -41,7 +41,7 @@ public class AirdeskActivity extends ActionBarActivity {
         setContentView(R.layout.activity_airdesk);
 
         ValidateUserRegistration();
-        AirdeskDataHolder.init();
+        AirdeskDataHolder.init(this);
         createWorkspaceTabs();
     }
 

@@ -12,5 +12,9 @@
         android:id="@+id/workspace_overflow_delete"
         android:icon="@drawable/ic_action_discard"
         android:title="@string/delete" />
+    <item
+        android:id="@+id/workspace_overflow_invite"
+        android:icon="@drawable/ic_action_add_person"
+        android:title="@string/delete" />
 
 </menu>

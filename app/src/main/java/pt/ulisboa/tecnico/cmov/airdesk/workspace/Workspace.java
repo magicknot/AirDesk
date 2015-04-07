@@ -105,7 +105,8 @@ public class Workspace {
     @Override
     public String toString() {
         return "Workspace{" +
-                "name='" + getName() + '\'' +
+                "workspaceId=" + getWorkspaceId() +
+                ", name='" + getName() + '\'' +
                 ", owner=" + getOwner() +
                 ", quota=" + getQuota() +
                 ", listFiles=" + getListFiles() +
