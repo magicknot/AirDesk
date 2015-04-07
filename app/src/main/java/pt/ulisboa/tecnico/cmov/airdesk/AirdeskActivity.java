@@ -2,7 +2,6 @@ package pt.ulisboa.tecnico.cmov.airdesk;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
@@ -15,15 +14,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.os.Build;
-import android.widget.ListView;
 import android.widget.Toast;
 
-import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.util.AirdeskDataHolder;
 import pt.ulisboa.tecnico.cmov.airdesk.view.SlidingTabLayout;
-import pt.ulisboa.tecnico.cmov.airdesk.workspace.BlankFragment;
-import pt.ulisboa.tecnico.cmov.airdesk.workspace.TabsWorkspacesFragment;
 
 
 public class AirdeskActivity extends ActionBarActivity {
