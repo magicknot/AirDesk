@@ -13,4 +13,7 @@
     <string name="create_workspace_name">Name</string>
     <string name="create_workspace_quota">Quota</string>
     <string name="title_activity_workspace_files">WorkspaceFilesActivity</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="about">About</string>
 </resources>

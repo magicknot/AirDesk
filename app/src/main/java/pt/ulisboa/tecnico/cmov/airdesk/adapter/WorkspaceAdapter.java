@@ -63,6 +63,7 @@ public class WorkspaceAdapter extends BaseAdapter {
             holder = (ViewHolder) view.getTag();
         }
         bindView(holder, position);
+
         return view;
     }
 
