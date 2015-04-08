@@ -43,15 +43,18 @@ public class AirdeskDataHolder {
         return this.localWorkspaces;
     }
 
-    public void addLocalWorkspace(String owner, String name, int quota, boolean isNotPrivate, ArrayList <WorkspaceTag>listofTags){
+    public void addLocalWorkspace(String owner, String name, int quota, boolean isNotPrivate, ArrayList <WorkspaceTag>listofTags, ArrayList <User>listofClients ){
         LocalWorkspace lw = new LocalWorkspace(owner, name, quota);
         //TODO:Validate Workspace name already exists
         db.open();
         lw = (LocalWorkspace)db.insertWorkspace(lw);
         //TODO:Create Workspace Folder
         if(isNotPrivate) {
-            Log.i(TAG, "isPrivate: Public (Adding tags to Workspace)");
+            Log.i(TAG, "isPrivate: Public (Adding Tags to Workspace)");
             lw.setListTags(listofTags);
+        } else {
+            Log.i(TAG, "isPrivate: Private (Adding Clients to Workspace)");
+            lw.setListClients(listofClients);
         }
         db.close();
         localWorkspaces.add(lw);
@@ -66,9 +69,5 @@ public class AirdeskDataHolder {
         Log.i(TAG, "isDeleted: "+Boolean.valueOf(isDeleted));
         localWorkspaces.remove(localWorkspace);
         return isDeleted;
-
     }
-
-
-
 }

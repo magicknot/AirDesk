@@ -26,7 +26,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.workspace.Workspace;
 /**
  * Created by oliveira on 03/04/15.
  */
-public class WorkspaceAdapter extends BaseAdapter {
+public class LocalWorkspaceAdapter extends BaseAdapter {
 
     private static final int ACTIVITY_WORKSPACE_FILES = 2;
 
@@ -37,17 +37,14 @@ public class WorkspaceAdapter extends BaseAdapter {
     private final int mResourceId;
     private ArrayList<LocalWorkspace> mListWorkspaces;
 
-    public WorkspaceAdapter(Context context, int resourceId) {
-//        mListWorkspaces = new ArrayList<>();
-//        init();
+    public LocalWorkspaceAdapter(Context context, int resourceId) {
         mListWorkspaces = AirdeskDataHolder.getInstance().getLocalWorkspaces(null);
-Log.i(TAG, mListWorkspaces.get(0).toString());
+//        Log.i(TAG, mListWorkspaces.get(0).toString());
 
         mContext = context;
         mLayoutInflater = LayoutInflater.from(mContext);
         mResourceId = resourceId;
     }
-
 
     @Override
     public int getCount() {
@@ -149,7 +146,6 @@ Log.i(TAG, mListWorkspaces.get(0).toString());
                     popupMenu.show();
                     return;
                 }
-
                 popupMenu.show();
             }
         });
@@ -169,21 +165,4 @@ Log.i(TAG, mListWorkspaces.get(0).toString());
         public TextView title;
     }
 
-    public void init(){
-        LocalWorkspace w = new LocalWorkspace("x", "SnowTrip", 10);
-        w.setWorkspaceId(1);
-        mListWorkspaces.add(w);
-        w = new LocalWorkspace("x", "BeachTrip", 11);
-        w.setWorkspaceId(2);
-        mListWorkspaces.add(w);
-        w = new LocalWorkspace("x", "CampTrip", 112);
-        w.setWorkspaceId(3);
-        mListWorkspaces.add(w);
-        w = new LocalWorkspace("x", "CityTrip", 15);
-        w.setWorkspaceId(4);
-        mListWorkspaces.add(w);
-        w = new LocalWorkspace("x", "OtherTrip", 2);
-        w.setWorkspaceId(5);
-        mListWorkspaces.add(w);
-    }
 }

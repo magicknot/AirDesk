@@ -17,4 +17,5 @@
     <string name="delete">Delete</string>
     <string name="detail">Detail</string>
     <string name="invite">Invite</string>
+    <string name="privacy_title">itemTitle</string>
 </resources>

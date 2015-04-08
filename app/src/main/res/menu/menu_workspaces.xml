@@ -7,11 +7,4 @@
         android:title="@string/action_settings"
         android:orderInCategory="100"
         app:showAsAction="never" />
-    <item
-        android:id="@+id/action_user"
-        android:orderInCategory="200"
-        android:title="User"
-        android:icon="@drawable/ic_action_add_person"
-        app:showAsAction="ifRoom"
-    />
 </menu>

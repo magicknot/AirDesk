@@ -2,18 +2,13 @@ package pt.ulisboa.tecnico.cmov.airdesk;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.ViewPagerAdapter;
@@ -33,6 +28,7 @@ public class AirdeskActivity extends ActionBarActivity {
     SlidingTabLayout tabs;
     CharSequence Titles[]={"Owned Workspaces","Foreign Workspaces"};
     int Numboftabs =2;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,29 +129,14 @@ public class AirdeskActivity extends ActionBarActivity {
                 return true;
             case R.id.action_user:
                 Toast.makeText(getBaseContext(), "You selected action_user", Toast.LENGTH_SHORT).show();
+/*
                 FragmentManager fm = getSupportFragmentManager();
                 CreateWorkspaceFragment dFragment = new CreateWorkspaceFragment();
                 dFragment.show(fm, "Dialog Fragment");
+*/
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-
-            View rootView = inflater.inflate(R.layout.fragment_airdesk, container, false);
-            return rootView;
-        }
     }
 
 }

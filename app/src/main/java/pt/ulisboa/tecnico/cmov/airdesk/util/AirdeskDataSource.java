@@ -203,7 +203,7 @@ public class AirdeskDataSource {
     }
 
     public void initializeData(){
-        User user = new User();
+        User user = new User("email");
         user.setEmail("xxx");
         user.setNickname("rasteirinho");
 

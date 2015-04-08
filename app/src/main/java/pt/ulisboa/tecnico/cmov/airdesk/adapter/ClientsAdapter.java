@@ -11,21 +11,21 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
-import pt.ulisboa.tecnico.cmov.airdesk.workspace.WorkspaceTag;
+import pt.ulisboa.tecnico.cmov.airdesk.user.User;
 
 /**
- * Created by oliveira on 06/04/15.
+ * Created by oliveira on 08/04/15.
  */
-public class TagsAdapter extends BaseAdapter {
+public class ClientsAdapter extends BaseAdapter {
 
-    private static final String TAG = "TagsAdapter";
+    private static final String TAG = "ClientsAdapter";
 
     private final LayoutInflater mLayoutInflater;
     private final int mResourceId;
-    private ArrayList<WorkspaceTag> mListWorkspacesTags;
+    private ArrayList<User> mListWorkspaceClients;
 
-    public TagsAdapter(LayoutInflater inflater, int resourceId) {
-        mListWorkspacesTags = new ArrayList<>();
+    public ClientsAdapter(LayoutInflater inflater, int resourceId) {
+        mListWorkspaceClients = new ArrayList<>();
 
         mLayoutInflater = inflater;
         mResourceId = resourceId;
@@ -33,22 +33,17 @@ public class TagsAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return mListWorkspacesTags.size();
+        return mListWorkspaceClients.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return mListWorkspacesTags.get(position);
+        return mListWorkspaceClients.get(position);
     }
 
     @Override
     public long getItemId(int position) {
         return position;
-    }
-
-    public void clear(){
-        mListWorkspacesTags.clear();
-        notifyDataSetChanged();
     }
 
     @Override
@@ -74,8 +69,8 @@ public class TagsAdapter extends BaseAdapter {
         imgRemoveTag.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Do something in response to button click
-                Log.i(TAG, "[onCheckedChanged] Remove Tag " + position);
-                mListWorkspacesTags.remove(position);
+                Log.i(TAG, "[onCheckedChanged] Remove User " + position);
+                mListWorkspaceClients.remove(position);
                 notifyDataSetChanged();
             }
         });
@@ -83,9 +78,10 @@ public class TagsAdapter extends BaseAdapter {
         return view;
     }
     public void bindView(ViewHolder holder, int position) {
-        WorkspaceTag tag = (WorkspaceTag)getItem(position);
+        User client = (User)getItem(position);
+
 //        holder.image.setImageResource(w.getWorkspaceId());
-        holder.title.setText(tag.getTag());
+        holder.title.setText(client.getEmail());
     }
 
     public static class ViewHolder {
@@ -94,13 +90,18 @@ public class TagsAdapter extends BaseAdapter {
     }
 
 
-    public void add(WorkspaceTag tag){
-        mListWorkspacesTags.add(tag);
+    public void add(User cliente){
+        mListWorkspaceClients.add(cliente);
         notifyDataSetChanged();
     }
 
-    public ArrayList<WorkspaceTag> getListWorkspacesTags(){
-        return mListWorkspacesTags;
+    public void clear(){
+        mListWorkspaceClients.clear();
+        notifyDataSetChanged();
+    }
+
+    public ArrayList<User> getListWorkspaceClients(){
+        return mListWorkspaceClients;
     }
 
 }

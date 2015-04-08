@@ -13,4 +13,7 @@ public class LocalUser extends User {
     private ArrayList<LocalWorkspace> lstLocalWorkspaces;
     private ArrayList<Workspace> lstForeignWorkspaces;
 
+    public LocalUser(String email) {
+        super(email);
+    }
 }
