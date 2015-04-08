@@ -41,7 +41,7 @@ public class WorkspaceAdapter extends BaseAdapter {
 //        mListWorkspaces = new ArrayList<>();
 //        init();
         mListWorkspaces = AirdeskDataHolder.getInstance().getLocalWorkspaces(null);
-Log.i(TAG, ((Workspace)mListWorkspaces.get(0)).toString());
+Log.i(TAG, mListWorkspaces.get(0).toString());
 
         mContext = context;
         mLayoutInflater = LayoutInflater.from(mContext);
@@ -64,11 +64,11 @@ Log.i(TAG, ((Workspace)mListWorkspaces.get(0)).toString());
     @Override
     public long getItemId(int position) {
         Log.i(TAG, " getItemId(int position) " + position);
-        return ((Workspace)mListWorkspaces.get(position)).getWorkspaceId();
+        return mListWorkspaces.get(position).getWorkspaceId();
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         final View view;
         final ViewHolder holder;
         if (null == convertView) {
@@ -118,8 +118,9 @@ Log.i(TAG, ((Workspace)mListWorkspaces.get(0)).toString());
                                 return true;
 
                             case R.id.workspace_overflow_delete:
-                                Log.i(TAG, " clicked. delete ");
-                                //setAlbumCover(mAlbum);
+                                Log.i(TAG, " clicked. delete "+ mListWorkspaces.get(position).toString());
+                                AirdeskDataHolder.getInstance().removeLocalWorkspace(mListWorkspaces.get(position));
+                                notifyDataSetChanged();
                                 return true;
 
                             case R.id.workspace_overflow_invite:

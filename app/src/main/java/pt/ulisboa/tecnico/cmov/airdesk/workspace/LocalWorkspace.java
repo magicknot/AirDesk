@@ -10,6 +10,10 @@ import pt.ulisboa.tecnico.cmov.airdesk.user.User;
 public class LocalWorkspace extends Workspace {
     private ArrayList<User> listClients;
 
+    public LocalWorkspace() {
+        super();
+    }
+
     public LocalWorkspace(String owner, String workspaceName, long workspaceQuota) {
         super(workspaceName, workspaceQuota, owner);
     }

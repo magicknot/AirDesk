@@ -15,5 +15,6 @@
     <string name="title_activity_workspace_files">WorkspaceFilesActivity</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
-    <string name="about">About</string>
+    <string name="detail">Detail</string>
+    <string name="invite">Invite</string>
 </resources>

@@ -54,6 +54,21 @@ public class AirdeskDataHolder {
             lw.setListTags(listofTags);
         }
         db.close();
+        localWorkspaces.add(lw);
     }
+
+    public boolean removeLocalWorkspace(LocalWorkspace localWorkspace){
+        boolean isDeleted;
+
+        db.open();
+        isDeleted = db.deleteWorkspace(localWorkspace.getWorkspaceId());
+        db.close();
+        Log.i(TAG, "isDeleted: "+Boolean.valueOf(isDeleted));
+        localWorkspaces.remove(localWorkspace);
+        return isDeleted;
+
+    }
+
+
 
 }

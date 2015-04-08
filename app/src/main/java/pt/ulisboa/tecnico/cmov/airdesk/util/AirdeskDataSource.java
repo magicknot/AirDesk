@@ -104,7 +104,7 @@ public class AirdeskDataSource {
     /**
      * Delete the workspace with the given rowId
      *
-     * @param rowId id of note to delete
+     * @param rowId id of workspace to delete
      * @return true if deleted, false otherwise
      */
     public boolean deleteWorkspace(long rowId) {
@@ -116,7 +116,7 @@ public class AirdeskDataSource {
         mDb.delete(AirdeskDbContract.WorkspaceTagsTable.TABLE_NAME, AirdeskDbContract.WorkspaceTagsTable.COLUMN_WORKSPACE_KEY + "='" + rowId + "'", null);
 
         // Delete all user association
-        mDb.delete(AirdeskDbContract.WorkspaceClientsTable.TABLE_NAME, AirdeskDbContract.WorkspaceClientsTable.COLUMN_WORKSPACE_KEY + "='" + rowId + "'", null);
+//        mDb.delete(AirdeskDbContract.WorkspaceClientsTable.TABLE_NAME, AirdeskDbContract.WorkspaceClientsTable.COLUMN_WORKSPACE_KEY + "='" + rowId + "'", null);
 
         // Delete workspace
         return mDb.delete(AirdeskDbContract.WorkspacesTable.TABLE_NAME, AirdeskDbContract.WorkspacesTable._ID + "=" + rowId, null) > 0;
@@ -134,17 +134,18 @@ public class AirdeskDataSource {
 //                AirdeskDbContract.WorkspacesTable.COLUMN_OWNER, AirdeskDbContract.WorkspacesTable.COLUMN_QUOTA, AirdeskDbContract.WorkspacesTable.COLUMN_PRIVACY}, null, null, null, null, null);
 //    }
 
-    public ArrayList<Workspace>fetchAllWorkspaces() {
+    public ArrayList<LocalWorkspace>fetchAllWorkspaces() {
 
-        Workspace w;
+        LocalWorkspace w;
 
-        ArrayList<Workspace> workspaces = new ArrayList<Workspace>();
+        ArrayList<LocalWorkspace> workspaces = new ArrayList<LocalWorkspace>();
         Cursor cursor = mDb.query(AirdeskDbContract.WorkspacesTable.TABLE_NAME, AirdeskDbContract.workspaceAllColls, null, null, null, null, null);
 
         Log.i(TAG, "Returned " + cursor.getCount() + " rows");
         if (cursor.getCount() > 0){
             while (cursor.moveToNext()){
-                w = new Workspace();
+                w = new LocalWorkspace();
+                w.setWorkspaceId(cursor.getLong(cursor.getColumnIndex(AirdeskDbContract.WorkspacesTable._ID)));
                 w.setName(cursor.getString(cursor.getColumnIndex(AirdeskDbContract.WorkspacesTable.COLUMN_WORKSPACE_NAME)));
                 w.setQuota(cursor.getLong(cursor.getColumnIndex(AirdeskDbContract.WorkspacesTable.COLUMN_QUOTA)));
                 w.setOwner(cursor.getString(cursor.getColumnIndex(AirdeskDbContract.WorkspacesTable.COLUMN_OWNER)));
