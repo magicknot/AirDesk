@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.internal.view.menu.MenuBuilder;
+import android.support.v7.widget.PopupMenu;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,18 +16,24 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.lang.reflect.Field;
+
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.LocalWorkspaceAdapter;
+import pt.ulisboa.tecnico.cmov.airdesk.util.AirdeskDataHolder;
 
 /**
  * Created by oliveira on 31/03/15.
  */
-public class Tab1 extends Fragment{
+public class Tab1 extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener {
 
     private static final String TAG = "AirDesk[Tab1]";
     private static final int DIALOG_FRAGMENT_NEW_WORKSPACE = 1;
+    private  static final int DIALOG_FRAGMENT_INVITE_CLIENTS=3;
+    private static final int ACTIVITY_WORKSPACE_FILES = 2;
 
     private LocalWorkspaceAdapter mAdapter;
 
@@ -38,7 +46,7 @@ public class Tab1 extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // This is the adapter we use to populate the grid.
-        mAdapter = new LocalWorkspaceAdapter(getActivity(), R.layout.item_workspace_grid);
+        mAdapter = new LocalWorkspaceAdapter(this, getActivity(), R.layout.item_workspace_grid);
 
         // Inflate the layout with a GridView in it.
         View v =inflater.inflate(R.layout.tab_1,container,false);
@@ -52,6 +60,8 @@ public class Tab1 extends Fragment{
         ListView listViewOwned = (ListView) view.findViewById(R.id.list_owned_workspaces);
         // Assign adapter to ListView
         listViewOwned.setAdapter(mAdapter);
+
+        listViewOwned.setOnItemClickListener(this);
     }
 
     @Override
@@ -95,5 +105,70 @@ public class Tab1 extends Fragment{
                 break;
         }    }
 
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Log.i(TAG,"onItemClick!. "+position);
+
+        //View listViewRow = mAdapter.getView(position, view, parent);
+        //ImageView dbRowView = (ImageView) listViewRow.findViewById(R.id.workspace_overflow);
+
+        Log.i(TAG, "title of " + position + "th element clicked");
+        Intent intent = new Intent(getActivity(), WorkspaceFilesActivity.class);
+        getActivity().startActivityForResult(intent, ACTIVITY_WORKSPACE_FILES);
+    }
+
+    @Override
+    public void onClick(View v) {
+        final int position = Integer.valueOf(v.getTag().toString());
+
+        Log.w(TAG, "onClick" + position);
+        PopupMenu popupMenu = new PopupMenu(getActivity(), v){
+            @Override
+            public boolean onMenuItemSelected(MenuBuilder menu, MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.workspace_overflow_about:
+                        Log.i(TAG, " clicked. about ");
+                        //deleteAlbum(mAlbum);
+                        return true;
+
+                    case R.id.workspace_overflow_edit:
+                        Log.i(TAG, " clicked. edit ");
+                        //renameAlbum(mAlbum);
+                        return true;
+
+                    case R.id.workspace_overflow_delete:
+                        Log.i(TAG, " clicked. delete "+ mAdapter.getItem(position).toString());
+                        AirdeskDataHolder.getInstance().removeLocalWorkspace(mAdapter.getItem(position));
+                        mAdapter.notifyDataSetChanged();
+                        return true;
+
+                    case R.id.workspace_overflow_invite:
+                        Log.i(TAG, " clicked. invite ");
+                        return true;
+
+                    default:
+                        return super.onMenuItemSelected(menu, item);
+                }
+            }
+        };
+        popupMenu.inflate(R.menu.menu_item_workspace);
+
+        // Force icons to show
+        Object menuHelper;
+        Class[] argTypes;
+        try {
+            Field fMenuHelper = PopupMenu.class.getDeclaredField("mPopup");
+            fMenuHelper.setAccessible(true);
+            menuHelper = fMenuHelper.get(popupMenu);
+            argTypes = new Class[] { boolean.class };
+            menuHelper.getClass().getDeclaredMethod("setForceShowIcon", argTypes).invoke(menuHelper, true);
+        } catch (Exception e) {
+            Log.w(TAG, "error forcing menu icons to show", e);
+            popupMenu.show();
+            return;
+        }
+        popupMenu.show();
+    }
 }
 

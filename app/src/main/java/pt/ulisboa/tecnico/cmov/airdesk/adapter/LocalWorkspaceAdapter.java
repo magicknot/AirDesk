@@ -1,24 +1,17 @@
 package pt.ulisboa.tecnico.cmov.airdesk.adapter;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.support.v7.internal.view.menu.MenuBuilder;
-import android.support.v7.widget.PopupMenu;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
-import pt.ulisboa.tecnico.cmov.airdesk.WorkspaceFilesActivity;
+import pt.ulisboa.tecnico.cmov.airdesk.Tab1;
 import pt.ulisboa.tecnico.cmov.airdesk.util.AirdeskDataHolder;
 import pt.ulisboa.tecnico.cmov.airdesk.workspace.LocalWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.workspace.Workspace;
@@ -28,39 +21,42 @@ import pt.ulisboa.tecnico.cmov.airdesk.workspace.Workspace;
  */
 public class LocalWorkspaceAdapter extends BaseAdapter {
 
-    private static final int ACTIVITY_WORKSPACE_FILES = 2;
+
 
     private static final String TAG = "WorkspaceAdapter";
 
     private final LayoutInflater mLayoutInflater;
     private final Context mContext;
     private final int mResourceId;
+    private final Tab1 mTab1;
+
     private ArrayList<LocalWorkspace> mListWorkspaces;
 
-    public LocalWorkspaceAdapter(Context context, int resourceId) {
+    public LocalWorkspaceAdapter(Tab1 t, Context context, int resourceId) {
         mListWorkspaces = AirdeskDataHolder.getInstance().getLocalWorkspaces(null);
 //        Log.i(TAG, mListWorkspaces.get(0).toString());
 
         mContext = context;
         mLayoutInflater = LayoutInflater.from(mContext);
         mResourceId = resourceId;
+        mTab1=t;
     }
 
     @Override
     public int getCount() {
-        Log.i(TAG, " getCount() " + mListWorkspaces.size());
+        //Log.i(TAG, " getCount() " + mListWorkspaces.size());
         return mListWorkspaces.size();
     }
 
     @Override
-    public Workspace getItem(int position) {
-        Log.i(TAG, " getItem(int position) " + position);
+    public LocalWorkspace getItem(int position) {
+        //Log.i(TAG, " getItem(int position) " + position);
         return mListWorkspaces.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        Log.i(TAG, " getItemId(int position) " + position);
+        //Log.i(TAG, " getItemId(int position) " + position);
         return mListWorkspaces.get(position).getWorkspaceId();
     }
 
@@ -74,6 +70,10 @@ public class LocalWorkspaceAdapter extends BaseAdapter {
             assert view != null;
             holder.title = (TextView) view.findViewById(R.id.title);
             holder.image = (ImageView) view.findViewById(R.id.workspace_overflow);
+
+            holder.image.setTag(position);
+            holder.image.setOnClickListener(mTab1);
+
             view.setTag(holder);
         } else {
             view = convertView;
@@ -81,7 +81,7 @@ public class LocalWorkspaceAdapter extends BaseAdapter {
         }
         bindView(holder, position);
 
-
+/*
         final int pos = position;
         holder.title.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,13 +94,14 @@ public class LocalWorkspaceAdapter extends BaseAdapter {
             }
         });
 
+
         holder.image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Do your work here
                 Log.i(TAG, "image of " + pos + "th element clicked");
 
-                PopupMenu popupMenu = new PopupMenu(mContext, view){
+                PopupMenu popupMenu = new PopupMenu(mContext, v){
                     @Override
                     public boolean onMenuItemSelected(MenuBuilder menu, MenuItem item) {
                         switch (item.getItemId()) {
@@ -122,7 +123,10 @@ public class LocalWorkspaceAdapter extends BaseAdapter {
 
                             case R.id.workspace_overflow_invite:
                                 Log.i(TAG, " clicked. invite ");
-                                //setAlbumCover(mAlbum);
+                                Toast.makeText(((Activity)mContext).getBaseContext(), "You selected action_new_local_workspace", Toast.LENGTH_SHORT).show();
+                                CreateWorkspaceFragment dFragment = CreateWorkspaceFragment.newInstance();
+
+//                                dFragment.setTargetFragment(this, DIALOG_FRAGMENT_INVITE_CLIENTS);
                                 return true;
 
                             default:
@@ -149,7 +153,7 @@ public class LocalWorkspaceAdapter extends BaseAdapter {
                 popupMenu.show();
             }
         });
-
+*/
         return view;
     }
 
