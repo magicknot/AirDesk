@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.user.User;
@@ -22,7 +23,7 @@ public class ClientsAdapter extends BaseAdapter {
 
     private final LayoutInflater mLayoutInflater;
     private final int mResourceId;
-    private ArrayList<User> mListWorkspaceClients;
+    private List<User> mListWorkspaceClients;
 
     public ClientsAdapter(LayoutInflater inflater, int resourceId) {
         mListWorkspaceClients = new ArrayList<>();
@@ -100,8 +101,16 @@ public class ClientsAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    public ArrayList<User> getListWorkspaceClients(){
+    public List<User> getListWorkspaceClients(){
         return mListWorkspaceClients;
+    }
+
+    public void setListWorkspaceClients(List<User> listClients){
+        if (listClients == null)
+            mListWorkspaceClients = new ArrayList<>();
+        else
+            mListWorkspaceClients=listClients;
+        Log.i(TAG, "setListWorkspaceClients " + listClients.size() + " clients");
     }
 
 }

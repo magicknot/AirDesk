@@ -28,7 +28,7 @@ public class LocalWorkspace extends Workspace implements Parcelable {
         return listClients;
     }
 
-    public void setListClients(ArrayList<User> listClients) {
+    public void setListClients(List<User> listClients) {
         this.listClients = listClients;
     }
 

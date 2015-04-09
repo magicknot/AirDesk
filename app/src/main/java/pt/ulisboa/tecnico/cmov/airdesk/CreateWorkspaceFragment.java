@@ -67,7 +67,6 @@ public class CreateWorkspaceFragment extends DialogFragment {
         bCreate = (Button)rootView.findViewById(R.id.buttonCreate);
         bCancel = (Button)rootView.findViewById(R.id.buttonCancel);
 
-
         mTagListAdapter = new TagsAdapter(inflater, R.layout.item_tag_grid);
         mClientsListAdapter = new ClientsAdapter(inflater, R.layout.item_tag_grid);
 

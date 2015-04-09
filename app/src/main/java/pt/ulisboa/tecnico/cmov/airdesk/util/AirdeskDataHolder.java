@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.workspace.ForeignWorkspace;
@@ -43,7 +44,7 @@ public class AirdeskDataHolder {
         return this.localWorkspaces;
     }
 
-    public void addLocalWorkspace(String owner, String name, int quota, boolean isNotPrivate, ArrayList <WorkspaceTag>listofTags, ArrayList <User>listofClients ){
+    public void addLocalWorkspace(String owner, String name, int quota, boolean isNotPrivate, List <WorkspaceTag>listofTags, List<User> listofClients ){
         LocalWorkspace lw = new LocalWorkspace(owner, name, quota);
         //TODO:Validate Workspace name already exists
         if(isNotPrivate) {
