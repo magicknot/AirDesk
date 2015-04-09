@@ -1,0 +1,121 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:weightSum="1" >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/create_workspace_name"
+        android:id="@+id/textViewName"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/create_workspace_quota"
+        android:id="@+id/textViewQuota"
+        android:layout_gravity="center_horizontal" />
+
+    <EditText
+        android:id="@+id/editTextQuota"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:numeric="integer"
+        android:singleLine="true"
+        android:lines="1"
+        android:maxLines="1"
+        android:gravity="center_horizontal"
+        android:textAlignment="center" />
+
+    <Switch
+        android:id="@+id/switchPrivacy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:text="Privacy "
+        android:showText="true"
+        android:textOff="Private"
+        android:textOn="Public"
+        android:layout_gravity="left" />
+    <!--
+        <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:fillViewport="true">
+    -->
+    <LinearLayout
+        android:id="@+id/layoutNewTag"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/privacy_title"
+            android:id="@+id/textViewPrivacy"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp" />
+
+
+        <ListView
+            android:id="@+id/tagList"
+            android:layout_width="fill_parent"
+            android:layout_height="200dp"
+            android:clickable="true" />
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <EditText
+                android:id="@+id/editTextNewTag"
+                android:layout_weight="5"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:lines="1"
+                android:maxLines="1"
+                android:hint="hint"/>
+
+            <ImageButton
+                android:id="@+id/buttonAddTag"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@android:drawable/ic_input_add" />
+        </LinearLayout>
+    </LinearLayout>
+    <!--    </ScrollView> -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/buttonCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:text="@string/cancel" />
+
+        <Button
+            android:id="@+id/buttonCreate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:text="@string/update" />
+    </LinearLayout>
+</LinearLayout>

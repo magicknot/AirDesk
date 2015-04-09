@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.cmov.airdesk;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
@@ -14,7 +15,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.ClientsAdapter;
-import pt.ulisboa.tecnico.cmov.airdesk.adapter.TagsAdapter;
+import pt.ulisboa.tecnico.cmov.airdesk.user.User;
+import pt.ulisboa.tecnico.cmov.airdesk.util.AirdeskDataHolder;
 import pt.ulisboa.tecnico.cmov.airdesk.workspace.LocalWorkspace;
 
 
@@ -79,6 +81,36 @@ public class InviteClientFragment extends DialogFragment {
         listViewItems = (ListView) rootView.findViewById(R.id.tagList);
         listViewItems.setAdapter(mClientsListAdapter);
 
+        //Setting Button addTag Listener
+        bAddItem.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Do something in response to button click
+                if (!tItem.getText().toString().trim().isEmpty()) {
+                    User client = new User(tItem.getText().toString().trim());
+                    mClientsListAdapter.add(client);
+                    tItem.getText().clear();
+                }
+            }
+        });
+
+        bCancel.setOnClickListener(new View.OnClickListener() {
+                                       public void onClick(View v) {
+                                           // Do something in response to button click
+                                           Log.i(TAG, "[onCheckedChanged] Cancel");
+                                           getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_CANCELED, getActivity().getIntent());
+                                           dismiss();
+                                       }
+                                   }
+        );
+        //Setting Button createWorkspace Listener
+        bCreate.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Do something in response to button click
+                Log.i(TAG, "[onCheckedChanged] Update");
+                AirdeskDataHolder.getInstance().updateLocalWorkspaceClients(mWorkspace, mClientsListAdapter.getListWorkspaceClients());
+                dismiss();
+            }
+        });
         return rootView;
     }
 

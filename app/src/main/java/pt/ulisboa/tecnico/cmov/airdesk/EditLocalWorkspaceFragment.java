@@ -1,8 +1,7 @@
 package pt.ulisboa.tecnico.cmov.airdesk;
 
-import android.app.Activity;
 
-import android.content.SharedPreferences;
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
@@ -22,59 +21,87 @@ import pt.ulisboa.tecnico.cmov.airdesk.adapter.ClientsAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.TagsAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.util.AirdeskDataHolder;
+import pt.ulisboa.tecnico.cmov.airdesk.workspace.LocalWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.workspace.WorkspaceTag;
 
 
-public class CreateWorkspaceFragment extends DialogFragment {
+public class EditLocalWorkspaceFragment extends DialogFragment {
 
-    public static final String PREFS_NAME = "MyPrefsFile";
-    private static final String TAG = "CreateWorkspaceFragment";
+    private static final String TAG = "EditLocalWorkspaceFrag";
 
-    private TextView tItemTitle;
-    private EditText tName, tQuota, tItem;
+    private LocalWorkspace mWorkspace;
+
+    private TextView tItemTitlePrivacy, tName;
+    private EditText tQuota, tItem;
     private Switch sPrivacy;
     private ImageButton bAddItem;
 
     private Button bCreate, bCancel;
     private ListView listViewItems;
 
-    LinearLayout layoutItems;
+    private LinearLayout layoutItems;
 
     private TagsAdapter mTagListAdapter;
     private ClientsAdapter mClientsListAdapter;
 
-    public static CreateWorkspaceFragment newInstance() {
-        return new CreateWorkspaceFragment();
+    public static EditLocalWorkspaceFragment newInstance(LocalWorkspace inWorkspace) {
+        EditLocalWorkspaceFragment fragment = new EditLocalWorkspaceFragment();
+
+        // Supply num input as an argument.
+        Bundle args = new Bundle();
+        args.putParcelable("workspace", inWorkspace);
+        fragment.setArguments(args);
+
+        return fragment;
+    }
+
+    public EditLocalWorkspaceFragment() {
+        // Required empty public constructor
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_create_workspace, container, false);
-        getDialog().setTitle("Create Workspace");
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mWorkspace = getArguments().getParcelable("workspace");
+    }
 
-        tName = (EditText)rootView.findViewById(R.id.editTextName);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View rootView = inflater.inflate(R.layout.fragment_edit_local_workspace, container, false);
+
+        // Get ListView object from xml
+        listViewItems = (ListView) rootView.findViewById(R.id.tagList);
+
+///////////
+        mTagListAdapter = new TagsAdapter(inflater, R.layout.item_tag_grid);
+        mClientsListAdapter = new ClientsAdapter(inflater, R.layout.item_tag_grid);
+
+        tName = (TextView)rootView.findViewById(R.id.textViewName);
+
         tQuota = (EditText)rootView.findViewById(R.id.editTextQuota);
         sPrivacy = (Switch)rootView.findViewById(R.id.switchPrivacy);
 
         layoutItems = (LinearLayout)rootView.findViewById(R.id.layoutNewTag);
-        tItemTitle = (TextView)rootView.findViewById(R.id.textViewPrivacy);
+        tItemTitlePrivacy = (TextView)rootView.findViewById(R.id.textViewPrivacy);
         tItem = (EditText)rootView.findViewById(R.id.editTextNewTag);
         bAddItem = (ImageButton)rootView.findViewById(R.id.buttonAddTag);
 
         bCreate = (Button)rootView.findViewById(R.id.buttonCreate);
         bCancel = (Button)rootView.findViewById(R.id.buttonCancel);
 
-        mTagListAdapter = new TagsAdapter(inflater, R.layout.item_tag_grid);
-        mClientsListAdapter = new ClientsAdapter(inflater, R.layout.item_tag_grid);
-
-        // Get ListView object from xml
-        listViewItems = (ListView) rootView.findViewById(R.id.tagList);
-        this.setWorkspacePrivate();
+        getDialog().setTitle("Edit Workspace");
+        tName.setText(mWorkspace.getName());
+        tQuota.setText(String.valueOf(mWorkspace.getQuota()));
+        sPrivacy.setChecked(!mWorkspace.isPrivate());
+        if(mWorkspace.isPrivate())
+            setWorkspacePrivate();
+        else
+            setWorkspacePublic();
 
         //Setting Switch Listener
         sPrivacy.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            //TODO: Cache changed values
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     // The toggle is enabled
@@ -109,62 +136,44 @@ public class CreateWorkspaceFragment extends DialogFragment {
         });
 
         bCancel.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                        // Do something in response to button click
-                        Log.i(TAG, "[onCheckedChanged] Cancel");
-                    getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_CANCELED, getActivity().getIntent());
-                    dismiss();
-                    }
-                }
+                                       public void onClick(View v) {
+                                           // Do something in response to button click
+                                           Log.i(TAG, "[onCheckedChanged] Cancel");
+                                           getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_CANCELED, getActivity().getIntent());
+                                           dismiss();
+                                       }
+                                   }
         );
         //Setting Button createWorkspace Listener
         bCreate.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Do something in response to button click
                 Log.i(TAG, "[onCheckedChanged] Create");
-                SharedPreferences myPrefs = getActivity().getSharedPreferences(PREFS_NAME, 0);
-                String email = myPrefs.getString("userEmail", "userEmail");
-                AirdeskDataHolder.getInstance().addLocalWorkspace(email, tName.getText().toString().trim(), Integer.valueOf(tQuota.getText().toString()), sPrivacy.isChecked(), mTagListAdapter.getListWorkspacesTags(), mClientsListAdapter.getListWorkspaceClients());
+                mWorkspace.setListClients(mClientsListAdapter.getListWorkspaceClients());
+                mWorkspace.setListTags(mTagListAdapter.getListWorkspacesTags());
+                AirdeskDataHolder.getInstance().updateLocalWorkspaceClients(mWorkspace);
                 getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, getActivity().getIntent());
                 dismiss();
             }
         });
+
         return rootView;
     }
 
     private void setWorkspacePublic(){
-        tItemTitle.setText("Tags");
+        tItemTitlePrivacy.setText("Tags");
         tItem.setHint("new tag");
         mClientsListAdapter.clear();
+        mTagListAdapter.setListWorkspaceClients(mWorkspace.getListTags());
         listViewItems.setAdapter(mTagListAdapter);
     }
 
     private void setWorkspacePrivate(){
-        tItemTitle.setText("Clients");
-        listViewItems.setAdapter(mClientsListAdapter);
+        tItemTitlePrivacy.setText("Clients");
         tItem.setHint("new email client");
         mTagListAdapter.clear();
+        mClientsListAdapter.setListWorkspaceClients(mWorkspace.getListClients());
+        listViewItems.setAdapter(mClientsListAdapter);
     }
-/*
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        return new AlertDialog.Builder(getActivity())
-                .setTitle("R.string.ERROR")
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .setPositiveButton("R.string.ok_button",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, getActivity().getIntent());
-                            }
-                        }
-                )
-                .setNegativeButton("R.string.cancel_button", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_CANCELED, getActivity().getIntent());
-                    }
-                })
-                .create();
-    }
-*/
 }

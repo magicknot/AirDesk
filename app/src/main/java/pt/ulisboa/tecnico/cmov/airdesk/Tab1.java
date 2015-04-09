@@ -2,7 +2,6 @@ package pt.ulisboa.tecnico.cmov.airdesk;
 
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -138,11 +137,11 @@ public class Tab1 extends Fragment implements AdapterView.OnItemClickListener, V
 
                     case R.id.workspace_overflow_edit:
                         Log.i(TAG, " clicked. edit ");
-                        Toast.makeText(getActivity().getBaseContext(), "You selected action_new_local_workspace", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity().getBaseContext(), "You selected workspace_overflow_edit", Toast.LENGTH_SHORT).show();
                         fm = getActivity().getSupportFragmentManager();
-                        CreateWorkspaceFragment dFragment = CreateWorkspaceFragment.newInstance();
-                        dFragment.setTargetFragment(Tab1.this, DIALOG_FRAGMENT_NEW_WORKSPACE);
-                        dFragment.show(fm, "Dialog Fragment");
+                        EditLocalWorkspaceFragment dFragmentEditLocalWorkspace = EditLocalWorkspaceFragment.newInstance(mAdapter.getItem(position));
+                        dFragmentEditLocalWorkspace.setTargetFragment(Tab1.this, DIALOG_FRAGMENT_NEW_WORKSPACE);
+                        dFragmentEditLocalWorkspace.show(fm, "Dialog Fragment");
                         return true;
 
                     case R.id.workspace_overflow_delete:
@@ -155,7 +154,6 @@ public class Tab1 extends Fragment implements AdapterView.OnItemClickListener, V
                         Log.i(TAG, " clicked. invite ");
                         Toast.makeText(getActivity().getBaseContext(), "You selected action_new_local_workspace", Toast.LENGTH_SHORT).show();
                         fm = getActivity().getSupportFragmentManager();
-//                        Log.i(TAG, "popupMenu " + mAdapter.getItem(position).getListClients().get(0).getEmail());
                         InviteClientFragment dFragmentInviteClient = InviteClientFragment.newInstance(mAdapter.getItem(position));
                         dFragmentInviteClient.setTargetFragment(Tab1.this, DIALOG_FRAGMENT_NEW_WORKSPACE);
                         dFragmentInviteClient.show(fm, "Dialog Fragment");

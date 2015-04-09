@@ -26,7 +26,7 @@ public class AirdeskDataHolder {
 
     private Context mContext = null;
     private AirdeskDataSource db = null;
-    private ArrayList localWorkspaces;
+    private ArrayList<LocalWorkspace> localWorkspaces;
     private ArrayList foreignWorkspaces;
 
     public AirdeskDataHolder(Context context) {
@@ -71,4 +71,35 @@ public class AirdeskDataHolder {
         localWorkspaces.remove(localWorkspace);
         return isDeleted;
     }
+
+    public void updateLocalWorkspaceClients(LocalWorkspace workspace){
+        db.open();
+        db.updateLocalWorkspace(workspace.getWorkspaceId(),workspace.getName(),workspace.getOwner(),workspace.getQuota(),workspace.isPrivate());
+        db.updateLocalWorkspaceTags(workspace.getWorkspaceId(), workspace.getListTags());
+        db.updateLocalWorkspaceClients(workspace.getWorkspaceId(), workspace.getListClients());
+        db.close();
+    }
+
+    public void updateLocalWorkspaceClients(LocalWorkspace workspace, List<User> listClients){
+        int i;
+
+        db.open();
+        db.updateLocalWorkspaceClients(workspace.getWorkspaceId(), listClients);
+        db.close();
+        for (i = 0; i<localWorkspaces.size()&& localWorkspaces.get(i).getWorkspaceId()!=workspace.getWorkspaceId() ; i++);
+        if(i<localWorkspaces.size()&&localWorkspaces.get(i).getWorkspaceId()==workspace.getWorkspaceId())
+            localWorkspaces.get(i).setListClients(listClients);
+    }
+
+    public void updateLocalWorkspaceTags(LocalWorkspace workspace, List<WorkspaceTag> listTags){
+        int i;
+
+        db.open();
+        db.updateLocalWorkspaceTags(workspace.getWorkspaceId(), listTags);
+        db.close();
+        for (i = 0; i<localWorkspaces.size()&& localWorkspaces.get(i).getWorkspaceId()!=workspace.getWorkspaceId() ; i++);
+        if(i<localWorkspaces.size()&&localWorkspaces.get(i).getWorkspaceId()==workspace.getWorkspaceId())
+            localWorkspaces.get(i).setListTags(listTags);
+    }
+
 }

@@ -19,4 +19,6 @@
     <string name="invite">Invite</string>
     <string name="privacy_title">itemTitle</string>
     <string name="workspace_name">workspace_name</string>
+    <string name="update">Update</string>
+    <string name="cancel">Cancel</string>
 </resources>

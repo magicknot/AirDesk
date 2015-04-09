@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.workspace.LocalWorkspace;
@@ -243,7 +244,7 @@ public class AirdeskDataSource {
      * @param workspacePrivacy the workspace privacy (public/private)
      * @return true if the note was successfully updated, false otherwise
      */
-    public boolean updateWorkspace(long rowId, String workspaceName, String workspaceOwner, int workspaceQuota, boolean workspacePrivacy) {
+    public boolean updateLocalWorkspace(long rowId, String workspaceName, String workspaceOwner, long workspaceQuota, boolean workspacePrivacy) {
 
         ContentValues args = new ContentValues();
         args.put(AirdeskDbContract.WorkspacesTable.COLUMN_WORKSPACE_NAME, workspaceName);
@@ -254,24 +255,31 @@ public class AirdeskDataSource {
         return mDb.update(AirdeskDbContract.WorkspacesTable.TABLE_NAME, args, AirdeskDbContract.WorkspacesTable._ID + "=" + rowId, null) > 0;
     }
 
-    public void initializeData(){
-        User user = new User("email");
-        user.setEmail("xxx");
-        user.setNickname("rasteirinho");
+    public  void updateLocalWorkspaceClients(long workspaceId, List<User> listClients) {
+        long insertid;
+        ContentValues clientValues = new ContentValues();
 
-        this.insertUser(user);
+        mDb.delete(AirdeskDbContract.WorkspaceClientsTable.TABLE_NAME, AirdeskDbContract.WorkspaceClientsTable.COLUMN_WORKSPACE_KEY + "='" + workspaceId + "'", null);
 
-        LocalWorkspace w = new LocalWorkspace(user.getEmail(), "SnowTrip", 10);
-        insertWorkspace(w);
-        w = new LocalWorkspace(user.getEmail(), "BeachTrip", 11);
-        this.insertWorkspace(w);
-        w = new LocalWorkspace(user.getEmail(), "CampTrip", 112);
-        this.insertWorkspace(w);
-        w = new LocalWorkspace(user.getEmail(), "CityTrip", 15);
-        this.insertWorkspace(w);
-        w = new LocalWorkspace(user.getEmail(), "OtherTrip", 2);
-        this.insertWorkspace(w);
+        for (int i=0; i<listClients.size(); i++) {
+            clientValues.put(AirdeskDbContract.WorkspaceClientsTable.COLUMN_WORKSPACE_KEY, workspaceId);
+            clientValues.put(AirdeskDbContract.WorkspaceClientsTable.COLUMN_CLIENT_KEY, listClients.get(i).getEmail());
+
+            insertid = mDb.insert(AirdeskDbContract.WorkspaceClientsTable.TABLE_NAME, null, clientValues);
+            Log.i(TAG, "Workspace Client(" + listClients.get(i).getEmail() + ")created with id " + insertid);
+        }
     }
 
+    public void updateLocalWorkspaceTags(long workspaceId, List<WorkspaceTag> listTags) {
+        long insertid;
+        ContentValues clientValues = new ContentValues();
 
+        for (int i=0; i<listTags.size(); i++) {
+            clientValues.put(AirdeskDbContract.WorkspaceTagsTable.COLUMN_WORKSPACE_KEY, workspaceId);
+            clientValues.put(AirdeskDbContract.WorkspaceTagsTable.COLUMN_TAG, listTags.get(i).getTag());
+            insertid = mDb.insert(AirdeskDbContract.WorkspaceTagsTable.TABLE_NAME, null, clientValues);
+            Log.i(TAG, "Workspace Tag(" + listTags.get(i).getTag() + ")created with id " + insertid);
+        }
+
+    }
 }

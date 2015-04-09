@@ -9,8 +9,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
+import pt.ulisboa.tecnico.cmov.airdesk.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.workspace.WorkspaceTag;
 
 /**
@@ -22,7 +24,7 @@ public class TagsAdapter extends BaseAdapter {
 
     private final LayoutInflater mLayoutInflater;
     private final int mResourceId;
-    private ArrayList<WorkspaceTag> mListWorkspacesTags;
+    private List<WorkspaceTag> mListWorkspacesTags;
 
     public TagsAdapter(LayoutInflater inflater, int resourceId) {
         mListWorkspacesTags = new ArrayList<>();
@@ -46,10 +48,6 @@ public class TagsAdapter extends BaseAdapter {
         return position;
     }
 
-    public void clear(){
-        mListWorkspacesTags.clear();
-        notifyDataSetChanged();
-    }
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
@@ -99,7 +97,20 @@ public class TagsAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    public ArrayList<WorkspaceTag> getListWorkspacesTags(){
+    public void clear(){
+        mListWorkspacesTags.clear();
+        notifyDataSetChanged();
+    }
+
+    public void setListWorkspaceClients(List<WorkspaceTag> listTags){
+        if (listTags == null)
+            mListWorkspacesTags = new ArrayList<>();
+        else
+            mListWorkspacesTags=listTags;
+        Log.i(TAG, "setListWorkspaceClients " + listTags.size() + " clients");
+    }
+
+    public List<WorkspaceTag> getListWorkspacesTags(){
         return mListWorkspacesTags;
     }
 
