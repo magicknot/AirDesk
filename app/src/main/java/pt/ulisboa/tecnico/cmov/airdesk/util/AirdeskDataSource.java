@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import pt.ulisboa.tecnico.cmov.airdesk.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.workspace.LocalWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.workspace.Workspace;
+import pt.ulisboa.tecnico.cmov.airdesk.workspace.WorkspaceTag;
 
 /**
  * Created by oliveira on 29/03/15.
@@ -85,19 +86,38 @@ public class AirdeskDataSource {
 
      * @return rowId or -1 if failed
      */
-    public Workspace insertWorkspace(Workspace workspace){
+    public Workspace insertWorkspace(LocalWorkspace workspace){
         long insertid;
+        ContentValues initialValues;
 
-        ContentValues initialValues = new ContentValues();
+        initialValues = new ContentValues();
         initialValues.put(AirdeskDbContract.WorkspacesTable.COLUMN_WORKSPACE_NAME, workspace.getName());
         initialValues.put(AirdeskDbContract.WorkspacesTable.COLUMN_OWNER, workspace.getOwner());
         initialValues.put(AirdeskDbContract.WorkspacesTable.COLUMN_QUOTA, workspace.getQuota());
         initialValues.put(AirdeskDbContract.WorkspacesTable.COLUMN_PRIVACY, workspace.isPrivate() ? 1 : 0);
-
         insertid = mDb.insert(AirdeskDbContract.WorkspacesTable.TABLE_NAME, null, initialValues);
+        //
         workspace.setWorkspaceId(insertid);
         Log.i(TAG, "Workspace created with id " + insertid);
 
+        initialValues = new ContentValues();
+        if (workspace.isPrivate()){
+            //insert Clients
+            for (int i=0; i<workspace.getListClients().size(); i++) {
+                initialValues.put(AirdeskDbContract.WorkspaceClientsTable.COLUMN_WORKSPACE_KEY, workspace.getWorkspaceId());
+                initialValues.put(AirdeskDbContract.WorkspaceClientsTable.COLUMN_CLIENT_KEY, workspace.getListClients().get(i).getEmail());
+                insertid = mDb.insert(AirdeskDbContract.WorkspaceClientsTable.TABLE_NAME, null, initialValues);
+                Log.i(TAG, "Workspace Client(" + workspace.getListClients().get(i).getEmail() + ")created with id " + insertid);
+            }
+        } else {
+            //insert tags
+            for (int i=0; i<workspace.getListTags().size(); i++) {
+                initialValues.put(AirdeskDbContract.WorkspaceTagsTable.COLUMN_WORKSPACE_KEY, workspace.getWorkspaceId());
+                initialValues.put(AirdeskDbContract.WorkspaceTagsTable.COLUMN_TAG, workspace.getListTags().get(i).getTag());
+                insertid = mDb.insert(AirdeskDbContract.WorkspaceTagsTable.TABLE_NAME, null, initialValues);
+                Log.i(TAG, "Workspace Tag(" + workspace.getListTags().get(i).getTag() + ")created with id " + insertid);
+            }
+        }
         return workspace;
     }
 
@@ -116,7 +136,7 @@ public class AirdeskDataSource {
         mDb.delete(AirdeskDbContract.WorkspaceTagsTable.TABLE_NAME, AirdeskDbContract.WorkspaceTagsTable.COLUMN_WORKSPACE_KEY + "='" + rowId + "'", null);
 
         // Delete all user association
-//        mDb.delete(AirdeskDbContract.WorkspaceClientsTable.TABLE_NAME, AirdeskDbContract.WorkspaceClientsTable.COLUMN_WORKSPACE_KEY + "='" + rowId + "'", null);
+        mDb.delete(AirdeskDbContract.WorkspaceClientsTable.TABLE_NAME, AirdeskDbContract.WorkspaceClientsTable.COLUMN_WORKSPACE_KEY + "='" + rowId + "'", null);
 
         // Delete workspace
         return mDb.delete(AirdeskDbContract.WorkspacesTable.TABLE_NAME, AirdeskDbContract.WorkspacesTable._ID + "=" + rowId, null) > 0;
@@ -137,9 +157,13 @@ public class AirdeskDataSource {
     public ArrayList<LocalWorkspace>fetchAllWorkspaces() {
 
         LocalWorkspace w;
+        User u;
+        WorkspaceTag t;
+        Cursor cursor;
+        String where_clause;
 
         ArrayList<LocalWorkspace> workspaces = new ArrayList<LocalWorkspace>();
-        Cursor cursor = mDb.query(AirdeskDbContract.WorkspacesTable.TABLE_NAME, AirdeskDbContract.workspaceAllColls, null, null, null, null, null);
+        cursor = mDb.query(AirdeskDbContract.WorkspacesTable.TABLE_NAME, AirdeskDbContract.workspaceAllColls, null, null, null, null, null);
 
         Log.i(TAG, "Returned " + cursor.getCount() + " rows");
         if (cursor.getCount() > 0){
@@ -154,6 +178,34 @@ public class AirdeskDataSource {
                 else
                     w.setPrivate(false);
                 workspaces.add(w);
+            }
+        }
+
+        for(int i=0; i<workspaces.size(); i++) {
+            w = workspaces.get(i);
+            if (w.isPrivate()) {
+                //insert Clients
+                where_clause =  AirdeskDbContract.WorkspaceClientsTable.COLUMN_WORKSPACE_KEY + "=" + String.valueOf(w.getWorkspaceId());
+                cursor = mDb.query(AirdeskDbContract.WorkspaceClientsTable.TABLE_NAME, AirdeskDbContract.workspaceClientsAllColls, where_clause, null, null, null, null);
+                Log.i(TAG, AirdeskDbContract.WorkspaceClientsTable.TABLE_NAME + " Returned " + cursor.getCount() + " rows");
+                if (cursor.getCount() > 0) {
+                    while (cursor.moveToNext()) {
+                        u = new User(cursor.getString(cursor.getColumnIndex(AirdeskDbContract.WorkspaceClientsTable.COLUMN_CLIENT_KEY)));
+                        w.addClient(u);
+                    }
+                }
+            } else {
+                //insert Clients
+                where_clause =  AirdeskDbContract.WorkspaceTagsTable.COLUMN_WORKSPACE_KEY + "=" + String.valueOf(w.getWorkspaceId());
+                cursor = mDb.query(AirdeskDbContract.WorkspaceTagsTable.TABLE_NAME, AirdeskDbContract.workspaceTagsAllColls, where_clause, null, null, null, null);
+                Log.i(TAG, AirdeskDbContract.WorkspaceTagsTable.TABLE_NAME + " Returned " + cursor.getCount() + " rows");
+                if (cursor.getCount() > 0) {
+                    while (cursor.moveToNext()) {
+                        t = new WorkspaceTag();
+                        t.setTag(cursor.getString(cursor.getColumnIndex(AirdeskDbContract.WorkspaceTagsTable.COLUMN_TAG)));
+                        w.addTag(t);
+                    }
+                }
             }
         }
         return workspaces;

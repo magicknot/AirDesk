@@ -18,4 +18,5 @@
     <string name="detail">Detail</string>
     <string name="invite">Invite</string>
     <string name="privacy_title">itemTitle</string>
+    <string name="workspace_name">workspace_name</string>
 </resources>

@@ -1,29 +1,31 @@
 package pt.ulisboa.tecnico.cmov.airdesk;
 
-import android.app.Activity;
-import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import pt.ulisboa.tecnico.cmov.airdesk.workspace.LocalWorkspace;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link InviteClientFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link InviteClientFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class InviteClientFragment extends DialogFragment {
 
-    private OnFragmentInteractionListener mListener;
+    private static final String TAG = "InviteClientFragment";
 
-     public static InviteClientFragment newInstance() {
+    private TextView tvWorkspaceName;
+    private LocalWorkspace mWorkspace;
+
+    public static InviteClientFragment newInstance(LocalWorkspace inWorkspace) {
         InviteClientFragment fragment = new InviteClientFragment();
+
+        // Supply num input as an argument.
+        Bundle args = new Bundle();
+        args.putParcelable("workspace", inWorkspace);
+        fragment.setArguments(args);
+
         return fragment;
     }
 
@@ -33,42 +35,21 @@ public class InviteClientFragment extends DialogFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
+        super.onCreate(savedInstanceState);
+        mWorkspace = getArguments().getParcelable("workspace");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_invite_client, container, false);
-    }
+        View rootView = inflater.inflate(R.layout.fragment_invite_client, container, false);
+        getDialog().setTitle("Invite Clients");
+        tvWorkspaceName = (TextView)rootView.findViewById(R.id.textViewWorksName);
+        tvWorkspaceName.setText(mWorkspace.getName());
+//        Log.i(TAG, mWorkspace.getListClients().get(0).getEmail());
+        //tvWorkspaceName.setText(String.valueOf(mNum));
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
+        return rootView;
     }
 
 }

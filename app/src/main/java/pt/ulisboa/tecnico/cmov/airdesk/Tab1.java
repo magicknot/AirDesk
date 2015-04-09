@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.cmov.airdesk;
 
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -32,7 +33,7 @@ public class Tab1 extends Fragment implements AdapterView.OnItemClickListener, V
 
     private static final String TAG = "AirDesk[Tab1]";
     private static final int DIALOG_FRAGMENT_NEW_WORKSPACE = 1;
-    private  static final int DIALOG_FRAGMENT_INVITE_CLIENTS=3;
+    private static final int DIALOG_FRAGMENT_INVITE_CLIENTS=3;
     private static final int ACTIVITY_WORKSPACE_FILES = 2;
 
     private LocalWorkspaceAdapter mAdapter;
@@ -120,12 +121,15 @@ public class Tab1 extends Fragment implements AdapterView.OnItemClickListener, V
 
     @Override
     public void onClick(View v) {
+        final int DIALOG_FRAGMENT_NEW_WORKSPACE = 4;
         final int position = Integer.valueOf(v.getTag().toString());
 
         Log.w(TAG, "onClick" + position);
         PopupMenu popupMenu = new PopupMenu(getActivity(), v){
             @Override
             public boolean onMenuItemSelected(MenuBuilder menu, MenuItem item) {
+                FragmentManager fm;
+
                 switch (item.getItemId()) {
                     case R.id.workspace_overflow_about:
                         Log.i(TAG, " clicked. about ");
@@ -134,7 +138,11 @@ public class Tab1 extends Fragment implements AdapterView.OnItemClickListener, V
 
                     case R.id.workspace_overflow_edit:
                         Log.i(TAG, " clicked. edit ");
-                        //renameAlbum(mAlbum);
+                        Toast.makeText(getActivity().getBaseContext(), "You selected action_new_local_workspace", Toast.LENGTH_SHORT).show();
+                        fm = getActivity().getSupportFragmentManager();
+                        CreateWorkspaceFragment dFragment = CreateWorkspaceFragment.newInstance();
+                        dFragment.setTargetFragment(Tab1.this, DIALOG_FRAGMENT_NEW_WORKSPACE);
+                        dFragment.show(fm, "Dialog Fragment");
                         return true;
 
                     case R.id.workspace_overflow_delete:
@@ -145,6 +153,12 @@ public class Tab1 extends Fragment implements AdapterView.OnItemClickListener, V
 
                     case R.id.workspace_overflow_invite:
                         Log.i(TAG, " clicked. invite ");
+                        Toast.makeText(getActivity().getBaseContext(), "You selected action_new_local_workspace", Toast.LENGTH_SHORT).show();
+                        fm = getActivity().getSupportFragmentManager();
+//                        Log.i(TAG, "popupMenu " + mAdapter.getItem(position).getListClients().get(0).getEmail());
+                        InviteClientFragment dFragmentInviteClient = InviteClientFragment.newInstance(mAdapter.getItem(position));
+                        dFragmentInviteClient.setTargetFragment(Tab1.this, DIALOG_FRAGMENT_NEW_WORKSPACE);
+                        dFragmentInviteClient.show(fm, "Dialog Fragment");
                         return true;
 
                     default:

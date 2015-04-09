@@ -1,6 +1,10 @@
 package pt.ulisboa.tecnico.cmov.airdesk.workspace;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
+import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.File;
 import pt.ulisboa.tecnico.cmov.airdesk.user.User;
@@ -8,7 +12,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.user.User;
 /**
  * Created by oliveira on 27/03/15.
  */
-public class Workspace {
+public class Workspace implements Parcelable {
 
     private long workspaceId;
     private String name;
@@ -16,8 +20,8 @@ public class Workspace {
     private long quota;
     private boolean isPrivate;
 
-    private ArrayList<File> listFiles;
-    private ArrayList<WorkspaceTag> listTags;
+    private List<File> listFiles;
+    private List<WorkspaceTag> listTags;
 
     public Workspace() {
     }
@@ -27,9 +31,10 @@ public class Workspace {
         this.setQuota(quota);
         this.setOwner(owner);
         this.setPrivate(true);
+
     }
 
-    public Workspace(String name, long quota, String owner, ArrayList<WorkspaceTag> listTags) {
+    public Workspace(String name, long quota, String owner, List<WorkspaceTag> listTags) {
         this.setName(name);
         this.setQuota(quota);
         this.setOwner(owner);
@@ -68,29 +73,35 @@ public class Workspace {
         this.owner = owner;
     }
 
-    public ArrayList<File> getListFiles() {
+    public List<File> getListFiles() {
         return listFiles;
     }
 
     public void addFile(File file) {
+        this.setPrivate(false);
+        if (listFiles == null)
+            listFiles=new ArrayList<File>();
+        this.listFiles.add(file);
         this.listFiles.add(file);
     }
 
-    public void setListFiles(ArrayList<File> listFiles) {
+    public void setListFiles(List<File> listFiles) {
         this.listFiles = listFiles;
     }
 
-    public ArrayList<WorkspaceTag> getListTags() {
+    public List<WorkspaceTag> getListTags() {
         return listTags;
     }
 
-    public void setListTags(ArrayList<WorkspaceTag> listTags) {
+    public void setListTags(List<WorkspaceTag> listTags) {
         this.setPrivate(false);
         this.listTags = listTags;
     }
 
     public void addTag(WorkspaceTag tag) {
         this.setPrivate(false);
+        if (listTags == null)
+            listTags=new ArrayList<WorkspaceTag>();
         this.listTags.add(tag);
     }
 
@@ -113,4 +124,44 @@ public class Workspace {
                 ", listTags=" + getListTags() +
                 '}';
     }
+
+    /////////////////////////////////////////
+    // Implementation of Parcelable interface
+    @SuppressWarnings("unused")
+
+    public Workspace(Parcel source) {
+        workspaceId = source.readLong();
+        name = source.readString();
+        owner = source.readString();
+        quota = source.readLong();
+        isPrivate = source.readInt() == 1 ;
+        source.readList( listTags, User.class.getClassLoader());
+        source.readList( listFiles, User.class.getClassLoader());
+
+    }
+    @Override
+    public int describeContents() {
+        return this.hashCode();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(workspaceId);
+        dest.writeString(name);
+        dest.writeString(owner);
+        dest.writeLong(quota);
+        dest.writeInt(isPrivate ? 1 : 0);
+        dest.writeList(listTags);
+        dest.writeList(listFiles);
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator<Workspace>() {
+        public Workspace createFromParcel(Parcel in) {
+            return new Workspace(in);
+        }
+
+        public Workspace[] newArray(int size) {
+            return new Workspace[size];
+        }
+    };
 }
