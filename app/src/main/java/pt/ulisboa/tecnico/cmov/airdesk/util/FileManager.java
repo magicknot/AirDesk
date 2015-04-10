@@ -73,7 +73,7 @@ public final class FileManager {
     }
 
     public static void deleteWorkspace(String workspaceName, Context context) {
-        File file = new File (context.getFilesDir().getAbsolutePath() + "/" + workspaceName);
+        File file = new File (context.getDir(workspaceName, Context.MODE_PRIVATE).getAbsolutePath());
         file.delete();
     }
 
@@ -84,7 +84,7 @@ public final class FileManager {
 
     public static long getWorkspaceUsedSpace(String workspaceName, Context context) {
         long totalSize = 0;
-        File workspaceDirectory = new File (context.getFilesDir().getAbsolutePath() + "/" + workspaceName);
+        File workspaceDirectory = new File (context.getDir(workspaceName, Context.MODE_PRIVATE).getAbsolutePath());
 
         if (workspaceDirectory.isDirectory()) {
             for (File f : workspaceDirectory.listFiles()) {
