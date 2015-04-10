@@ -39,7 +39,9 @@ public final class FileManager {
 
         String filePath = context.getDir(workspaceName, Context.MODE_PRIVATE).getAbsolutePath() + "/" + filename;
 
-        FileInputStream fis = context.openFileInput(filePath);
+        //FileInputStream fis = context.openFileInput(filePath);
+
+        FileInputStream fis = new FileInputStream (new File(filePath));
         InputStreamReader isr = new InputStreamReader(fis);
 
 

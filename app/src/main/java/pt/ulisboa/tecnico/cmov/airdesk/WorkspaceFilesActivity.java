@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.FileWorkspaceAdapter;
+import pt.ulisboa.tecnico.cmov.airdesk.fragment.EditFileFragment;
+import pt.ulisboa.tecnico.cmov.airdesk.fragment.EditLocalWorkspaceFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.NewFileFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.workspace.Workspace;
 
@@ -25,7 +27,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.workspace.Workspace;
 public class WorkspaceFilesActivity extends ActionBarActivity implements AdapterView.OnItemClickListener,
         View.OnClickListener {
     private final String ACTIVITY_WORKSPACE_FILES_PARCEL = "ACTIVITY_WORKSPACE_FILES_PARCEL";
-    private final int DIALOG_FRAGMENT_NEW_FILE = 6;
+    private final int DIALOG_FRAGMENT_EDIT_FILE = 7;
     private static final String TAG = "WorkspaceFilesActivity";
     private FileWorkspaceAdapter fileWorkspaceAdapter;
     private Workspace workspace;
@@ -86,7 +88,7 @@ public class WorkspaceFilesActivity extends ActionBarActivity implements Adapter
                 Toast.makeText(getBaseContext(), "You selected action_new_file", Toast.LENGTH_SHORT).show();
                 fm = getSupportFragmentManager();
                 NewFileFragment dFragmentCreateFile = NewFileFragment.newInstance(workspace);
-                dFragmentCreateFile.setTargetFragment(dFragmentCreateFile, DIALOG_FRAGMENT_NEW_FILE);
+                dFragmentCreateFile.setTargetFragment(dFragmentCreateFile, DIALOG_FRAGMENT_EDIT_FILE);
                 dFragmentCreateFile.show(fm, "Dialog Fragment");
 
                 return true;
@@ -114,11 +116,12 @@ public class WorkspaceFilesActivity extends ActionBarActivity implements Adapter
                 switch (item.getItemId()) {
                     case R.id.workspace_overflow_edit:
                         Log.i(TAG, " clicked. edit ");
-                        Toast.makeText(getBaseContext(),"You selected workspace_overflow_edit", Toast.LENGTH_SHORT).show();
-                        //fm = getActivity().getSupportFragmentManager();
-                        //EditLocalWorkspaceFragment dFragmentEditLocalWorkspace =EditLocalWorkspaceFragment.newInstance(getWorkspace().getItem(position));
-                        //dFragmentEditLocalWorkspace.setTargetFragment(LocalWorkspaceTab.this, DIALOG_FRAGMENT_NEW_WORKSPACE);
-                        //dFragmentEditLocalWorkspace.show(fm, "Dialog Fragment");
+                        fm = getSupportFragmentManager();
+
+                        EditFileFragment dFragmentEditFileFragment = EditFileFragment.newInstance(workspace, (String)fileWorkspaceAdapter.getItem(position) );
+                        dFragmentEditFileFragment.setTargetFragment(dFragmentEditFileFragment, DIALOG_FRAGMENT_NEW_WORKSPACE);
+                        dFragmentEditFileFragment.show(fm, "Dialog Fragment");
+
                         return true;
 
                     case R.id.workspace_overflow_delete:
