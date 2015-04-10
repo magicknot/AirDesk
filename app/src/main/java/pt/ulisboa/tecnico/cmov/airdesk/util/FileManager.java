@@ -64,6 +64,11 @@ public final class FileManager {
         file.delete();
     }
 
+    public static void deleteWorkspace(String workspaceName, Context context) {
+        File file = new File (context.getFilesDir().getAbsolutePath() + "/" + workspaceName);
+        file.delete();
+    }
+
     public static long getFreeSpace(Context context) {
         File homeDir = new File (context.getFilesDir().getAbsolutePath());
         return homeDir.getUsableSpace();
