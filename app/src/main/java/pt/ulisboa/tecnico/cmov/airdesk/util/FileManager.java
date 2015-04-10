@@ -17,9 +17,9 @@ public final class FileManager {
 
     private FileManager () {}
 
-    public static void saveFile(String workspaceName, String filename, String content) throws CannotSaveFileException, IOException {
+    public static void saveFile(String workspaceName, String filename, String content, Context context) throws IOException {
 
-        File workspaceDirectory = new File(context.getDir(workspaceName));
+        File workspaceDirectory = new File(context.getDir(workspaceName, Context.MODE_PRIVATE).getAbsolutePath());
         File outputFile = new File(workspaceDirectory, filename);
         FileOutputStream fos;
 
@@ -29,18 +29,18 @@ public final class FileManager {
 
     }
 
-    public static String[] listFiles(String workspaceName) {
+    public static String[] listFiles(String workspaceName, Context context) {
 
-        File workspaceDirectory = new File(context.getDir(workspaceName));
+        File workspaceDirectory = new File(context.getDir(workspaceName, Context.MODE_PRIVATE).getAbsolutePath());
         return workspaceDirectory.list();
 
     }
 
-    public static String readFile(String workspaceName, String filename) throws IOException {
+    public static String readFile(String workspaceName, String filename, Context context) throws IOException {
 
         String filePath = context.getFilesDir() + "/" + workspaceName + "/" + filename;
 
-        FileInputStream fis = context.openFileInput(filePath, Context.MODE_PRIVATE);
+        FileInputStream fis = context.openFileInput(filePath);
         InputStreamReader isr = new InputStreamReader(fis);
 
 
@@ -59,17 +59,17 @@ public final class FileManager {
         return text.toString();
     }
 
-    public static void deleteFile(String workspaceName, String filename) {
+    public static void deleteFile(String workspaceName, String filename, Context context) {
         File file = new File (context.getFilesDir().getAbsolutePath() + "/" + workspaceName + "/" + filename);
         file.delete();
     }
 
-    public static long getFreeSpace() {
-        File homeDir = new File (context.getFilesDir());
+    public static long getFreeSpace(Context context) {
+        File homeDir = new File (context.getFilesDir().getAbsolutePath());
         return homeDir.getUsableSpace();
     }
 
-    public static long getWorkspaceUsedSpace(String workspaceName) {
+    public static long getWorkspaceUsedSpace(String workspaceName, Context context) {
         long totalSize = 0;
         File workspaceDirectory = new File (context.getFilesDir().getAbsolutePath() + "/" + workspaceName);
 
