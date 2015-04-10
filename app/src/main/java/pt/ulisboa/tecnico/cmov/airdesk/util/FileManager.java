@@ -9,10 +9,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-
-/**
- * Created by rcm on 09/04/15.
- */
 public final class FileManager {
 
     private FileManager () {}

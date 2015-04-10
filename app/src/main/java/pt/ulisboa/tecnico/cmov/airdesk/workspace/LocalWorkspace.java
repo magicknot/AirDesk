@@ -81,7 +81,7 @@ public class LocalWorkspace extends Workspace implements Parcelable {
         super.setOwner(source.readString());
         super.setPrivate(source.readInt()==1);
         source.readList(super.tags, WorkspaceTag.class.getClassLoader());
-        source.readList(super.files, User.class.getClassLoader());
+        // FIXME: source.readList(super.files, User.class.getClassLoader());
         quota = source.readLong();
         source.readList(clients, User.class.getClassLoader());
     }
@@ -98,7 +98,7 @@ public class LocalWorkspace extends Workspace implements Parcelable {
         dest.writeString(super.getOwner());
         dest.writeInt(super.isPrivate() ? 1 : 0);
         dest.writeList(super.getTags());
-        dest.writeList(super.getFiles());
+        // FIXME: dest.writeList(super.getFiles());
         dest.writeLong(quota);
         dest.writeList(clients);
     }
