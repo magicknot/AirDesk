@@ -20,11 +20,17 @@ public final class FileManager {
         Log.i("Storage", workspaceDirectory.getAbsolutePath());
         File outputFile = new File(workspaceDirectory, filename);
         Log.i("Storage(outputFile)", outputFile.getAbsolutePath());
-        FileOutputStream fos;
 
-        fos = new FileOutputStream(outputFile);
-        fos.write(content.getBytes());
-        fos.close();
+        if ( content.isEmpty() && outputFile.exists() ) {
+            // if we are creating an empty file overwritting an existing file, we do nothing
+
+        } else { // otherwise we write to the file
+            FileOutputStream fos;
+            fos = new FileOutputStream(outputFile);
+            fos.write(content.getBytes());
+            fos.close();
+        }
+
 
     }
 
