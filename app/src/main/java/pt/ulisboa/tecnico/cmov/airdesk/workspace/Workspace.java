@@ -128,6 +128,7 @@ public class Workspace implements Parcelable {
     @SuppressWarnings("unused")
 
     public Workspace(Parcel source) {
+        this();
         workspaceId = source.readLong();
         name = source.readString();
         owner = source.readString();
