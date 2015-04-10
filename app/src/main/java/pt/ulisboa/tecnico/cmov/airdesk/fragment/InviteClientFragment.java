@@ -76,7 +76,7 @@ public class InviteClientFragment extends DialogFragment {
         bCancel = (Button)rootView.findViewById(R.id.buttonCancel);
 
         mClientsListAdapter = new ClientsAdapter(inflater, R.layout.item_tag_grid);
-        mClientsListAdapter.setListWorkspaceClients(mWorkspace.getListClients());
+        mClientsListAdapter.setListWorkspaceClients(mWorkspace.getClients());
 
         // Get ListView object from xml
         listViewItems = (ListView) rootView.findViewById(R.id.tagList);

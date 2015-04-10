@@ -155,8 +155,8 @@ public class EditLocalWorkspaceFragment extends DialogFragment {
             public void onClick(View v) {
                 // Do something in response to button click
                 Log.i(TAG, "[onCheckedChanged] Create");
-                mWorkspace.setListClients(mClientsListAdapter.getListWorkspaceClients());
-                mWorkspace.setListTags(mTagListAdapter.getListWorkspacesTags());
+                mWorkspace.setClients(mClientsListAdapter.getListWorkspaceClients());
+                mWorkspace.setTags(mTagListAdapter.getListWorkspacesTags());
                 Log.i(TAG, "onClick - updateLocalWorkspaceClients - isPrivate: " + String.valueOf(mWorkspace.isPrivate()));
                 AirdeskDataHolder.getInstance().updateLocalWorkspaceClients(mWorkspace);
                 getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, getActivity().getIntent());
@@ -171,7 +171,7 @@ public class EditLocalWorkspaceFragment extends DialogFragment {
         tItemTitlePrivacy.setText("Clients");
         tItem.setHint("new email client");
         mTagListAdapter.clear();
-        mClientsListAdapter.setListWorkspaceClients(mWorkspace.getListClients());
+        mClientsListAdapter.setListWorkspaceClients(mWorkspace.getClients());
         listViewItems.setAdapter(mClientsListAdapter);
     }
 
@@ -179,7 +179,7 @@ public class EditLocalWorkspaceFragment extends DialogFragment {
         tItemTitlePrivacy.setText("Tags");
         tItem.setHint("new tag");
         mClientsListAdapter.clear();
-        mTagListAdapter.setListWorkspaceTags(mWorkspace.getListTags());
+        mTagListAdapter.setListWorkspaceTags(mWorkspace.getTags());
         listViewItems.setAdapter(mTagListAdapter);
     }
 

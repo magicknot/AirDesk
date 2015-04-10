@@ -9,36 +9,32 @@ import java.util.List;
 import pt.ulisboa.tecnico.cmov.airdesk.File;
 import pt.ulisboa.tecnico.cmov.airdesk.user.User;
 
-/**
- * Created by oliveira on 27/03/15.
- */
 public class Workspace implements Parcelable {
 
     private long workspaceId;
     private String name;
     private String owner;
-    private long quota;
     private boolean isPrivate;
 
-    private List<File> listFiles;
-    private List<WorkspaceTag> listTags;
+    private List<File> files;
+    private List<WorkspaceTag> tags;
 
     public Workspace() {
+        super();
     }
 
-    public Workspace(String name, long quota, String owner) {
-        this.setName(name);
-        this.setQuota(quota);
-        this.setOwner(owner);
-        this.setPrivate(true);
+    public Workspace(String name, String owner) {
+        this.name = name;
+        this.owner = owner;
+        this.isPrivate = true;
 
     }
 
-    public Workspace(String name, long quota, String owner, List<WorkspaceTag> listTags) {
-        this.setName(name);
-        this.setQuota(quota);
-        this.setOwner(owner);
-        this.setListTags(listTags);
+    public Workspace(String name, String owner, List<WorkspaceTag> tags) {
+        this.name = name;
+        this.owner = owner;
+        this.isPrivate = false;
+        this.setTags(tags);
     }
 
     public long getWorkspaceId() {
@@ -57,14 +53,6 @@ public class Workspace implements Parcelable {
         this.name = name;
     }
 
-    public long getQuota() {
-        return quota;
-    }
-
-    public void setQuota(long quota) {
-        this.quota = quota;
-    }
-
     public String getOwner() {
         return owner;
     }
@@ -73,38 +61,38 @@ public class Workspace implements Parcelable {
         this.owner = owner;
     }
 
-    public List<File> getListFiles() {
-        return listFiles;
+    public List<File> getFiles() {
+        return files;
     }
 
     public void addFile(File file) {
         this.setPrivate(false);
-        if (listFiles == null)
-            listFiles=new ArrayList<File>();
-        this.listFiles.add(file);
-        this.listFiles.add(file);
+        if (files == null)
+            files = new ArrayList<>();
+        this.files.add(file);
+        this.files.add(file);
     }
 
-    public void setListFiles(List<File> listFiles) {
-        this.listFiles = listFiles;
+    public void setFiles(List<File> listFiles) {
+        this.files = listFiles;
     }
 
-    public List<WorkspaceTag> getListTags() {
-        return listTags;
+    public List<WorkspaceTag> getTags() {
+        return tags;
     }
 
-    public void setListTags(List<WorkspaceTag> listTags) {
+    public void setTags(List<WorkspaceTag> listTags) {
         if (listTags == null)
-            this.listTags= new ArrayList<WorkspaceTag>();
+            this.tags = new ArrayList<>();
         else
-            this.listTags = listTags;
+            this.tags = listTags;
     }
 
     public void addTag(WorkspaceTag tag) {
         this.setPrivate(false);
-        if (listTags == null)
-            listTags=new ArrayList<WorkspaceTag>();
-        this.listTags.add(tag);
+        if (tags == null)
+            tags = new ArrayList<>();
+        this.tags.add(tag);
     }
 
     public boolean isPrivate() {
@@ -121,9 +109,8 @@ public class Workspace implements Parcelable {
                 "workspaceId=" + getWorkspaceId() +
                 ", name='" + getName() + '\'' +
                 ", owner=" + getOwner() +
-                ", quota=" + getQuota() +
-                ", listFiles=" + getListFiles() +
-                ", listTags=" + getListTags() +
+                ", files=" + getFiles() +
+                ", tags=" + getTags() +
                 '}';
     }
 
@@ -135,12 +122,12 @@ public class Workspace implements Parcelable {
         workspaceId = source.readLong();
         name = source.readString();
         owner = source.readString();
-        quota = source.readLong();
-        isPrivate = source.readInt() == 1 ;
-        source.readList( listTags, User.class.getClassLoader());
-        source.readList( listFiles, User.class.getClassLoader());
+        isPrivate = source.readInt() == 1;
+        source.readList(tags, User.class.getClassLoader());
+        source.readList(files, User.class.getClassLoader());
 
     }
+
     @Override
     public int describeContents() {
         return this.hashCode();
@@ -151,10 +138,9 @@ public class Workspace implements Parcelable {
         dest.writeLong(workspaceId);
         dest.writeString(name);
         dest.writeString(owner);
-        dest.writeLong(quota);
         dest.writeInt(isPrivate ? 1 : 0);
-        dest.writeList(listTags);
-        dest.writeList(listFiles);
+        dest.writeList(tags);
+        dest.writeList(files);
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator<Workspace>() {
