@@ -27,6 +27,7 @@ public class WorkspaceFilesActivity extends ActionBarActivity implements Adapter
     private final String ACTIVITY_WORKSPACE_FILES_PARCEL = "ACTIVITY_WORKSPACE_FILES_PARCEL";
     private final int DIALOG_FRAGMENT_NEW_FILE = 6;
     private static final String TAG = "WorkspaceFilesActivity";
+    private FileWorkspaceAdapter fileWorkspaceAdapter;
     private Workspace workspace;
     Toolbar toolbar;
 
@@ -52,7 +53,7 @@ public class WorkspaceFilesActivity extends ActionBarActivity implements Adapter
         String filelist[] = this.workspace.listFiles(getBaseContext());
 
         // This is the adapter we use to populate the grid.
-        FileWorkspaceAdapter fileWorkspaceAdapter = new FileWorkspaceAdapter(this, getBaseContext(),R.layout.item_workspace_grid, filelist);
+       fileWorkspaceAdapter = new FileWorkspaceAdapter(this, getBaseContext(),R.layout.item_workspace_grid, filelist);
 
         // Inflate the layout with a GridView in it.
 
@@ -111,11 +112,6 @@ public class WorkspaceFilesActivity extends ActionBarActivity implements Adapter
                 FragmentManager fm;
 
                 switch (item.getItemId()) {
-                    case R.id.workspace_overflow_about:
-                        Log.i(TAG, " clicked. about ");
-                        //deleteAlbum(mAlbum);
-                        return true;
-
                     case R.id.workspace_overflow_edit:
                         Log.i(TAG, " clicked. edit ");
                         Toast.makeText(getBaseContext(),"You selected workspace_overflow_edit", Toast.LENGTH_SHORT).show();
@@ -126,18 +122,9 @@ public class WorkspaceFilesActivity extends ActionBarActivity implements Adapter
                         return true;
 
                     case R.id.workspace_overflow_delete:
-                        Log.i(TAG, " clicked. delete " + String.valueOf(position));
-                        //AirdeskDataHolder.getInstance().removeLocalWorkspace(getWorkspace().getItem(position));
-                        //getWorkspace().notifyDataSetChanged();
-                        return true;
-
-                    case R.id.workspace_overflow_invite:
-                        Log.i(TAG, " clicked. invite ");
-                        Toast.makeText(getBaseContext(), "You selected action_new_local_workspace", Toast.LENGTH_SHORT).show();
-                        //fm = getActivity().getSupportFragmentManager();
-                        //InviteClientFragment dFragmentInviteClient = InviteClientFragment.newInstance((LocalWorkspace)getWorkspace().getItem(position));
-                        //dFragmentInviteClient.setTargetFragment(LocalWorkspaceTab.this, DIALOG_FRAGMENT_NEW_WORKSPACE);
-                        //dFragmentInviteClient.show(fm, "Dialog Fragment");
+                        Log.i(TAG, " clicked. delete " + String.valueOf(position)+ " : "+ (String)fileWorkspaceAdapter.getItem(position));
+                        workspace.deleteFile((String)fileWorkspaceAdapter.getItem(position), getBaseContext());
+                        fileWorkspaceAdapter.notifyDataSetChanged();
                         return true;
 
                     default:
@@ -145,7 +132,7 @@ public class WorkspaceFilesActivity extends ActionBarActivity implements Adapter
                 }
             }
         };
-        popupMenu.inflate(R.menu.menu_item_local_workspace);
+        popupMenu.inflate(R.menu.menu_item_files);
 
         // Force icons to show
         Object menuHelper;

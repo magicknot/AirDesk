@@ -19,6 +19,7 @@ public final class FileManager {
         File workspaceDirectory = new File(context.getDir(workspaceName, Context.MODE_PRIVATE).getAbsolutePath());
         Log.i("Storage", workspaceDirectory.getAbsolutePath());
         File outputFile = new File(workspaceDirectory, filename);
+        Log.i("Storage(outputFile)", outputFile.getAbsolutePath());
         FileOutputStream fos;
 
         fos = new FileOutputStream(outputFile);
@@ -36,7 +37,7 @@ public final class FileManager {
 
     public static String readFile(String workspaceName, String filename, Context context) throws IOException {
 
-        String filePath = context.getFilesDir() + "/" + workspaceName + "/" + filename;
+        String filePath = context.getDir(workspaceName, Context.MODE_PRIVATE).getAbsolutePath() + "/" + filename;
 
         FileInputStream fis = context.openFileInput(filePath);
         InputStreamReader isr = new InputStreamReader(fis);
@@ -58,7 +59,8 @@ public final class FileManager {
     }
 
     public static void deleteFile(String workspaceName, String filename, Context context) {
-        File file = new File (context.getFilesDir().getAbsolutePath() + "/" + workspaceName + "/" + filename);
+        File file = new File (context.getDir(workspaceName, Context.MODE_PRIVATE).getAbsolutePath() + "/" + filename);
+        Log.i("deleteFile", "fileName:"+context.getDir(workspaceName, Context.MODE_PRIVATE).getAbsolutePath() + "/" + filename);
         file.delete();
     }
 
