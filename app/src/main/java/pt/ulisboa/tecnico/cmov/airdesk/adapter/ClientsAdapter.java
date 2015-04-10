@@ -110,7 +110,7 @@ public class ClientsAdapter extends BaseAdapter {
             mListWorkspaceClients = new ArrayList<>();
         else
             mListWorkspaceClients=listClients;
-        Log.i(TAG, "setListWorkspaceClients " + listClients.size() + " clients");
+        Log.i(TAG, "setListWorkspaceClients " + mListWorkspaceClients.size() + " clients");
     }
 
 }

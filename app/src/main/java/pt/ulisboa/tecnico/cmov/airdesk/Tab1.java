@@ -139,7 +139,9 @@ public class Tab1 extends Fragment implements AdapterView.OnItemClickListener, V
                         Log.i(TAG, " clicked. edit ");
                         Toast.makeText(getActivity().getBaseContext(), "You selected workspace_overflow_edit", Toast.LENGTH_SHORT).show();
                         fm = getActivity().getSupportFragmentManager();
+                        //fm = getActivity().getFragmentManager()
                         EditLocalWorkspaceFragment dFragmentEditLocalWorkspace = EditLocalWorkspaceFragment.newInstance(mAdapter.getItem(position));
+                        Log.i(TAG, "isPrivate: " + String.valueOf(mAdapter.getItem(position).isPrivate()));
                         dFragmentEditLocalWorkspace.setTargetFragment(Tab1.this, DIALOG_FRAGMENT_NEW_WORKSPACE);
                         dFragmentEditLocalWorkspace.show(fm, "Dialog Fragment");
                         return true;

@@ -94,8 +94,10 @@ public class Workspace implements Parcelable {
     }
 
     public void setListTags(List<WorkspaceTag> listTags) {
-        this.setPrivate(false);
-        this.listTags = listTags;
+        if (listTags == null)
+            this.listTags= new ArrayList<WorkspaceTag>();
+        else
+            this.listTags = listTags;
     }
 
     public void addTag(WorkspaceTag tag) {

@@ -63,6 +63,8 @@ public class EditLocalWorkspaceFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mWorkspace = getArguments().getParcelable("workspace");
+        Log.i(TAG, "isPrivate: " + String.valueOf(mWorkspace.isPrivate()));
+
     }
 
     @Override
@@ -106,10 +108,12 @@ public class EditLocalWorkspaceFragment extends DialogFragment {
                 if (isChecked) {
                     // The toggle is enabled
                     Log.i(TAG, "[onCheckedChanged] Checked");
+                    mWorkspace.setPrivate(false);
                     setWorkspacePublic();
                 } else {
                     // The toggle is disabled
                     Log.i(TAG, "[onCheckedChanged] unChecked");
+                    mWorkspace.setPrivate(true);
                     setWorkspacePrivate();
                 }
             }
@@ -151,6 +155,7 @@ public class EditLocalWorkspaceFragment extends DialogFragment {
                 Log.i(TAG, "[onCheckedChanged] Create");
                 mWorkspace.setListClients(mClientsListAdapter.getListWorkspaceClients());
                 mWorkspace.setListTags(mTagListAdapter.getListWorkspacesTags());
+                Log.i(TAG, "onClick - updateLocalWorkspaceClients - isPrivate: " + String.valueOf(mWorkspace.isPrivate()));
                 AirdeskDataHolder.getInstance().updateLocalWorkspaceClients(mWorkspace);
                 getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, getActivity().getIntent());
                 dismiss();
@@ -160,20 +165,20 @@ public class EditLocalWorkspaceFragment extends DialogFragment {
         return rootView;
     }
 
-    private void setWorkspacePublic(){
-        tItemTitlePrivacy.setText("Tags");
-        tItem.setHint("new tag");
-        mClientsListAdapter.clear();
-        mTagListAdapter.setListWorkspaceClients(mWorkspace.getListTags());
-        listViewItems.setAdapter(mTagListAdapter);
-    }
-
     private void setWorkspacePrivate(){
         tItemTitlePrivacy.setText("Clients");
         tItem.setHint("new email client");
         mTagListAdapter.clear();
         mClientsListAdapter.setListWorkspaceClients(mWorkspace.getListClients());
         listViewItems.setAdapter(mClientsListAdapter);
+    }
+
+    private void setWorkspacePublic(){
+        tItemTitlePrivacy.setText("Tags");
+        tItem.setHint("new tag");
+        mClientsListAdapter.clear();
+        mTagListAdapter.setListWorkspaceTags(mWorkspace.getListTags());
+        listViewItems.setAdapter(mTagListAdapter);
     }
 
 }

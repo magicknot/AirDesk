@@ -274,6 +274,8 @@ public class AirdeskDataSource {
         long insertid;
         ContentValues clientValues = new ContentValues();
 
+        mDb.delete(AirdeskDbContract.WorkspaceTagsTable.TABLE_NAME, AirdeskDbContract.WorkspaceTagsTable.COLUMN_WORKSPACE_KEY + "='" + workspaceId + "'", null);
+
         for (int i=0; i<listTags.size(); i++) {
             clientValues.put(AirdeskDbContract.WorkspaceTagsTable.COLUMN_WORKSPACE_KEY, workspaceId);
             clientValues.put(AirdeskDbContract.WorkspaceTagsTable.COLUMN_TAG, listTags.get(i).getTag());

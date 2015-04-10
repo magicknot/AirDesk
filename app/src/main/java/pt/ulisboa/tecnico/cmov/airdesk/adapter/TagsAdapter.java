@@ -102,12 +102,12 @@ public class TagsAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    public void setListWorkspaceClients(List<WorkspaceTag> listTags){
+    public void setListWorkspaceTags(List<WorkspaceTag> listTags){
         if (listTags == null)
             mListWorkspacesTags = new ArrayList<>();
         else
             mListWorkspacesTags=listTags;
-        Log.i(TAG, "setListWorkspaceClients " + listTags.size() + " clients");
+        Log.i(TAG, "setListWorkspaceClients " + mListWorkspacesTags.size() + " clients");
     }
 
     public List<WorkspaceTag> getListWorkspacesTags(){
