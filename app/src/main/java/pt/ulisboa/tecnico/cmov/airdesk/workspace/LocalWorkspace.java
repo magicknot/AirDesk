@@ -6,39 +6,58 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 import java.util.List;
 
-import pt.ulisboa.tecnico.cmov.airdesk.File;
 import pt.ulisboa.tecnico.cmov.airdesk.user.User;
 
-/**
- * Created by oliveira on 27/03/15.
- */
 public class LocalWorkspace extends Workspace implements Parcelable {
-    private List<User> listClients;
+
+    private long quota;
+    private List<User> clients;
 
     public LocalWorkspace() {
         super();
-        listClients= new ArrayList<User>();
+        clients = new ArrayList<>();
     }
 
-    public LocalWorkspace(String owner, String workspaceName, long workspaceQuota) {
-        super(workspaceName, workspaceQuota, owner);
+    public LocalWorkspace(String owner, String name, long quota) {
+        super(name, owner);
+        this.quota = quota;
     }
 
-    public List<User> getListClients() {
-        return listClients;
+    public long getQuota() {
+        return quota;
     }
 
-    public void setListClients(List<User> listClients) {
-        if (listClients == null)
-            this.listClients= new ArrayList<User>();
-        else
-            this.listClients = listClients;
+    public void setQuota(long quota) {
+        this.quota = quota;
+    }
+
+    public List<User> getClients() {
+        return clients;
+    }
+
+    public void setClients(List<User> clients) {
+        if (clients == null) {
+            this.clients = new ArrayList<>();
+        } else {
+            this.clients = clients;
+        }
     }
 
     public void addClient(User client) {
-        if (this.listClients == null)
-            listClients= new ArrayList<User>();
-        this.listClients.add(client);
+        if (this.clients == null) {
+            clients = new ArrayList<>();
+        }
+
+        this.clients.add(client);
+    }
+
+    public boolean containClient(User client) {
+        for (User c : clients) {
+            if (c.getEmail().toLowerCase().equals(client.getEmail().toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /////////////////////////////////////////
@@ -46,7 +65,8 @@ public class LocalWorkspace extends Workspace implements Parcelable {
     @SuppressWarnings("unused")
 
     public LocalWorkspace(Parcel source) {
-        source.readList( listClients, User.class.getClassLoader());
+        quota = source.readLong();
+        source.readList(clients, User.class.getClassLoader());
     }
 
     @Override
@@ -56,7 +76,8 @@ public class LocalWorkspace extends Workspace implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeList(listClients);
+        dest.writeLong(quota);
+        dest.writeList(clients);
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator<LocalWorkspace>() {

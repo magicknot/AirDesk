@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.ViewPagerAdapter;
+import pt.ulisboa.tecnico.cmov.airdesk.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.util.AirdeskDataHolder;
 import pt.ulisboa.tecnico.cmov.airdesk.view.SlidingTabLayout;
 
@@ -22,13 +23,13 @@ public class AirdeskActivity extends ActionBarActivity {
     private static final String TAG = "AirdeskActivity";
     private static final int ACTIVITY_USER_REGISTRATION = 0;
 
-    Toolbar toolbar;
-    ViewPager pager;
-    ViewPagerAdapter adapter;
-    SlidingTabLayout tabs;
-    CharSequence Titles[]={"Owned Workspaces","Foreign Workspaces"};
-    int Numboftabs =2;
-
+    private Toolbar toolbar;
+    private ViewPager pager;
+    private ViewPagerAdapter adapter;
+    private SlidingTabLayout tabs;
+    private CharSequence Titles[] = {"Owned Workspaces", "Foreign Workspaces"};
+    private int numberOfTabs = 2;
+    private User currentUser = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,12 +37,12 @@ public class AirdeskActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_airdesk);
 
-        ValidateUserRegistration();
-        AirdeskDataHolder.init(this);
+        validateUserRegistration();
+        AirdeskDataHolder.init(this, currentUser);
         createWorkspaceTabs();
     }
 
-    private void ValidateUserRegistration(){
+    private void validateUserRegistration(){
         String email;
         String nickname;
 
@@ -54,6 +55,7 @@ public class AirdeskActivity extends ActionBarActivity {
         } else {
             email = myPrefs.getString("userEmail", "userEmail");
             nickname = myPrefs.getString("userNickname", "userNickname");
+            currentUser = new User(email, nickname);
             Log.i(TAG, "User Login: " + nickname + "/" + email);
         }
     }
@@ -64,7 +66,7 @@ public class AirdeskActivity extends ActionBarActivity {
         setSupportActionBar(toolbar);
 
         // Creating The ViewPagerAdapter and Passing Fragment Manager, Titles fot the Tabs and Number Of Tabs.
-        adapter =  new ViewPagerAdapter(getSupportFragmentManager(),Titles,Numboftabs);
+        adapter =  new ViewPagerAdapter(getSupportFragmentManager(),Titles, numberOfTabs);
 
         // Assigning ViewPager View and setting the adapter
         pager = (ViewPager) findViewById(R.id.pager);
@@ -97,7 +99,7 @@ public class AirdeskActivity extends ActionBarActivity {
             SharedPreferences myPrefs = getSharedPreferences(PREFS_NAME, 0);
             String email = myPrefs.getString("userEmail", "userEmail");
             String nickname = myPrefs.getString("userNickname", "userNickname");
-
+            currentUser = new User(email, nickname);
             Log.i(TAG, "User Login " + email + " - " + nickname);
         }
         Log.i(TAG, "onActivityResult " + requestCode);

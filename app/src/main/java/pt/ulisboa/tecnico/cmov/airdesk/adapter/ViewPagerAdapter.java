@@ -4,8 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import pt.ulisboa.tecnico.cmov.airdesk.fragment.ForeignWorkspaceTab;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.LocalWorkspaceTab;
-import pt.ulisboa.tecnico.cmov.airdesk.fragment.Tab2;
 
 /**
  * Created by oliveira on 31/03/15.
@@ -33,7 +33,7 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
             return new LocalWorkspaceTab();
         } else {
             // As we are having 2 tabs if the position is now 0 it must be 1 so we are returning second tab
-            return new Tab2();
+            return new ForeignWorkspaceTab();
         }
     }
 

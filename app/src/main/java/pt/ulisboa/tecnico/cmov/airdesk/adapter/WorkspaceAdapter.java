@@ -59,7 +59,6 @@ public class WorkspaceAdapter<W extends Workspace> extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        Log.i("WorkspaceAdapter", "getView started (received i=" + i + ")");
         final View currentView;
         final ViewHolder holder;
         if (null == view) {
@@ -78,8 +77,6 @@ public class WorkspaceAdapter<W extends Workspace> extends BaseAdapter {
             holder = (ViewHolder) currentView.getTag();
         }
         bindView(holder, i);
-        Log.i("WorkspaceAdapter", " int: " + i + ", View: " + currentView.toString() + ", ViewGroup: " + viewGroup.toString());
-
         return currentView;
     }
 

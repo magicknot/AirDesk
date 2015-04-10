@@ -104,19 +104,19 @@ public class AirdeskDataSource {
         initialValues = new ContentValues();
         if (workspace.isPrivate()){
             //insert Clients
-            for (int i=0; i<workspace.getListClients().size(); i++) {
+            for (int i=0; i<workspace.getClients().size(); i++) {
                 initialValues.put(AirdeskDbContract.WorkspaceClientsTable.COLUMN_WORKSPACE_KEY, workspace.getWorkspaceId());
-                initialValues.put(AirdeskDbContract.WorkspaceClientsTable.COLUMN_CLIENT_KEY, workspace.getListClients().get(i).getEmail());
+                initialValues.put(AirdeskDbContract.WorkspaceClientsTable.COLUMN_CLIENT_KEY, workspace.getClients().get(i).getEmail());
                 insertid = mDb.insert(AirdeskDbContract.WorkspaceClientsTable.TABLE_NAME, null, initialValues);
-                Log.i(TAG, "Workspace Client(" + workspace.getListClients().get(i).getEmail() + ")created with id " + insertid);
+                Log.i(TAG, "Workspace Client(" + workspace.getClients().get(i).getEmail() + ")created with id " + insertid);
             }
         } else {
             //insert tags
-            for (int i=0; i<workspace.getListTags().size(); i++) {
+            for (int i=0; i<workspace.getTags().size(); i++) {
                 initialValues.put(AirdeskDbContract.WorkspaceTagsTable.COLUMN_WORKSPACE_KEY, workspace.getWorkspaceId());
-                initialValues.put(AirdeskDbContract.WorkspaceTagsTable.COLUMN_TAG, workspace.getListTags().get(i).getTag());
+                initialValues.put(AirdeskDbContract.WorkspaceTagsTable.COLUMN_TAG, workspace.getTags().get(i).getTag());
                 insertid = mDb.insert(AirdeskDbContract.WorkspaceTagsTable.TABLE_NAME, null, initialValues);
-                Log.i(TAG, "Workspace Tag(" + workspace.getListTags().get(i).getTag() + ")created with id " + insertid);
+                Log.i(TAG, "Workspace Tag(" + workspace.getTags().get(i).getTag() + ")created with id " + insertid);
             }
         }
         return workspace;

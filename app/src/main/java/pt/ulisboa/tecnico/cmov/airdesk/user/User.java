@@ -3,15 +3,17 @@ package pt.ulisboa.tecnico.cmov.airdesk.user;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * Created by oliveira on 27/03/15.
- */
 public class User implements Parcelable {
     private String email;
     private String nickname;
 
     public User(String email) {
         this.email = email;
+    }
+
+    public User(String email, String nickname) {
+        this(email);
+        this.nickname = nickname;
     }
 
     public void setNickname(String nickname) {
@@ -38,10 +40,10 @@ public class User implements Parcelable {
                 ", nickname='" + nickname + '\'' +
                 '}';
     }
+
     /////////////////////////////////////////
     // Implementation of Parcelable interface
     @SuppressWarnings("unused")
-
     public User(Parcel source) {
         email = source.readString();
         nickname = source.readString();

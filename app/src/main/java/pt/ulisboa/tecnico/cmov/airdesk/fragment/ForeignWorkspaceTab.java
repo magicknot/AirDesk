@@ -18,9 +18,10 @@ import java.lang.reflect.Field;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.util.AirdeskDataHolder;
+import pt.ulisboa.tecnico.cmov.airdesk.workspace.ForeignWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.workspace.LocalWorkspace;
 
-public class LocalWorkspaceTab extends Tab {
+public class ForeignWorkspaceTab extends Tab {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -29,15 +30,11 @@ public class LocalWorkspaceTab extends Tab {
         // This is the adapter we use to populate the grid.
         WorkspaceAdapter adapter = new WorkspaceAdapter<>(this, getActivity(),
                 R.layout.item_workspace_grid,
-                AirdeskDataHolder.getInstance().getLocalWorkspaces(null));
+                AirdeskDataHolder.getInstance().getForeignWorkspaces());
 
         setWorkspaceAdapter(adapter);
         // Inflate the layout with a GridView in it.
-        View v = inflater.inflate(R.layout.tab_1, container, false);
-
-        Log.i(getLogTag(), "onCreateView: v = null? " + String.valueOf(v == null));
-
-        return v;
+        return inflater.inflate(R.layout.tab_2, container, false);
     }
 
     @Override
@@ -45,8 +42,7 @@ public class LocalWorkspaceTab extends Tab {
         Log.i(getLogTag(), "onViewCreated started");
         super.onViewCreated(view, savedInstanceState);
         // Get ListView object from xml
-        ListView listViewOwned = (ListView) view.findViewById(R.id.list_owned_workspaces);
-        Log.i(getLogTag(), "onViewCreated: listViewOwned = null? " + String.valueOf(listViewOwned == null));
+        ListView listViewOwned = (ListView) view.findViewById(R.id.list_foreign_workspaces);
         // Assign adapter to ListView
         WorkspaceAdapter adapter = getWorkspace();
         listViewOwned.setAdapter(adapter);
@@ -65,7 +61,7 @@ public class LocalWorkspaceTab extends Tab {
         switch (id){
             case R.id.action_new_local_workspace:
                 Toast.makeText(getActivity().getBaseContext(),
-                        "You selected action_new_local_workspace", Toast.LENGTH_SHORT).show();
+                        "You selected action_new_foreign_workspace", Toast.LENGTH_SHORT).show();
                 FragmentManager fm = getActivity().getSupportFragmentManager();
                 CreateWorkspaceFragment dFragment = new CreateWorkspaceFragment();
                 dFragment.setTargetFragment(this, DIALOG_FRAGMENT_NEW_WORKSPACE);
@@ -100,7 +96,7 @@ public class LocalWorkspaceTab extends Tab {
                         EditLocalWorkspaceFragment dFragmentEditLocalWorkspace =
                                 EditLocalWorkspaceFragment.newInstance(getWorkspace()
                                         .getItem(position));
-                        dFragmentEditLocalWorkspace.setTargetFragment(LocalWorkspaceTab.this,
+                        dFragmentEditLocalWorkspace.setTargetFragment(ForeignWorkspaceTab.this,
                                 DIALOG_FRAGMENT_NEW_WORKSPACE);
                         dFragmentEditLocalWorkspace.show(fm, "Dialog Fragment");
                         return true;
@@ -120,7 +116,7 @@ public class LocalWorkspaceTab extends Tab {
                         fm = getActivity().getSupportFragmentManager();
                         InviteClientFragment dFragmentInviteClient =
                                 InviteClientFragment.newInstance((LocalWorkspace)getWorkspace().getItem(position));
-                        dFragmentInviteClient.setTargetFragment(LocalWorkspaceTab.this,
+                        dFragmentInviteClient.setTargetFragment(ForeignWorkspaceTab.this,
                                 DIALOG_FRAGMENT_NEW_WORKSPACE);
                         dFragmentInviteClient.show(fm, "Dialog Fragment");
                         return true;
@@ -152,6 +148,6 @@ public class LocalWorkspaceTab extends Tab {
 
     @Override
     public String getLogTag() {
-        return "LocalWorkspaceTab";
+        return "ForeignWorkspaceTab";
     }
 }
