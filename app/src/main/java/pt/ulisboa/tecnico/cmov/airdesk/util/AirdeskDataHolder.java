@@ -4,8 +4,11 @@ import android.content.Context;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.workspace.ForeignWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.workspace.LocalWorkspace;
@@ -22,10 +25,13 @@ public class AirdeskDataHolder {
     private User currentUser;
     private List<LocalWorkspace> localWorkspaces;
     private List<ForeignWorkspace> foreignWorkspaces;
+    private Map<String, WorkspaceAdapter<ForeignWorkspace>> activeUsers;
 
     public AirdeskDataHolder(Context context, User currentUser) {
         this.context = context;
         this.currentUser = currentUser;
+        this.activeUsers = new HashMap<>();
+
         this.db = new AirdeskDataSource(this.context);
         this.db.open();
         this.localWorkspaces = this.db.fetchAllWorkspaces();
@@ -40,6 +46,14 @@ public class AirdeskDataHolder {
 
     public static synchronized void init(Context context, User user) {
         holder = new AirdeskDataHolder(context, user);
+    }
+
+    public User getCurrentUser() {
+        return currentUser;
+    }
+
+    public void setCurrentUser(User user) {
+        this.currentUser = user;
     }
 
     public List<LocalWorkspace> getLocalWorkspaces(User owner) {
@@ -75,18 +89,6 @@ public class AirdeskDataHolder {
         lw = (LocalWorkspace) db.insertWorkspace(lw);
         db.close();
         localWorkspaces.add(lw);
-    }
-
-    public void addForeignWorkspace(String owner, String name) {
-        for (ForeignWorkspace ws : foreignWorkspaces) {
-            if (ws.getName().toLowerCase().equals(name.toLowerCase())
-                    && ws.getOwner().toLowerCase().equals(owner.toLowerCase())) {
-                // TODO Show a popup message saying that name is already in use
-                return;
-            }
-        }
-
-        foreignWorkspaces.add(new ForeignWorkspace(name, owner));
     }
 
     public boolean removeLocalWorkspace(Workspace workspace) {
@@ -141,11 +143,35 @@ public class AirdeskDataHolder {
         }
     }
 
+    public void addForeignWorkspace(String owner, String name) {
+        for (ForeignWorkspace ws : foreignWorkspaces) {
+            if (ws.getName().toLowerCase().equals(name.toLowerCase())
+                    && ws.getOwner().toLowerCase().equals(owner.toLowerCase())) {
+                // TODO Show a popup message saying that name is already in use
+                return;
+            }
+        }
+
+        foreignWorkspaces.add(new ForeignWorkspace(name, owner));
+    }
+
     public void fetchForeignWorkspaces() {
+        this.foreignWorkspaces = new ArrayList<>();
         for (LocalWorkspace ws : localWorkspaces) {
             if (ws.containClient(currentUser)) {
                 addForeignWorkspace(ws.getOwner(), ws.getName());
             }
         }
     }
+
+    public void registerActiveUser(String email, WorkspaceAdapter<ForeignWorkspace> workspace) {
+        Log.i(TAG, "registerActiveUser - adding:\n\t email " + email + "\n\tworkspace: "
+                + workspace.toString());
+        activeUsers.put(email, workspace);
+    }
+
+    public WorkspaceAdapter<ForeignWorkspace> getWorkspaceAdapterByUser(String email) {
+        return activeUsers.get(email);
+    }
+
 }

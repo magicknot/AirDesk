@@ -38,8 +38,7 @@ public class AirdeskActivity extends ActionBarActivity {
         setContentView(R.layout.activity_airdesk);
 
         validateUserRegistration();
-        AirdeskDataHolder.init(this, currentUser);
-        createWorkspaceTabs();
+//        createWorkspaceTabs();
     }
 
     private void validateUserRegistration(){
@@ -56,6 +55,8 @@ public class AirdeskActivity extends ActionBarActivity {
             email = myPrefs.getString("userEmail", "userEmail");
             nickname = myPrefs.getString("userNickname", "userNickname");
             currentUser = new User(email, nickname);
+            AirdeskDataHolder.init(this, currentUser);
+            createWorkspaceTabs();
             Log.i(TAG, "User Login: " + nickname + "/" + email);
         }
     }
@@ -100,7 +101,9 @@ public class AirdeskActivity extends ActionBarActivity {
             String email = myPrefs.getString("userEmail", "userEmail");
             String nickname = myPrefs.getString("userNickname", "userNickname");
             currentUser = new User(email, nickname);
+            AirdeskDataHolder.init(this, currentUser);
             Log.i(TAG, "User Login " + email + " - " + nickname);
+            createWorkspaceTabs();
         }
         Log.i(TAG, "onActivityResult " + requestCode);
 

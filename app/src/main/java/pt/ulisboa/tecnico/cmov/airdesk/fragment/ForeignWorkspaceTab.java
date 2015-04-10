@@ -17,6 +17,7 @@ import java.lang.reflect.Field;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceAdapter;
+import pt.ulisboa.tecnico.cmov.airdesk.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.util.AirdeskDataHolder;
 import pt.ulisboa.tecnico.cmov.airdesk.workspace.ForeignWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.workspace.LocalWorkspace;
@@ -28,9 +29,12 @@ public class ForeignWorkspaceTab extends Tab {
                              @Nullable Bundle savedInstanceState) {
         Log.i(getLogTag(), "onCreateView started");
         // This is the adapter we use to populate the grid.
-        WorkspaceAdapter adapter = new WorkspaceAdapter<>(this, getActivity(),
+        WorkspaceAdapter<ForeignWorkspace> adapter = new WorkspaceAdapter<>(this, getActivity(),
                 R.layout.item_workspace_grid,
                 AirdeskDataHolder.getInstance().getForeignWorkspaces());
+
+        AirdeskDataHolder.getInstance().registerActiveUser(
+                AirdeskDataHolder.getInstance().getCurrentUser().getEmail(), adapter);
 
         setWorkspaceAdapter(adapter);
         // Inflate the layout with a GridView in it.
@@ -126,7 +130,7 @@ public class ForeignWorkspaceTab extends Tab {
                 }
             }
         };
-        popupMenu.inflate(R.menu.menu_item_workspace);
+        popupMenu.inflate(R.menu.menu_item_local_workspace);
 
         // Force icons to show
         Object menuHelper;

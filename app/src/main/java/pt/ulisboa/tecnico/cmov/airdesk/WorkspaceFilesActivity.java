@@ -1,6 +1,5 @@
 package pt.ulisboa.tecnico.cmov.airdesk;
 
-import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -18,7 +17,6 @@ import android.widget.Toast;
 import java.lang.reflect.Field;
 
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.FileWorkspaceAdapter;
-import pt.ulisboa.tecnico.cmov.airdesk.workspace.LocalWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.workspace.Workspace;
 
 
@@ -135,7 +133,7 @@ public class WorkspaceFilesActivity extends ActionBarActivity implements Adapter
                 }
             }
         };
-        popupMenu.inflate(R.menu.menu_item_workspace);
+        popupMenu.inflate(R.menu.menu_item_local_workspace);
 
         // Force icons to show
         Object menuHelper;

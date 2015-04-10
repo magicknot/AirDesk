@@ -3,12 +3,16 @@ package pt.ulisboa.tecnico.cmov.airdesk.user;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceAdapter;
+import pt.ulisboa.tecnico.cmov.airdesk.workspace.ForeignWorkspace;
+
 public class User implements Parcelable {
     private String email;
     private String nickname;
 
     public User(String email) {
         this.email = email;
+        this.nickname = null;
     }
 
     public User(String email, String nickname) {

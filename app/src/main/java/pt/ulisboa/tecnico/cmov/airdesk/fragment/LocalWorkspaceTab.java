@@ -13,10 +13,12 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.Toast;
 
+
 import java.lang.reflect.Field;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceAdapter;
+import pt.ulisboa.tecnico.cmov.airdesk.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.util.AirdeskDataHolder;
 import pt.ulisboa.tecnico.cmov.airdesk.workspace.LocalWorkspace;
 
@@ -108,8 +110,22 @@ public class LocalWorkspaceTab extends Tab {
                     case R.id.workspace_overflow_delete:
                         Log.i(getLogTag(), " clicked. delete "+ getWorkspace()
                                 .getItem(position).toString());
-                        AirdeskDataHolder.getInstance()
-                                .removeLocalWorkspace(getWorkspace().getItem(position));
+
+                        LocalWorkspace ws = (LocalWorkspace) getWorkspace().getItem(position);
+
+                        AirdeskDataHolder.getInstance().removeLocalWorkspace(ws);
+
+                        // TODO Update this to fetch user location from network
+                        for (User client : ws.getClients()) {
+                            WorkspaceAdapter workspace = AirdeskDataHolder.getInstance()
+                                    .getWorkspaceAdapterByUser(client.getEmail());
+
+                            if (workspace != null) {
+                                workspace.reloadForeignWorkspaces();
+                                workspace.notifyDataSetChanged();
+                            }
+                        }
+
                         getWorkspace().notifyDataSetChanged();
                         return true;
 
@@ -130,7 +146,7 @@ public class LocalWorkspaceTab extends Tab {
                 }
             }
         };
-        popupMenu.inflate(R.menu.menu_item_workspace);
+        popupMenu.inflate(R.menu.menu_item_local_workspace);
 
         // Force icons to show
         Object menuHelper;

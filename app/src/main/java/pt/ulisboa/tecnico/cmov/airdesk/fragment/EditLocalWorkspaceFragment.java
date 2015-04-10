@@ -17,9 +17,13 @@ import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.ClientsAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.TagsAdapter;
+import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.util.AirdeskDataHolder;
 import pt.ulisboa.tecnico.cmov.airdesk.workspace.LocalWorkspace;
@@ -81,24 +85,24 @@ public class EditLocalWorkspaceFragment extends DialogFragment {
         mTagListAdapter = new TagsAdapter(inflater, R.layout.item_tag_grid);
         mClientsListAdapter = new ClientsAdapter(inflater, R.layout.item_tag_grid);
 
-        tName = (TextView)rootView.findViewById(R.id.textViewName);
+        tName = (TextView) rootView.findViewById(R.id.textViewName);
 
-        tQuota = (EditText)rootView.findViewById(R.id.editTextQuota);
-        sPrivacy = (Switch)rootView.findViewById(R.id.switchPrivacy);
+        tQuota = (EditText) rootView.findViewById(R.id.editTextQuota);
+        sPrivacy = (Switch) rootView.findViewById(R.id.switchPrivacy);
 
-        layoutItems = (LinearLayout)rootView.findViewById(R.id.layoutNewTag);
-        tItemTitlePrivacy = (TextView)rootView.findViewById(R.id.textViewPrivacy);
-        tItem = (EditText)rootView.findViewById(R.id.editTextNewTag);
-        bAddItem = (ImageButton)rootView.findViewById(R.id.buttonAddTag);
+        layoutItems = (LinearLayout) rootView.findViewById(R.id.layoutNewTag);
+        tItemTitlePrivacy = (TextView) rootView.findViewById(R.id.textViewPrivacy);
+        tItem = (EditText) rootView.findViewById(R.id.editTextNewTag);
+        bAddItem = (ImageButton) rootView.findViewById(R.id.buttonAddTag);
 
-        bCreate = (Button)rootView.findViewById(R.id.buttonCreate);
-        bCancel = (Button)rootView.findViewById(R.id.buttonCancel);
+        bCreate = (Button) rootView.findViewById(R.id.buttonCreate);
+        bCancel = (Button) rootView.findViewById(R.id.buttonCancel);
 
         getDialog().setTitle("Edit Workspace");
         tName.setText(mWorkspace.getName());
         tQuota.setText(String.valueOf(mWorkspace.getQuota()));
         sPrivacy.setChecked(!mWorkspace.isPrivate());
-        if(mWorkspace.isPrivate())
+        if (mWorkspace.isPrivate())
             setWorkspacePrivate();
         else
             setWorkspacePublic();
@@ -157,9 +161,24 @@ public class EditLocalWorkspaceFragment extends DialogFragment {
                 Log.i(TAG, "[onCheckedChanged] Create");
                 mWorkspace.setClients(mClientsListAdapter.getListWorkspaceClients());
                 mWorkspace.setTags(mTagListAdapter.getListWorkspacesTags());
-                Log.i(TAG, "onClick - updateLocalWorkspaceClients - isPrivate: " + String.valueOf(mWorkspace.isPrivate()));
+                Log.i(TAG, "onClick - updateLocalWorkspaceClients - isPrivate: " +
+                        String.valueOf(mWorkspace.isPrivate()));
                 AirdeskDataHolder.getInstance().updateLocalWorkspaceClients(mWorkspace);
-                getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, getActivity().getIntent());
+                getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK,
+                        getActivity().getIntent());
+
+                // TODO Update this to fetch user location from network
+                // FIXME
+                User client = AirdeskDataHolder.getInstance().getCurrentUser();
+                WorkspaceAdapter workspace = AirdeskDataHolder.getInstance()
+                        .getWorkspaceAdapterByUser(client.getEmail());
+
+                if (workspace != null) {
+                    workspace.reloadForeignWorkspaces();
+                    workspace.notifyDataSetChanged();
+                }
+                
+
                 dismiss();
             }
         });
@@ -167,7 +186,7 @@ public class EditLocalWorkspaceFragment extends DialogFragment {
         return rootView;
     }
 
-    private void setWorkspacePrivate(){
+    private void setWorkspacePrivate() {
         tItemTitlePrivacy.setText("Clients");
         tItem.setHint("new email client");
         mTagListAdapter.clear();
@@ -175,7 +194,7 @@ public class EditLocalWorkspaceFragment extends DialogFragment {
         listViewItems.setAdapter(mClientsListAdapter);
     }
 
-    private void setWorkspacePublic(){
+    private void setWorkspacePublic() {
         tItemTitlePrivacy.setText("Tags");
         tItem.setHint("new tag");
         mClientsListAdapter.clear();

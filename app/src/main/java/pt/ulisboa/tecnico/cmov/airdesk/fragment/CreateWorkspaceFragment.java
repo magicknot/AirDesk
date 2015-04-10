@@ -21,6 +21,7 @@ import android.widget.TextView;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.ClientsAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.TagsAdapter;
+import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.util.AirdeskDataHolder;
 import pt.ulisboa.tecnico.cmov.airdesk.workspace.WorkspaceTag;
@@ -113,7 +114,8 @@ public class CreateWorkspaceFragment extends DialogFragment {
                 public void onClick(View v) {
                         // Do something in response to button click
                         Log.i(TAG, "[onCheckedChanged] Cancel");
-                    getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_CANCELED, getActivity().getIntent());
+                    getTargetFragment().onActivityResult(getTargetRequestCode(),
+                            Activity.RESULT_CANCELED, getActivity().getIntent());
                     dismiss();
                     }
                 }
@@ -125,8 +127,25 @@ public class CreateWorkspaceFragment extends DialogFragment {
                 Log.i(TAG, "[onCheckedChanged] Create");
                 SharedPreferences myPrefs = getActivity().getSharedPreferences(PREFS_NAME, 0);
                 String email = myPrefs.getString("userEmail", "userEmail");
-                AirdeskDataHolder.getInstance().addLocalWorkspace(email, tName.getText().toString().trim(), Integer.valueOf(tQuota.getText().toString()), sPrivacy.isChecked(), mTagListAdapter.getListWorkspacesTags(), mClientsListAdapter.getListWorkspaceClients());
-                getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, getActivity().getIntent());
+                AirdeskDataHolder.getInstance().addLocalWorkspace(email,
+                        tName.getText().toString().trim(),
+                        Integer.valueOf(tQuota.getText().toString()),
+                        sPrivacy.isChecked(), mTagListAdapter.getListWorkspacesTags(),
+                        mClientsListAdapter.getListWorkspaceClients());
+                getTargetFragment().onActivityResult(getTargetRequestCode(),
+                        Activity.RESULT_OK, getActivity().getIntent());
+
+                // TODO Update this to fetch user location from network
+                for (User client : mClientsListAdapter.getListWorkspaceClients()) {
+                    WorkspaceAdapter workspace = AirdeskDataHolder.getInstance()
+                            .getWorkspaceAdapterByUser(client.getEmail());
+
+                    if (workspace != null) {
+                        workspace.reloadForeignWorkspaces();
+                        workspace.notifyDataSetChanged();
+                    }
+                }
+
                 dismiss();
             }
         });
