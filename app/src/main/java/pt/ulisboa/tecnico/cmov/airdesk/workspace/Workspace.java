@@ -3,6 +3,8 @@ package pt.ulisboa.tecnico.cmov.airdesk.workspace;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +14,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
 public class Workspace implements Parcelable {
 
     private long workspaceId;
+    private long quota;
     private String name;
     private String owner;
     private boolean isPrivate;
@@ -21,17 +24,12 @@ public class Workspace implements Parcelable {
         super();
     }
 
-    public Workspace(String name, String owner) {
+    public Workspace(String name, String owner, long quota) {
+        this.quota = quota;
         this.name = name;
         this.owner = owner;
         this.isPrivate = true;
-    }
-
-    public Workspace(String name, String owner, List<WorkspaceTag> tags) {
-        this.name = name;
-        this.owner = owner;
-        this.isPrivate = false;
-        this.setTags(tags);
+        this.setTags(null);
     }
 
     public long getWorkspaceId() {
@@ -40,6 +38,23 @@ public class Workspace implements Parcelable {
 
     public void setWorkspaceId(long workspaceId) {
         this.workspaceId = workspaceId;
+    }
+
+    public long getQuota() {
+        return quota;
+    }
+
+    protected void setQuota(long quota) {
+        this.quota = quota;
+    }
+
+    public void setQuota(long quota, Context context) {
+        long minimumValue = FileManager.getWorkspaceUsedSpace(name, context);
+        long maximumValue = FileManager.getFreeSpace(context);
+
+        if (quota >= minimumValue && quota <= maximumValue) {
+            this.quota = quota;
+        }
     }
 
     public String getName() {
@@ -63,7 +78,12 @@ public class Workspace implements Parcelable {
     }
 
     public void writeFile(String filename, String content , Context context) throws IOException {
-        FileManager.saveFile(this.name, filename, content, context);
+        Long usedSpace = FileManager.getWorkspaceUsedSpace(name, context);
+        if (usedSpace + 2 * content.length() < quota) {
+            FileManager.saveFile(this.name, filename, content, context);
+        } else {
+           throw new IOException("Quota exceeded (" + usedSpace + " + 2 * " + content.length() + " < " + quota + " = false)");
+        }
     }
 
     public String readFile(String filename, Context context) throws IOException {
@@ -116,6 +136,7 @@ public class Workspace implements Parcelable {
     public String toString() {
         return "Workspace{" +
                 "workspaceId=" + getWorkspaceId() +
+                "quota=" + quota +
                 ", name='" + getName() + '\'' +
                 ", owner=" + getOwner() +
                //FIXME:  ", files=" + getFiles() +
@@ -130,6 +151,7 @@ public class Workspace implements Parcelable {
     public Workspace(Parcel source) {
         this();
         workspaceId = source.readLong();
+        quota = source.readLong();
         name = source.readString();
         owner = source.readString();
         isPrivate = source.readInt() == 1;
@@ -146,6 +168,7 @@ public class Workspace implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(workspaceId);
+        dest.writeLong(quota);
         dest.writeString(name);
         dest.writeString(owner);
         dest.writeInt(isPrivate ? 1 : 0);

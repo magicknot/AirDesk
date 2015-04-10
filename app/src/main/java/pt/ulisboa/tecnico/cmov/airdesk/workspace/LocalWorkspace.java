@@ -9,15 +9,12 @@ import java.util.List;
 import pt.ulisboa.tecnico.cmov.airdesk.user.User;
 
 public class LocalWorkspace extends Workspace implements Parcelable {
-
-    private long quota;
     private List<User> clients;
 
     @Override
     public String toString() {
         return super.toString() +
                 " LocalWorkspace{" +
-                "quota=" + quota +
                 ", clients=" + clients +
                 '}';
     }
@@ -28,17 +25,8 @@ public class LocalWorkspace extends Workspace implements Parcelable {
     }
 
     public LocalWorkspace(String owner, String name, long quota) {
-        super(name, owner);
-        this.quota = quota;
+        super(name, owner, quota);
         clients = new ArrayList<>();
-    }
-
-    public long getQuota() {
-        return quota;
-    }
-
-    public void setQuota(long quota) {
-        this.quota = quota;
     }
 
     public List<User> getClients() {
@@ -88,12 +76,12 @@ public class LocalWorkspace extends Workspace implements Parcelable {
     public LocalWorkspace(Parcel source) {
         this();
         super.setWorkspaceId(source.readLong());
+        super.setQuota(source.readLong());
         super.setName(source.readString());
         super.setOwner(source.readString());
         super.setPrivate(source.readInt()==1);
         source.readList(super.tags, WorkspaceTag.class.getClassLoader());
         // FIXME: source.readList(super.files, User.class.getClassLoader());
-        quota = source.readLong();
         source.readList(clients, User.class.getClassLoader());
     }
 
@@ -105,12 +93,12 @@ public class LocalWorkspace extends Workspace implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(super.getWorkspaceId());
+        dest.writeLong(super.getQuota());
         dest.writeString(super.getName());
         dest.writeString(super.getOwner());
         dest.writeInt(super.isPrivate() ? 1 : 0);
         dest.writeList(super.getTags());
         // FIXME: dest.writeList(super.getFiles());
-        dest.writeLong(quota);
         dest.writeList(clients);
     }
 

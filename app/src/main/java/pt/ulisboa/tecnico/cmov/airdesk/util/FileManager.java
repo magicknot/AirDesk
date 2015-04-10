@@ -80,8 +80,10 @@ public final class FileManager {
         long totalSize = 0;
         File workspaceDirectory = new File (context.getFilesDir().getAbsolutePath() + "/" + workspaceName);
 
-        for(File f: workspaceDirectory.listFiles()) {
-            totalSize += f.length();
+        if (workspaceDirectory.isDirectory()) {
+            for (File f : workspaceDirectory.listFiles()) {
+                totalSize += f.length();
+            }
         }
         return totalSize;
     }

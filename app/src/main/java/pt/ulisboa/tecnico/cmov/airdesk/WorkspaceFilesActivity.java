@@ -54,6 +54,7 @@ public class WorkspaceFilesActivity extends ActionBarActivity implements Adapter
 
         String filelist[] = this.workspace.listFiles(getBaseContext());
 
+
         // This is the adapter we use to populate the grid.
        fileWorkspaceAdapter = new FileWorkspaceAdapter(this, getBaseContext(),R.layout.item_workspace_grid, filelist);
 

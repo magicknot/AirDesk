@@ -76,6 +76,7 @@ public class AirdeskDataHolder {
 
         LocalWorkspace lw = new LocalWorkspace(owner, name, Math.min(quota,
                 FileManager.getFreeSpace(context)/1024));
+//                FileManager.getFreeSpace(context)));
 
         if (isNotPrivate) {
             Log.i(TAG, "isPrivate: Public (Adding Tags to Workspace)");
@@ -144,7 +145,7 @@ public class AirdeskDataHolder {
         }
     }
 
-    public void addForeignWorkspace(String owner, String name) {
+    public void addForeignWorkspace(String owner, String name, long quota) {
         for (ForeignWorkspace ws : foreignWorkspaces) {
             if (ws.getName().toLowerCase().equals(name.toLowerCase())
                     && ws.getOwner().toLowerCase().equals(owner.toLowerCase())) {
@@ -153,7 +154,7 @@ public class AirdeskDataHolder {
             }
         }
 
-        foreignWorkspaces.add(new ForeignWorkspace(name, owner));
+        foreignWorkspaces.add(new ForeignWorkspace(name, owner, quota));
     }
 
     public void removeForeignWorkspace(Workspace workspace) {
@@ -180,7 +181,7 @@ public class AirdeskDataHolder {
         this.foreignWorkspaces = new ArrayList<>();
         for (LocalWorkspace ws : localWorkspaces) {
             if (ws.containClient(currentUser)) {
-                addForeignWorkspace(ws.getOwner(), ws.getName());
+                addForeignWorkspace(ws.getOwner(), ws.getName(), ws.getQuota());
             }
         }
     }

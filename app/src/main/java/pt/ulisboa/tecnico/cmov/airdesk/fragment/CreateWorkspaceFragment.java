@@ -24,6 +24,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.adapter.TagsAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.util.AirdeskDataHolder;
+import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
 import pt.ulisboa.tecnico.cmov.airdesk.workspace.WorkspaceTag;
 
 
@@ -70,6 +71,8 @@ public class CreateWorkspaceFragment extends DialogFragment {
 
         mTagListAdapter = new TagsAdapter(inflater, R.layout.item_tag_grid);
         mClientsListAdapter = new ClientsAdapter(inflater, R.layout.item_tag_grid);
+
+        tQuota.setText(String.valueOf(FileManager.getFreeSpace(getActivity().getBaseContext())));
 
         // Get ListView object from xml
         listViewItems = (ListView) rootView.findViewById(R.id.tagList);
@@ -129,7 +132,7 @@ public class CreateWorkspaceFragment extends DialogFragment {
                 String email = myPrefs.getString("userEmail", "userEmail");
                 AirdeskDataHolder.getInstance().addLocalWorkspace(email,
                         tName.getText().toString().trim(),
-                        Long.valueOf(tQuota.getText().toString()),
+                        Long.parseLong(tQuota.getText().toString()),
                         sPrivacy.isChecked(), mTagListAdapter.getListWorkspacesTags(),
                         mClientsListAdapter.getListWorkspaceClients());
                 getTargetFragment().onActivityResult(getTargetRequestCode(),

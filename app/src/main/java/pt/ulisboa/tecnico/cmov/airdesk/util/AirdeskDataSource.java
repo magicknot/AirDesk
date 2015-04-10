@@ -172,7 +172,7 @@ public class AirdeskDataSource {
                 w = new LocalWorkspace();
                 w.setWorkspaceId(cursor.getLong(cursor.getColumnIndex(AirdeskDbContract.WorkspacesTable._ID)));
                 w.setName(cursor.getString(cursor.getColumnIndex(AirdeskDbContract.WorkspacesTable.COLUMN_WORKSPACE_NAME)));
-                w.setQuota(cursor.getLong(cursor.getColumnIndex(AirdeskDbContract.WorkspacesTable.COLUMN_QUOTA)));
+                w.setQuota(cursor.getLong(cursor.getColumnIndex(AirdeskDbContract.WorkspacesTable.COLUMN_QUOTA)), mCtx);
                 w.setOwner(cursor.getString(cursor.getColumnIndex(AirdeskDbContract.WorkspacesTable.COLUMN_OWNER)));
                 if(cursor.getInt(cursor.getColumnIndex(AirdeskDbContract.WorkspacesTable.COLUMN_PRIVACY)) == 1)
                     w.setPrivate(true);

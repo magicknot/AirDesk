@@ -81,7 +81,6 @@ public class EditLocalWorkspaceFragment extends DialogFragment {
         // Get ListView object from xml
         listViewItems = (ListView) rootView.findViewById(R.id.tagList);
 
-///////////
         mTagListAdapter = new TagsAdapter(inflater, R.layout.item_tag_grid);
         mClientsListAdapter = new ClientsAdapter(inflater, R.layout.item_tag_grid);
 
@@ -161,6 +160,7 @@ public class EditLocalWorkspaceFragment extends DialogFragment {
                 Log.i(TAG, "[onCheckedChanged] Create");
                 mWorkspace.setClients(mClientsListAdapter.getListWorkspaceClients());
                 mWorkspace.setTags(mTagListAdapter.getListWorkspacesTags());
+                mWorkspace.setQuota(Long.parseLong(tQuota.getText().toString()), getActivity().getBaseContext());
                 Log.i(TAG, "onClick - updateLocalWorkspaceClients - isPrivate: " +
                         String.valueOf(mWorkspace.isPrivate()));
                 AirdeskDataHolder.getInstance().updateLocalWorkspaceClients(mWorkspace);
