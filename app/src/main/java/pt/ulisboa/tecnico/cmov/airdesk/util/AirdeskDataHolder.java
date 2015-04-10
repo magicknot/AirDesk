@@ -9,6 +9,7 @@ import java.util.List;
 import pt.ulisboa.tecnico.cmov.airdesk.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.workspace.ForeignWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.workspace.LocalWorkspace;
+import pt.ulisboa.tecnico.cmov.airdesk.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.workspace.WorkspaceTag;
 
 /**
@@ -40,7 +41,7 @@ public class AirdeskDataHolder {
         db.close();
     }
 
-    public ArrayList<LocalWorkspace> getLocalWorkspaces(User owner){
+    public List<LocalWorkspace> getLocalWorkspaces(User owner){
         return this.localWorkspaces;
     }
 
@@ -61,14 +62,14 @@ public class AirdeskDataHolder {
         localWorkspaces.add(lw);
     }
 
-    public boolean removeLocalWorkspace(LocalWorkspace localWorkspace){
+    public boolean removeLocalWorkspace(Workspace workspace){
         boolean isDeleted;
 
         db.open();
-        isDeleted = db.deleteWorkspace(localWorkspace.getWorkspaceId());
+        isDeleted = db.deleteWorkspace(workspace.getWorkspaceId());
         db.close();
         Log.i(TAG, "isDeleted: "+Boolean.valueOf(isDeleted));
-        localWorkspaces.remove(localWorkspace);
+        localWorkspaces.remove(workspace);
         return isDeleted;
     }
 

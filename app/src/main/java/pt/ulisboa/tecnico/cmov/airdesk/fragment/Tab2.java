@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.cmov.airdesk;
+package pt.ulisboa.tecnico.cmov.airdesk.fragment;
 
 
 import android.os.Bundle;
@@ -9,7 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import pt.ulisboa.tecnico.cmov.airdesk.adapter.LocalWorkspaceAdapter;
+import pt.ulisboa.tecnico.cmov.airdesk.R;
+import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceAdapter;
 
 /**
  * Created by oliveira on 31/03/15.
@@ -18,7 +19,7 @@ public class Tab2 extends Fragment {
 
     private static final String TAG = "AirDesk[Tab2]";
 
-    private LocalWorkspaceAdapter mAdapter;
+    private WorkspaceAdapter mAdapter;
 
 
     @Override
