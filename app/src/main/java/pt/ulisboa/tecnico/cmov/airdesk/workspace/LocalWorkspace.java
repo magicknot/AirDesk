@@ -75,6 +75,7 @@ public class LocalWorkspace extends Workspace implements Parcelable {
     @SuppressWarnings("unused")
 
     public LocalWorkspace(Parcel source) {
+        this();
         super.setWorkspaceId(source.readLong());
         super.setName(source.readString());
         super.setOwner(source.readString());
