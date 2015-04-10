@@ -92,37 +92,12 @@ public class ForeignWorkspaceTab extends Tab {
                         //deleteAlbum(mAlbum);
                         return true;
 
-                    case R.id.workspace_overflow_edit:
-                        Log.i(getLogTag(), " clicked. edit ");
-                        Toast.makeText(getActivity().getBaseContext(),
-                                "You selected workspace_overflow_edit", Toast.LENGTH_SHORT).show();
-                        fm = getActivity().getSupportFragmentManager();
-                        EditLocalWorkspaceFragment dFragmentEditLocalWorkspace =
-                                EditLocalWorkspaceFragment.newInstance(getWorkspace()
-                                        .getItem(position));
-                        dFragmentEditLocalWorkspace.setTargetFragment(ForeignWorkspaceTab.this,
-                                DIALOG_FRAGMENT_NEW_WORKSPACE);
-                        dFragmentEditLocalWorkspace.show(fm, "Dialog Fragment");
-                        return true;
-
-                    case R.id.workspace_overflow_delete:
-                        Log.i(getLogTag(), " clicked. delete "+ getWorkspace()
-                                .getItem(position).toString());
+                    case R.id.workspace_overflow_unsubscribe:
+                        Log.i(getLogTag(), " clicked. unsubscribe " +
+                                getWorkspace().getItem(position).toString());
                         AirdeskDataHolder.getInstance()
-                                .removeLocalWorkspace(getWorkspace().getItem(position));
+                                .removeForeignWorkspace(getWorkspace().getItem(position));
                         getWorkspace().notifyDataSetChanged();
-                        return true;
-
-                    case R.id.workspace_overflow_invite:
-                        Log.i(getLogTag(), " clicked. invite ");
-                        Toast.makeText(getActivity().getBaseContext(),
-                                "You selected action_new_local_workspace", Toast.LENGTH_SHORT).show();
-                        fm = getActivity().getSupportFragmentManager();
-                        InviteClientFragment dFragmentInviteClient =
-                                InviteClientFragment.newInstance((LocalWorkspace)getWorkspace().getItem(position));
-                        dFragmentInviteClient.setTargetFragment(ForeignWorkspaceTab.this,
-                                DIALOG_FRAGMENT_NEW_WORKSPACE);
-                        dFragmentInviteClient.show(fm, "Dialog Fragment");
                         return true;
 
                     default:
@@ -130,7 +105,8 @@ public class ForeignWorkspaceTab extends Tab {
                 }
             }
         };
-        popupMenu.inflate(R.menu.menu_item_local_workspace);
+
+        popupMenu.inflate(R.menu.menu_item_foreign_workspace);
 
         // Force icons to show
         Object menuHelper;

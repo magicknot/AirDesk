@@ -155,6 +155,26 @@ public class AirdeskDataHolder {
         foreignWorkspaces.add(new ForeignWorkspace(name, owner));
     }
 
+    public void removeForeignWorkspace(Workspace workspace) {
+        LocalWorkspace localWs = null;
+
+        for (LocalWorkspace ws : localWorkspaces) {
+            if (ws.getName().equals(workspace.getName())) {
+                localWs = ws;
+                break;
+            }
+        }
+
+        if (localWs != null) {
+            localWs.removeClient(this.currentUser);
+            db.open();
+            db.updateLocalWorkspaceClients(localWs.getWorkspaceId(), localWs.getClients());
+            db.close();
+        }
+
+        foreignWorkspaces.remove(workspace);
+    }
+
     public void fetchForeignWorkspaces() {
         this.foreignWorkspaces = new ArrayList<>();
         for (LocalWorkspace ws : localWorkspaces) {

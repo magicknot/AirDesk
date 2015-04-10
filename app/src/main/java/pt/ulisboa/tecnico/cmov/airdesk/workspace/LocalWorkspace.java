@@ -70,6 +70,17 @@ public class LocalWorkspace extends Workspace implements Parcelable {
         return false;
     }
 
+    public void removeClient(User client) {
+        int i = 0;
+
+        for (User user : clients) {
+            if (user.getEmail().toLowerCase().equals(client.getEmail().toLowerCase())) {
+                clients.remove(i);
+            }
+            i++;
+        }
+    }
+
     /////////////////////////////////////////
     // Implementation of Parcelable interface
     @SuppressWarnings("unused")
