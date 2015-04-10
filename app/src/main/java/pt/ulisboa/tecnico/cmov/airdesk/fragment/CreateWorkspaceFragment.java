@@ -129,7 +129,7 @@ public class CreateWorkspaceFragment extends DialogFragment {
                 String email = myPrefs.getString("userEmail", "userEmail");
                 AirdeskDataHolder.getInstance().addLocalWorkspace(email,
                         tName.getText().toString().trim(),
-                        Integer.valueOf(tQuota.getText().toString()),
+                        Long.valueOf(tQuota.getText().toString()),
                         sPrivacy.isChecked(), mTagListAdapter.getListWorkspacesTags(),
                         mClientsListAdapter.getListWorkspaceClients());
                 getTargetFragment().onActivityResult(getTargetRequestCode(),

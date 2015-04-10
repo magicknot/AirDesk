@@ -65,7 +65,7 @@ public class AirdeskDataHolder {
         return this.foreignWorkspaces;
     }
 
-    public void addLocalWorkspace(String owner, String name, int quota, boolean isNotPrivate,
+    public void addLocalWorkspace(String owner, String name, long quota, boolean isNotPrivate,
                                   List<WorkspaceTag> tags, List<User> clients) {
         for (LocalWorkspace ws : localWorkspaces) {
             if (ws.getName().toLowerCase().equals(name.toLowerCase())) {
@@ -74,7 +74,8 @@ public class AirdeskDataHolder {
             }
         }
 
-        LocalWorkspace lw = new LocalWorkspace(owner, name, quota);
+        LocalWorkspace lw = new LocalWorkspace(owner, name, Math.min(quota,
+                FileManager.getFreeSpace(context)/1024));
 
         if (isNotPrivate) {
             Log.i(TAG, "isPrivate: Public (Adding Tags to Workspace)");
