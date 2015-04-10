@@ -10,18 +10,22 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
+import pt.ulisboa.tecnico.cmov.airdesk.WorkspaceFilesActivity;
 
 
 public class FileWorkspaceAdapter extends BaseAdapter{
     private final LayoutInflater layoutInflater;
     private final Context context;
     private final int resourceId;
+    private final WorkspaceFilesActivity filesActivity;
+
     private String[] mListWorkspaceFiles;
 
-    public FileWorkspaceAdapter(Context context, int resourceId, String[] mListWorkspaceFiles) {
+    public FileWorkspaceAdapter(WorkspaceFilesActivity filesActivity, Context context, int resourceId, String[] mListWorkspaceFiles) {
         this.mListWorkspaceFiles = mListWorkspaceFiles;
         this.context = context;
         this.resourceId = resourceId;
+        this.filesActivity = filesActivity;
         this.layoutInflater = LayoutInflater.from(context);
     }
 
@@ -60,7 +64,7 @@ public class FileWorkspaceAdapter extends BaseAdapter{
             holder.image = (ImageView) currentView.findViewById(R.id.workspace_overflow);
 
             holder.image.setTag(position);
-//            holder.image.setOnClickListener(tab);
+            holder.image.setOnClickListener(filesActivity);
 
             currentView.setTag(holder);
         } else {
