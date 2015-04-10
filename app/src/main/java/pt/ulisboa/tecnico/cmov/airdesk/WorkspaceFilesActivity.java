@@ -1,17 +1,43 @@
 package pt.ulisboa.tecnico.cmov.airdesk;
 
+import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import pt.ulisboa.tecnico.cmov.airdesk.adapter.FileWorkspaceAdapter;
 
 
 public class WorkspaceFilesActivity extends ActionBarActivity {
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Creating The Toolbar and setting it as the Toolbar for the activity
+        toolbar = (Toolbar) findViewById(R.id.tool_bar1);
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+        }
+
         setContentView(R.layout.activity_workspace_files);
+
+        String teste[] = {"ola", "ole"};
+        // This is the adapter we use to populate the grid.
+        FileWorkspaceAdapter fileWorkspaceAdapter = new FileWorkspaceAdapter(this, R.layout.item_workspace_grid, teste);
+
+        // Inflate the layout with a GridView in it.
+
+        ListView listView = (ListView) findViewById(R.id.filesList);
+        listView.setAdapter(fileWorkspaceAdapter);
+
+        Log.i("WorkspaceFilesActivity", "onCreate");
     }
 
 

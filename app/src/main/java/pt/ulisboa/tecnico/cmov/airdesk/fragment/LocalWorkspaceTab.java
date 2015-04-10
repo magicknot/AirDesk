@@ -50,7 +50,7 @@ public class LocalWorkspaceTab extends Tab {
         // Assign adapter to ListView
         WorkspaceAdapter<LocalWorkspace> adapter = getWorkspace();
         listViewOwned.setAdapter(adapter);
-        //listViewOwned.setOnItemClickListener(this);
+        listViewOwned.setOnItemClickListener(this);
     }
 
     @Override

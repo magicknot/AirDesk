@@ -98,7 +98,7 @@ public class AirdeskDataHolder {
         db.open();
         db.updateLocalWorkspaceTags(workspace.getWorkspaceId(), listTags);
         db.close();
-        for (i = 0; i<localWorkspaces.size()&& localWorkspaces.get(i).getWorkspaceId()!=workspace.getWorkspaceId() ; i++);
+        for (i = 0; i<localWorkspaces.size()&& localWorkspaces.get(i).getWorkspaceId()!=workspace.getWorkspaceId(); i++);
         if(i<localWorkspaces.size()&&localWorkspaces.get(i).getWorkspaceId()==workspace.getWorkspaceId())
             localWorkspaces.get(i).setListTags(listTags);
     }
