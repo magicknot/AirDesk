@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.FileWorkspaceAdapter;
@@ -48,9 +49,22 @@ public class WorkspaceFilesActivity extends ActionBarActivity implements Adapter
            Log.i("WorkspaceFilesActivity", "onCreate: getParcelableExtra: " + workspace);
         }
 
-        String teste[] = {"ola", "ole"};
+        //String teste[] = {"ola", "ole"};
+        // test:
+
+
+        try {
+            this.workspace.createFile("cenas",getBaseContext());
+            this.workspace.createFile("yo",getBaseContext());
+            this.workspace.createFile("bla",getBaseContext());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String filelist[] = this.workspace.listFiles(getBaseContext());
+
         // This is the adapter we use to populate the grid.
-        FileWorkspaceAdapter fileWorkspaceAdapter = new FileWorkspaceAdapter(this, getBaseContext(),R.layout.item_workspace_grid, teste);
+        FileWorkspaceAdapter fileWorkspaceAdapter = new FileWorkspaceAdapter(this, getBaseContext(),R.layout.item_workspace_grid, filelist);
 
         // Inflate the layout with a GridView in it.
 

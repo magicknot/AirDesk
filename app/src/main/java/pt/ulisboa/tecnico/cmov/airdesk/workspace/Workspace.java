@@ -1,13 +1,13 @@
 package pt.ulisboa.tecnico.cmov.airdesk.workspace;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
-
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import pt.ulisboa.tecnico.cmov.airdesk.File;
-import pt.ulisboa.tecnico.cmov.airdesk.user.User;
+import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
 
 public class Workspace implements Parcelable {
 
@@ -15,8 +15,6 @@ public class Workspace implements Parcelable {
     private String name;
     private String owner;
     private boolean isPrivate;
-
-    protected List<File> files;
     protected List<WorkspaceTag> tags;
 
     public Workspace() {
@@ -27,7 +25,6 @@ public class Workspace implements Parcelable {
         this.name = name;
         this.owner = owner;
         this.isPrivate = true;
-
     }
 
     public Workspace(String name, String owner, List<WorkspaceTag> tags) {
@@ -61,20 +58,32 @@ public class Workspace implements Parcelable {
         this.owner = owner;
     }
 
-    public List<File> getFiles() {
-        return files;
+    public void createFile(String filename, Context context) throws IOException {
+        FileManager.saveFile(this.name, filename, "", context);
     }
 
-    public void addFile(File file) {
-        this.setPrivate(false);
-        if (files == null)
-            files = new ArrayList<>();
-        this.files.add(file);
-        this.files.add(file);
+    public void writeFile(String filename, String content , Context context) throws IOException {
+        FileManager.saveFile(this.name, filename, content, context);
     }
 
-    public void setFiles(List<File> listFiles) {
-        this.files = listFiles;
+    public String readFile(String filename, Context context) throws IOException {
+        return FileManager.readFile(this.name, filename, context);
+    }
+
+    public void deleteFile(String filename, Context context) {
+        FileManager.deleteFile(this.name, filename, context);
+    }
+
+    public void deleteWorkspaceDirectory(Context context) {
+        FileManager.deleteWorkspace(this.name, context);
+    }
+
+    public long getUsedSpaceByWorkspace(Context context) {
+        return FileManager.getWorkspaceUsedSpace(this.name, context);
+    }
+
+    public String[] listFiles(Context context) {
+        return FileManager.listFiles(this.name, context);
     }
 
     public List<WorkspaceTag> getTags() {
@@ -109,7 +118,7 @@ public class Workspace implements Parcelable {
                 "workspaceId=" + getWorkspaceId() +
                 ", name='" + getName() + '\'' +
                 ", owner=" + getOwner() +
-                ", files=" + getFiles() +
+               //FIXME:  ", files=" + getFiles() +
                 ", tags=" + getTags() +
                 '}';
     }
@@ -124,7 +133,7 @@ public class Workspace implements Parcelable {
         owner = source.readString();
         isPrivate = source.readInt() == 1;
         source.readList(tags, WorkspaceTag.class.getClassLoader());
-        source.readList(files, User.class.getClassLoader());
+        // FIXME: source.readList(files, User.class.getClassLoader());
 
     }
 
@@ -140,7 +149,7 @@ public class Workspace implements Parcelable {
         dest.writeString(owner);
         dest.writeInt(isPrivate ? 1 : 0);
         dest.writeList(tags);
-        dest.writeList(files);
+        // FIXME: dest.writeList(files);
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator<Workspace>() {
