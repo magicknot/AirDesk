@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.cmov.airdesk;
 
+import android.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -14,13 +15,12 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.FileWorkspaceAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.EditFileFragment;
-import pt.ulisboa.tecnico.cmov.airdesk.fragment.EditLocalWorkspaceFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.NewFileFragment;
+import pt.ulisboa.tecnico.cmov.airdesk.fragment.showFileFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.workspace.Workspace;
 
 
@@ -28,6 +28,7 @@ public class WorkspaceFilesActivity extends ActionBarActivity implements Adapter
         View.OnClickListener {
     private final String ACTIVITY_WORKSPACE_FILES_PARCEL = "ACTIVITY_WORKSPACE_FILES_PARCEL";
     private final int DIALOG_FRAGMENT_EDIT_FILE = 7;
+    private final int DIALOG_FRAGMENT_SHOW_FILE = 8;
     private static final String TAG = "WorkspaceFilesActivity";
     private FileWorkspaceAdapter fileWorkspaceAdapter;
     private Workspace workspace;
@@ -101,6 +102,13 @@ public class WorkspaceFilesActivity extends ActionBarActivity implements Adapter
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Log.w(TAG, "onItemClick" + position);
+
+        FragmentManager fm = getSupportFragmentManager();
+
+        showFileFragment dFragmentShowFileFragment = showFileFragment.newInstance(workspace, (String) fileWorkspaceAdapter.getItem(position));
+        dFragmentShowFileFragment.setTargetFragment(dFragmentShowFileFragment, DIALOG_FRAGMENT_SHOW_FILE);
+        dFragmentShowFileFragment.show(fm, "Dialog Fragment");
+
     }
 
     @Override
