@@ -18,8 +18,13 @@
     <string name="detail">Detail</string>
     <string name="invite">Invite</string>
     <string name="privacy_title">itemTitle</string>
+    <string name="tag_title">Tags</string>
     <string name="workspace_name">workspace_name</string>
     <string name="update">Update</string>
     <string name="unsubscribe">Unsubscribe</string>
     <string name="cancel">Cancel</string>
+    <string name="hint">hint</string>
+    <string name="search">Search</string>
+    <string name="workspaces_title">Workspaces</string>
+    <string name="subscribe">Subscribe</string>
 </resources>
