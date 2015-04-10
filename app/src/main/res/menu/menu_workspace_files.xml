@@ -8,9 +8,9 @@
         android:orderInCategory="100"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_new_local_workspace"
+        android:id="@+id/action_new_file"
         android:orderInCategory="200"
-        android:title="User"
+        android:title="File"
         android:icon="@drawable/ic_action_new"
         app:showAsAction="ifRoom"
         />

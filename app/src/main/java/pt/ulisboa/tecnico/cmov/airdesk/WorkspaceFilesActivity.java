@@ -18,12 +18,14 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.FileWorkspaceAdapter;
+import pt.ulisboa.tecnico.cmov.airdesk.fragment.NewFileFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.workspace.Workspace;
 
 
 public class WorkspaceFilesActivity extends ActionBarActivity implements AdapterView.OnItemClickListener,
         View.OnClickListener {
     private final String ACTIVITY_WORKSPACE_FILES_PARCEL = "ACTIVITY_WORKSPACE_FILES_PARCEL";
+    private final int DIALOG_FRAGMENT_NEW_FILE = 6;
     private static final String TAG = "WorkspaceFilesActivity";
     private Workspace workspace;
     Toolbar toolbar;
@@ -45,18 +47,6 @@ public class WorkspaceFilesActivity extends ActionBarActivity implements Adapter
             //Log.i("WorkspaceFilesActivity", "onCreate: getParcelableExtra: " + i);
            workspace = b.getParcelable("EXTRA_SESSION_ID");
            Log.i("WorkspaceFilesActivity", "onCreate: getParcelableExtra: " + workspace);
-        }
-
-        //String teste[] = {"ola", "ole"};
-        // test:
-
-
-        try {
-            this.workspace.createFile("cenas",getBaseContext());
-            this.workspace.createFile("yo",getBaseContext());
-            this.workspace.createFile("bla",getBaseContext());
-        } catch (IOException e) {
-            e.printStackTrace();
         }
 
         String filelist[] = this.workspace.listFiles(getBaseContext());
@@ -86,12 +76,20 @@ public class WorkspaceFilesActivity extends ActionBarActivity implements Adapter
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
+        FragmentManager fm;
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+        switch (id){
+            case R.id.action_settings:
+                return true;
+            case R.id.action_new_file:
+                Toast.makeText(getBaseContext(), "You selected action_new_file", Toast.LENGTH_SHORT).show();
+                fm = getSupportFragmentManager();
+                NewFileFragment dFragmentCreateFile = NewFileFragment.newInstance(workspace);
+                dFragmentCreateFile.setTargetFragment(dFragmentCreateFile, DIALOG_FRAGMENT_NEW_FILE);
+                dFragmentCreateFile.show(fm, "Dialog Fragment");
 
+                return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 

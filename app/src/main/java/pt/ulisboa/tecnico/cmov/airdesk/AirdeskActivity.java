@@ -124,7 +124,7 @@ public class AirdeskActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        switch (item.getItemId()){
+        switch (id){
             case R.id.action_settings:
                 SharedPreferences myPrefs = getSharedPreferences(PREFS_NAME, 0);
                 String email = myPrefs.getString("userEmail", "userEmail");

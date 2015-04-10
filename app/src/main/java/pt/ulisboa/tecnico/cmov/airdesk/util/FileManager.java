@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.cmov.airdesk.util;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -16,6 +17,7 @@ public final class FileManager {
     public static void saveFile(String workspaceName, String filename, String content, Context context) throws IOException {
 
         File workspaceDirectory = new File(context.getDir(workspaceName, Context.MODE_PRIVATE).getAbsolutePath());
+        Log.i("Storage", workspaceDirectory.getAbsolutePath());
         File outputFile = new File(workspaceDirectory, filename);
         FileOutputStream fos;
 
