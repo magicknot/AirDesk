@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.cmov.airdesk;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -17,23 +18,34 @@ import android.widget.Toast;
 import java.lang.reflect.Field;
 
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.FileWorkspaceAdapter;
-
+import pt.ulisboa.tecnico.cmov.airdesk.workspace.LocalWorkspace;
+import pt.ulisboa.tecnico.cmov.airdesk.workspace.Workspace;
 
 
 public class WorkspaceFilesActivity extends ActionBarActivity implements AdapterView.OnItemClickListener,
         View.OnClickListener {
+    private final String ACTIVITY_WORKSPACE_FILES_PARCEL = "ACTIVITY_WORKSPACE_FILES_PARCEL";
     private static final String TAG = "WorkspaceFilesActivity";
+    private Workspace workspace;
     Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workspace_files);
-
         // Creating The Toolbar and setting it as the Toolbar for the activity
         toolbar = (Toolbar) findViewById(R.id.tool_bar1);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
+        }
+
+        int i;
+        Bundle b = this.getIntent().getExtras();
+        if(b!=null) {
+            //i = b.getInt("EXTRA_SESSION_ID");
+            //Log.i("WorkspaceFilesActivity", "onCreate: getParcelableExtra: " + i);
+           workspace = b.getParcelable("EXTRA_SESSION_ID");
+           Log.i("WorkspaceFilesActivity", "onCreate: getParcelableExtra: " + workspace);
         }
 
         String teste[] = {"ola", "ole"};
@@ -46,7 +58,7 @@ public class WorkspaceFilesActivity extends ActionBarActivity implements Adapter
         listView.setAdapter(fileWorkspaceAdapter);
         listView.setOnItemClickListener(this);
 
-        Log.i("WorkspaceFilesActivity", "onCreate");
+        Log.i("WorkspaceFilesActivity", "onCreate: end");
     }
 
     @Override
@@ -104,7 +116,7 @@ public class WorkspaceFilesActivity extends ActionBarActivity implements Adapter
                         return true;
 
                     case R.id.workspace_overflow_delete:
-                        Log.i(TAG, " clicked. delete "+ String.valueOf(position));
+                        Log.i(TAG, " clicked. delete " + String.valueOf(position));
                         //AirdeskDataHolder.getInstance().removeLocalWorkspace(getWorkspace().getItem(position));
                         //getWorkspace().notifyDataSetChanged();
                         return true;

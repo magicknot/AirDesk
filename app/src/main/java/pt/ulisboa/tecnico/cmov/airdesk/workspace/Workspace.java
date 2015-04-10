@@ -16,8 +16,8 @@ public class Workspace implements Parcelable {
     private String owner;
     private boolean isPrivate;
 
-    private List<File> files;
-    private List<WorkspaceTag> tags;
+    protected List<File> files;
+    protected List<WorkspaceTag> tags;
 
     public Workspace() {
         super();
@@ -123,7 +123,7 @@ public class Workspace implements Parcelable {
         name = source.readString();
         owner = source.readString();
         isPrivate = source.readInt() == 1;
-        source.readList(tags, User.class.getClassLoader());
+        source.readList(tags, WorkspaceTag.class.getClassLoader());
         source.readList(files, User.class.getClassLoader());
 
     }

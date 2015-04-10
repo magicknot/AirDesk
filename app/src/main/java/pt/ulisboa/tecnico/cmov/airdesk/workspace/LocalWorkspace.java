@@ -13,6 +13,15 @@ public class LocalWorkspace extends Workspace implements Parcelable {
     private long quota;
     private List<User> clients;
 
+    @Override
+    public String toString() {
+        return super.toString() +
+                " LocalWorkspace{" +
+                "quota=" + quota +
+                ", clients=" + clients +
+                '}';
+    }
+
     public LocalWorkspace() {
         super();
         clients = new ArrayList<>();
@@ -21,6 +30,7 @@ public class LocalWorkspace extends Workspace implements Parcelable {
     public LocalWorkspace(String owner, String name, long quota) {
         super(name, owner);
         this.quota = quota;
+        clients = new ArrayList<>();
     }
 
     public long getQuota() {
@@ -65,6 +75,12 @@ public class LocalWorkspace extends Workspace implements Parcelable {
     @SuppressWarnings("unused")
 
     public LocalWorkspace(Parcel source) {
+        super.setWorkspaceId(source.readLong());
+        super.setName(source.readString());
+        super.setOwner(source.readString());
+        super.setPrivate(source.readInt()==1);
+        source.readList(super.tags, WorkspaceTag.class.getClassLoader());
+        source.readList(super.files, User.class.getClassLoader());
         quota = source.readLong();
         source.readList(clients, User.class.getClassLoader());
     }
@@ -76,6 +92,12 @@ public class LocalWorkspace extends Workspace implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(super.getWorkspaceId());
+        dest.writeString(super.getName());
+        dest.writeString(super.getOwner());
+        dest.writeInt(super.isPrivate() ? 1 : 0);
+        dest.writeList(super.getTags());
+        dest.writeList(super.getFiles());
         dest.writeLong(quota);
         dest.writeList(clients);
     }
