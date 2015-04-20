@@ -25,7 +25,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.workspace.Workspace;
 
 
 public class WorkspaceFilesActivity extends ActionBarActivity implements AdapterView.OnItemClickListener,
-        View.OnClickListener {
+        View.OnClickListener,  NewFileFragment.OnItemSelectedListener {
     private final String ACTIVITY_WORKSPACE_FILES_PARCEL = "ACTIVITY_WORKSPACE_FILES_PARCEL";
     private final int DIALOG_FRAGMENT_EDIT_FILE = 7;
     private final int DIALOG_FRAGMENT_SHOW_FILE = 8;
@@ -136,6 +136,7 @@ public class WorkspaceFilesActivity extends ActionBarActivity implements Adapter
                     case R.id.workspace_overflow_delete:
                         Log.i(TAG, " clicked. delete " + String.valueOf(position)+ " : "+ (String)fileWorkspaceAdapter.getItem(position));
                         workspace.deleteFile((String)fileWorkspaceAdapter.getItem(position), getBaseContext());
+                        fileWorkspaceAdapter.setListWorkspaceFiles(workspace.listFiles(getBaseContext()));
                         fileWorkspaceAdapter.notifyDataSetChanged();
                         return true;
 
@@ -162,6 +163,22 @@ public class WorkspaceFilesActivity extends ActionBarActivity implements Adapter
             return;
         }
         popupMenu.show();
+    }
+
+    @Override
+    public void onNewFileItemSelected(String fileName) {
+    /*
+        DetailFragment fragment = (DetailFragment) getFragmentManager()
+                .findFragmentById(R.id.detailFragment);
+        if (fragment != null && fragment.isInLayout()) {
+            fragment.setText(link);
+        }
+    */
+        Log.i(TAG, "onRssItemSelected : "+fileName);
+        fileWorkspaceAdapter.setListWorkspaceFiles(this.workspace.listFiles(getBaseContext()));
+        fileWorkspaceAdapter.notifyDataSetChanged();
 
     }
+
+
 }

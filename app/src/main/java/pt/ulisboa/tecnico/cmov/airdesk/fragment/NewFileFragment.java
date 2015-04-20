@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.cmov.airdesk.fragment;
 
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -21,6 +22,12 @@ public class NewFileFragment extends DialogFragment {
     private Button bCreate;
 
     private Workspace mWorkspace;
+
+    private OnItemSelectedListener listener;
+
+    public interface OnItemSelectedListener {
+        public void onNewFileItemSelected(String fileName);
+    }
 
     public NewFileFragment() {
         // Required empty public constructor
@@ -56,21 +63,43 @@ public class NewFileFragment extends DialogFragment {
 
         bCreate.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                String fileName;
-                // Do something in response to button click
-                if (!tName.getText().toString().trim().isEmpty()) {
-                    fileName= tName.getText().toString().trim();
-                    try {
-                        mWorkspace.createFile(fileName, getActivity().getBaseContext());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                dismiss();
+                createFile();
             }
         });
 
         return rootView;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        if (activity instanceof OnItemSelectedListener) {
+            listener = (OnItemSelectedListener) activity;
+        } else {
+            throw new ClassCastException(activity.toString()
+                    + " must implemenet MyListFragment.OnItemSelectedListener");
+        }
+
+    }
+
+    // May also be triggered from the Activity
+    public void createFile() {
+
+        String fileName=new String();
+        // Do something in response to button click
+        if (!tName.getText().toString().trim().isEmpty()) {
+            fileName= tName.getText().toString().trim();
+            try {
+                mWorkspace.createFile(fileName, getActivity().getBaseContext());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        dismiss();
+
+        // Send data to Activity
+        listener.onNewFileItemSelected(fileName);
     }
 
 }
