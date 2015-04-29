@@ -4,7 +4,7 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_workspaces">Airdesk Workspaces</string>
     <string name="title_activity_local_workspace">Local Workspace</string>
-    <string name="title_activity_airdesk">AirdeskActivity</string>
+    <string name="title_activity_airdesk">Airdesk</string>
     <string name="hello_world">Hello world!</string>
 
     <!-- TODO: Remove or change this placeholder text -->
