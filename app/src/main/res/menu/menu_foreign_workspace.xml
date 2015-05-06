@@ -4,8 +4,8 @@
 
     <item
         android:id="@+id/action_new_foreign_workspace"
-        android:orderInCategory="200"
-        android:title="User"
+        android:orderInCategory="100"
+        android:title="Add Workspace"
         android:icon="@drawable/ic_action_new"
         app:showAsAction="ifRoom"
         />

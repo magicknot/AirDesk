@@ -10,10 +10,30 @@
         app:showAsAction="never"
         />
     <item
+        android:id="@+id/wifi_on"
+        android:orderInCategory="200"
+        android:title="WiFi On"
+        app:showAsAction="never"
+        />
+    <item
+        android:id="@+id/wifi_off"
+        android:orderInCategory="200"
+        android:title="WiFi Off"
+        app:showAsAction="never"
+        />
+
+    <item
         android:id="@+id/action_user"
         android:orderInCategory="200"
         android:title="User"
         android:icon="@drawable/ic_action_add_person"
+        app:showAsAction="ifRoom"
+        />
+    <item
+        android:id="@+id/wifi_direct"
+        android:title="WiFi Direct"
+        android:icon="@drawable/ic_action_share"
+        android:orderInCategory="100"
         app:showAsAction="ifRoom"
         />
 </menu>

@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import pt.ulisboa.tecnico.cmov.airdesk.WifiDirect.PeerDevice;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.workspace.ForeignWorkspace;
@@ -195,5 +196,6 @@ public class AirdeskDataHolder {
     public WorkspaceAdapter<ForeignWorkspace> getWorkspaceAdapterByUser(String email) {
         return activeUsers.get(email);
     }
+
 
 }

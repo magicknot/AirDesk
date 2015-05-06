@@ -40,6 +40,10 @@ public class WorkspaceFilesActivity extends ActionBarActivity implements Adapter
         setContentView(R.layout.activity_workspace_files);
         // Creating The Toolbar and setting it as the Toolbar for the activity
         toolbar = (Toolbar) findViewById(R.id.tool_bar1);
+        toolbar.setTitle("Airdesk");
+        toolbar.setSubtitle("Workspace Files");
+        setSupportActionBar(toolbar);
+
         if (toolbar != null) {
             setSupportActionBar(toolbar);
         }

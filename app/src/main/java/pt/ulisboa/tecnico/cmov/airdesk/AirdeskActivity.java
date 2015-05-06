@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import pt.ulisboa.tecnico.cmov.airdesk.WifiDirect.WiFiDirectNetwork;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.ViewPagerAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.util.AirdeskDataHolder;
@@ -35,10 +36,18 @@ public class AirdeskActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
+        // initialize the UI
         setContentView(R.layout.activity_airdesk);
 
         validateUserRegistration();
 //        createWorkspaceTabs();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
     }
 
     private void validateUserRegistration(){
@@ -118,6 +127,7 @@ public class AirdeskActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
@@ -134,11 +144,20 @@ public class AirdeskActivity extends ActionBarActivity {
                 return true;
             case R.id.action_user:
                 Toast.makeText(getBaseContext(), "You selected action_user", Toast.LENGTH_SHORT).show();
-/*
-                FragmentManager fm = getSupportFragmentManager();
-                CreateWorkspaceFragment dFragment = new CreateWorkspaceFragment();
-                dFragment.show(fm, "Dialog Fragment");
-*/
+                return true;
+            case R.id.wifi_on:
+                Toast.makeText(getBaseContext(), "Wifi On", Toast.LENGTH_SHORT).show();
+                WiFiDirectNetwork.getInstance().setWiFiDirectOn();
+                return true;
+            case R.id.wifi_off:
+                Toast.makeText(getBaseContext(), "Wifi Off", Toast.LENGTH_SHORT).show();
+                WiFiDirectNetwork.getInstance().setWiFiDirectOff();
+                return true;
+            case R.id.wifi_direct:
+                intent = new Intent(this, WifiDirectActivity.class);
+                intent.putExtra("EXTRA_SESSION_ID", "WiFi Direct");
+                startActivity(intent);
+                Toast.makeText(getBaseContext(), "Wifi Direct", Toast.LENGTH_SHORT).show();
                 return true;
         }
         return super.onOptionsItemSelected(item);
