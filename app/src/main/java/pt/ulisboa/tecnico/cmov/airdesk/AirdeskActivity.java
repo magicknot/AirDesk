@@ -154,6 +154,7 @@ public class AirdeskActivity extends ActionBarActivity {
                 WiFiDirectNetwork.getInstance().setWiFiDirectOff();
                 return true;
             case R.id.wifi_direct:
+                WiFiDirectNetwork.getInstance().refreshPeerDevices();
                 intent = new Intent(this, WifiDirectActivity.class);
                 intent.putExtra("EXTRA_SESSION_ID", "WiFi Direct");
                 startActivity(intent);

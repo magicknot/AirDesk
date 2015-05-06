@@ -7,15 +7,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 
-import pt.inesc.termite.wifidirect.SimWifiP2pDeviceList;
-import pt.inesc.termite.wifidirect.SimWifiP2pInfo;
 import pt.ulisboa.tecnico.cmov.airdesk.WifiDirect.WiFiDirectNetwork;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.PeerDevicesAdapter;
-import pt.ulisboa.tecnico.cmov.airdesk.util.AirdeskDataHolder;
 
 
 public class WifiDirectActivity extends ActionBarActivity {
     private Toolbar toolbar;
+
+    PeerDevicesAdapter peerDevicesAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +31,7 @@ public class WifiDirectActivity extends ActionBarActivity {
         }
 
         // This is the adapter we use to populate the Peer Devices grid.
-        PeerDevicesAdapter peerDevicesAdapter = new PeerDevicesAdapter(getBaseContext(),
+        peerDevicesAdapter = new PeerDevicesAdapter(getBaseContext(),
                 R.layout.item_peer_device_list,
                 WiFiDirectNetwork.getInstance().getPeerDevices());
         // Inflate the layout with a GridView in it.
@@ -58,6 +57,8 @@ public class WifiDirectActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_search_devices) {
+            WiFiDirectNetwork.getInstance().refreshPeerDevices();
+            peerDevicesAdapter.notifyDataSetChanged();
             return true;
         }
 

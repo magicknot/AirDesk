@@ -8,16 +8,22 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Messenger;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import pt.inesc.termite.wifidirect.SimWifiP2pBroadcast;
+import pt.inesc.termite.wifidirect.SimWifiP2pDevice;
+import pt.inesc.termite.wifidirect.SimWifiP2pDeviceList;
+import pt.inesc.termite.wifidirect.SimWifiP2pInfo;
 import pt.inesc.termite.wifidirect.SimWifiP2pManager;
 import pt.inesc.termite.wifidirect.service.SimWifiP2pService;
 import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocketManager;
 
-public class WiFiDirectNetwork {
+public class WiFiDirectNetwork
+        implements SimWifiP2pManager.PeerListListener, SimWifiP2pManager.GroupInfoListener {
+
     private static WiFiDirectNetwork holder;
 
     private Context appContext;
@@ -88,7 +94,6 @@ public class WiFiDirectNetwork {
 
     public void setWiFiDirectOn(){
         Intent intent = new Intent(appContext, SimWifiP2pService.class);
-
         appContext.bindService(intent, appConnection, Context.BIND_AUTO_CREATE);
         mBound = true;
     }
@@ -104,6 +109,10 @@ public class WiFiDirectNetwork {
         return mBound;
     }
 
+
+    public void refreshPeerDevices(){
+        mManager.requestPeers(mChannel, this);
+    }
 
     public void addPeerDevices(PeerDevice peerDevice){
         peerDevices.add(peerDevice);
@@ -141,4 +150,28 @@ public class WiFiDirectNetwork {
         this.peerDevices.add(tmp);
     }
 
+
+
+    @Override
+    public void onGroupInfoAvailable(SimWifiP2pDeviceList simWifiP2pDeviceList, SimWifiP2pInfo simWifiP2pInfo) {
+
+    }
+
+    @Override
+    public void onPeersAvailable(SimWifiP2pDeviceList peers) {
+        PeerDevice peerDevice;
+        StringBuilder peersStr = new StringBuilder();
+
+        //WiFiDirectNetwork.getInstance().initPeerDevices();
+
+        // compile list of devices in range
+        for (SimWifiP2pDevice device : peers.getDeviceList()) {
+            String devstr = "" + device.deviceName + " (" + device.getVirtIp() + ", " + device.realDeviceAddress + ")\n";
+            peersStr.append(devstr);
+            peerDevice = new PeerDevice();
+            peerDevice.setIp(device.deviceName);
+            peerDevice.setMac(device.getVirtIp());
+            addPeerDevices(peerDevice);
+        }
+    }
 }
