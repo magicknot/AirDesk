@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.cmov.airdesk.fragment;
+package pt.ulisboa.tecnico.cmov.airdesk.view.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -16,9 +16,9 @@ import android.widget.TextView;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.ClientsAdapter;
-import pt.ulisboa.tecnico.cmov.airdesk.user.User;
-import pt.ulisboa.tecnico.cmov.airdesk.util.AirdeskDataHolder;
-import pt.ulisboa.tecnico.cmov.airdesk.workspace.LocalWorkspace;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.User;
+import pt.ulisboa.tecnico.cmov.airdesk.data.AirdeskDataHolder;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.LocalWorkspace;
 
 
 public class InviteClientFragment extends DialogFragment {

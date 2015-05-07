@@ -1,10 +1,9 @@
-package pt.ulisboa.tecnico.cmov.airdesk.workspace;
+package pt.ulisboa.tecnico.cmov.airdesk.domain.workspace;
 
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;

@@ -1,6 +1,5 @@
-package pt.ulisboa.tecnico.cmov.airdesk;
+package pt.ulisboa.tecnico.cmov.airdesk.view.activity;
 
-import android.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -17,11 +16,12 @@ import android.widget.Toast;
 
 import java.lang.reflect.Field;
 
+import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.FileWorkspaceAdapter;
-import pt.ulisboa.tecnico.cmov.airdesk.fragment.EditFileFragment;
-import pt.ulisboa.tecnico.cmov.airdesk.fragment.NewFileFragment;
-import pt.ulisboa.tecnico.cmov.airdesk.fragment.showFileFragment;
-import pt.ulisboa.tecnico.cmov.airdesk.workspace.Workspace;
+import pt.ulisboa.tecnico.cmov.airdesk.view.fragment.EditFileFragment;
+import pt.ulisboa.tecnico.cmov.airdesk.view.fragment.NewFileFragment;
+import pt.ulisboa.tecnico.cmov.airdesk.view.fragment.showFileFragment;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
 
 
 public class WorkspaceFilesActivity extends ActionBarActivity implements AdapterView.OnItemClickListener,

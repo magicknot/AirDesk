@@ -12,8 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
-import pt.ulisboa.tecnico.cmov.airdesk.user.User;
-import pt.ulisboa.tecnico.cmov.airdesk.workspace.WorkspaceTag;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.WorkspaceTag;
 
 /**
  * Created by oliveira on 06/04/15.

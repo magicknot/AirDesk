@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
-import pt.ulisboa.tecnico.cmov.airdesk.user.User;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.User;
 
 /**
  * Created by oliveira on 08/04/15.

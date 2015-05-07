@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.cmov.airdesk.fragment;
+package pt.ulisboa.tecnico.cmov.airdesk.view.fragment;
 
 import android.app.Activity;
 import android.support.v4.app.Fragment;
@@ -11,9 +11,9 @@ import android.view.View;
 import android.widget.AdapterView;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
-import pt.ulisboa.tecnico.cmov.airdesk.WorkspaceFilesActivity;
+import pt.ulisboa.tecnico.cmov.airdesk.view.activity.WorkspaceFilesActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceAdapter;
-import pt.ulisboa.tecnico.cmov.airdesk.workspace.Workspace;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
 
 abstract public class Tab extends Fragment implements AdapterView.OnItemClickListener,
         View.OnClickListener {

@@ -18,7 +18,7 @@
         tools:replace="android:icon"
         android:name="AirdeskApp">
         <activity
-            android:name=".AirdeskActivity"
+            android:name=".view.activity.AirdeskActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,23 +27,23 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".UserRegistrationActivity"
+            android:name=".view.activity.UserRegistrationActivity"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name=".WorkspaceFilesActivity"
+            android:name=".view.activity.WorkspaceFilesActivity"
             android:label="@string/title_activity_workspace_files" >
         </activity>
 
         <service android:name="pt.inesc.termite.wifidirect.service.SimWifiP2pService" />
 
         <activity
-            android:name=".WifiDirectActivity"
+            android:name=".view.activity.WifiDirectActivity"
             android:label="@string/title_activity_wifi_direct"
-            android:parentActivityName=".AirdeskActivity" >
+            android:parentActivityName=".view.activity.AirdeskActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="pt.ulisboa.tecnico.cmov.airdesk.AirdeskActivity" />
+                android:value=".view.activity.AirdeskActivity" />
         </activity>
     </application>
 

@@ -1,21 +1,19 @@
-package pt.ulisboa.tecnico.cmov.airdesk.fragment;
+package pt.ulisboa.tecnico.cmov.airdesk.view.fragment;
 
 
 import android.os.Bundle;
-import android.app.Fragment;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import java.io.IOException;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
-import pt.ulisboa.tecnico.cmov.airdesk.workspace.Workspace;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
 
 
 public class showFileFragment extends DialogFragment {

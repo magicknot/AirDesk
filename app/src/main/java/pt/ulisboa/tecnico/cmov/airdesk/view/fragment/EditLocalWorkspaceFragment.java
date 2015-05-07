@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.cmov.airdesk.fragment;
+package pt.ulisboa.tecnico.cmov.airdesk.view.fragment;
 
 
 import android.app.Activity;
@@ -17,18 +17,15 @@ import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.ClientsAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.TagsAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceAdapter;
-import pt.ulisboa.tecnico.cmov.airdesk.user.User;
-import pt.ulisboa.tecnico.cmov.airdesk.util.AirdeskDataHolder;
-import pt.ulisboa.tecnico.cmov.airdesk.workspace.LocalWorkspace;
-import pt.ulisboa.tecnico.cmov.airdesk.workspace.Workspace;
-import pt.ulisboa.tecnico.cmov.airdesk.workspace.WorkspaceTag;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.User;
+import pt.ulisboa.tecnico.cmov.airdesk.data.AirdeskDataHolder;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.LocalWorkspace;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.WorkspaceTag;
 
 
 public class EditLocalWorkspaceFragment extends DialogFragment {

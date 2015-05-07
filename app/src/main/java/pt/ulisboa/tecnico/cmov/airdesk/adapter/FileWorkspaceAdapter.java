@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
-import pt.ulisboa.tecnico.cmov.airdesk.WorkspaceFilesActivity;
+import pt.ulisboa.tecnico.cmov.airdesk.view.activity.WorkspaceFilesActivity;
 
 
 public class FileWorkspaceAdapter extends BaseAdapter{

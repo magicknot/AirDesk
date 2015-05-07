@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.cmov.airdesk.util;
+package pt.ulisboa.tecnico.cmov.airdesk.data;
 
 import android.content.Context;
 import android.util.Log;
@@ -8,13 +8,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import pt.ulisboa.tecnico.cmov.airdesk.WifiDirect.PeerDevice;
+import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
+import pt.ulisboa.tecnico.cmov.airdesk.util.WifiDirect.PeerDevice;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceAdapter;
-import pt.ulisboa.tecnico.cmov.airdesk.user.User;
-import pt.ulisboa.tecnico.cmov.airdesk.workspace.ForeignWorkspace;
-import pt.ulisboa.tecnico.cmov.airdesk.workspace.LocalWorkspace;
-import pt.ulisboa.tecnico.cmov.airdesk.workspace.Workspace;
-import pt.ulisboa.tecnico.cmov.airdesk.workspace.WorkspaceTag;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.User;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.ForeignWorkspace;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.LocalWorkspace;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.WorkspaceTag;
 
 public class AirdeskDataHolder {
     private static final String TAG = "AirdeskDataHolder";

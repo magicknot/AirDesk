@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.cmov.airdesk.WifiDirect;
+package pt.ulisboa.tecnico.cmov.airdesk.util.WifiDirect;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -8,7 +8,6 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Messenger;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;

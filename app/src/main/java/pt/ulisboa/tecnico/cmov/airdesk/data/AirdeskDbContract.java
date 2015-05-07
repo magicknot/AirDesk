@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.cmov.airdesk.util;
+package pt.ulisboa.tecnico.cmov.airdesk.data;
 
 import android.provider.BaseColumns;
 

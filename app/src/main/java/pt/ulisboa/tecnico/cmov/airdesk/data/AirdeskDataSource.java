@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.cmov.airdesk.util;
+package pt.ulisboa.tecnico.cmov.airdesk.data;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -10,10 +10,10 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-import pt.ulisboa.tecnico.cmov.airdesk.user.User;
-import pt.ulisboa.tecnico.cmov.airdesk.workspace.LocalWorkspace;
-import pt.ulisboa.tecnico.cmov.airdesk.workspace.Workspace;
-import pt.ulisboa.tecnico.cmov.airdesk.workspace.WorkspaceTag;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.User;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.LocalWorkspace;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.WorkspaceTag;
 
 /**
  * Created by oliveira on 29/03/15.

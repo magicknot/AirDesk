@@ -1,11 +1,10 @@
 package pt.ulisboa.tecnico.cmov.airdesk;
 
-
 import android.app.Application;
-import pt.ulisboa.tecnico.cmov.airdesk.WifiDirect.WiFiDirectNetwork;
+
+import pt.ulisboa.tecnico.cmov.airdesk.util.WifiDirect.WiFiDirectNetwork;
 
 public class AirdeskApp extends Application {
-
 
     @Override
     public void onCreate() {

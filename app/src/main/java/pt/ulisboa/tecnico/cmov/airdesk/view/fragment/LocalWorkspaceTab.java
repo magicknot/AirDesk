@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.cmov.airdesk.fragment;
+package pt.ulisboa.tecnico.cmov.airdesk.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,32 +13,33 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.Toast;
 
+
 import java.lang.reflect.Field;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceAdapter;
-import pt.ulisboa.tecnico.cmov.airdesk.user.User;
-import pt.ulisboa.tecnico.cmov.airdesk.util.AirdeskDataHolder;
-import pt.ulisboa.tecnico.cmov.airdesk.workspace.ForeignWorkspace;
-import pt.ulisboa.tecnico.cmov.airdesk.workspace.LocalWorkspace;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.User;
+import pt.ulisboa.tecnico.cmov.airdesk.data.AirdeskDataHolder;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.LocalWorkspace;
 
-public class ForeignWorkspaceTab extends Tab {
+public class LocalWorkspaceTab extends Tab {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         Log.i(getLogTag(), "onCreateView started");
         // This is the adapter we use to populate the grid.
-        WorkspaceAdapter<ForeignWorkspace> adapter = new WorkspaceAdapter<>(this, getActivity(),
+        WorkspaceAdapter adapter = new WorkspaceAdapter<>(this, getActivity(),
                 R.layout.item_workspace_grid,
-                AirdeskDataHolder.getInstance().getForeignWorkspaces());
-
-        AirdeskDataHolder.getInstance().registerActiveUser(
-                AirdeskDataHolder.getInstance().getCurrentUser().getEmail(), adapter);
+                AirdeskDataHolder.getInstance().getLocalWorkspaces(null));
 
         setWorkspaceAdapter(adapter);
         // Inflate the layout with a GridView in it.
-        return inflater.inflate(R.layout.tab_2, container, false);
+        View v = inflater.inflate(R.layout.tab_1, container, false);
+
+        Log.i(getLogTag(), "onCreateView: v = null? " + String.valueOf(v == null));
+
+        return v;
     }
 
     @Override
@@ -46,7 +47,8 @@ public class ForeignWorkspaceTab extends Tab {
         Log.i(getLogTag(), "onViewCreated started");
         super.onViewCreated(view, savedInstanceState);
         // Get ListView object from xml
-        ListView listViewOwned = (ListView) view.findViewById(R.id.list_foreign_workspaces);
+        ListView listViewOwned = (ListView) view.findViewById(R.id.list_owned_workspaces);
+        Log.i(getLogTag(), "onViewCreated: listViewOwned = null? " + String.valueOf(listViewOwned == null));
         // Assign adapter to ListView
         WorkspaceAdapter adapter = getWorkspace();
         listViewOwned.setAdapter(adapter);
@@ -65,7 +67,7 @@ public class ForeignWorkspaceTab extends Tab {
         switch (id){
             case R.id.action_new_local_workspace:
                 Toast.makeText(getActivity().getBaseContext(),
-                        "You selected action_new_foreign_workspace", Toast.LENGTH_SHORT).show();
+                        "You selected action_new_local_workspace", Toast.LENGTH_SHORT).show();
                 FragmentManager fm = getActivity().getSupportFragmentManager();
                 CreateWorkspaceFragment dFragment = new CreateWorkspaceFragment();
                 dFragment.setTargetFragment(this, DIALOG_FRAGMENT_NEW_WORKSPACE);
@@ -92,12 +94,51 @@ public class ForeignWorkspaceTab extends Tab {
                         //deleteAlbum(mAlbum);
                         return true;
 
-                    case R.id.workspace_overflow_unsubscribe:
-                        Log.i(getLogTag(), " clicked. unsubscribe " +
-                                getWorkspace().getItem(position).toString());
-                        AirdeskDataHolder.getInstance()
-                                .removeForeignWorkspace(getWorkspace().getItem(position));
+                    case R.id.workspace_overflow_edit:
+                        Log.i(getLogTag(), " clicked. edit ");
+                        Toast.makeText(getActivity().getBaseContext(),
+                                "You selected workspace_overflow_edit", Toast.LENGTH_SHORT).show();
+                        fm = getActivity().getSupportFragmentManager();
+                        EditLocalWorkspaceFragment dFragmentEditLocalWorkspace =
+                                EditLocalWorkspaceFragment.newInstance(getWorkspace()
+                                        .getItem(position));
+                        dFragmentEditLocalWorkspace.setTargetFragment(LocalWorkspaceTab.this,
+                                DIALOG_FRAGMENT_NEW_WORKSPACE);
+                        dFragmentEditLocalWorkspace.show(fm, "Dialog Fragment");
+                        return true;
+
+                    case R.id.workspace_overflow_delete:
+                        Log.i(getLogTag(), " clicked. delete "+ getWorkspace()
+                                .getItem(position).toString());
+
+                        LocalWorkspace ws = (LocalWorkspace) getWorkspace().getItem(position);
+
+                        AirdeskDataHolder.getInstance().removeLocalWorkspace(ws);
+
+                        // TODO Update this to fetch user location from network
+                        for (User client : ws.getClients()) {
+                            WorkspaceAdapter workspace = AirdeskDataHolder.getInstance()
+                                    .getWorkspaceAdapterByUser(client.getEmail());
+
+                            if (workspace != null) {
+                                workspace.reloadForeignWorkspaces();
+                                workspace.notifyDataSetChanged();
+                            }
+                        }
+
                         getWorkspace().notifyDataSetChanged();
+                        return true;
+
+                    case R.id.workspace_overflow_invite:
+                        Log.i(getLogTag(), " clicked. invite ");
+                        Toast.makeText(getActivity().getBaseContext(),
+                                "You selected action_new_local_workspace", Toast.LENGTH_SHORT).show();
+                        fm = getActivity().getSupportFragmentManager();
+                        InviteClientFragment dFragmentInviteClient =
+                                InviteClientFragment.newInstance((LocalWorkspace)getWorkspace().getItem(position));
+                        dFragmentInviteClient.setTargetFragment(LocalWorkspaceTab.this,
+                                DIALOG_FRAGMENT_NEW_WORKSPACE);
+                        dFragmentInviteClient.show(fm, "Dialog Fragment");
                         return true;
 
                     default:
@@ -105,8 +146,7 @@ public class ForeignWorkspaceTab extends Tab {
                 }
             }
         };
-
-        popupMenu.inflate(R.menu.menu_item_foreign_workspace);
+        popupMenu.inflate(R.menu.menu_item_local_workspace);
 
         // Force icons to show
         Object menuHelper;
@@ -128,6 +168,6 @@ public class ForeignWorkspaceTab extends Tab {
 
     @Override
     public String getLogTag() {
-        return "ForeignWorkspaceTab";
+        return "LocalWorkspaceTab";
     }
 }

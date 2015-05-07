@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.cmov.airdesk.workspace;
+package pt.ulisboa.tecnico.cmov.airdesk.domain.workspace;
 
 import android.os.Parcel;
 import android.os.Parcelable;

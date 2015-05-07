@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.cmov.airdesk.workspace;
+package pt.ulisboa.tecnico.cmov.airdesk.domain.workspace;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 import java.util.List;
 
-import pt.ulisboa.tecnico.cmov.airdesk.user.User;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.User;
 
 public class LocalWorkspace extends Workspace implements Parcelable {
     private List<User> clients;

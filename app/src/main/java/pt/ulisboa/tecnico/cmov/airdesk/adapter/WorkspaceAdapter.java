@@ -1,7 +1,6 @@
 package pt.ulisboa.tecnico.cmov.airdesk.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
-import pt.ulisboa.tecnico.cmov.airdesk.fragment.Tab;
-import pt.ulisboa.tecnico.cmov.airdesk.util.AirdeskDataHolder;
-import pt.ulisboa.tecnico.cmov.airdesk.workspace.ForeignWorkspace;
-import pt.ulisboa.tecnico.cmov.airdesk.workspace.LocalWorkspace;
-import pt.ulisboa.tecnico.cmov.airdesk.workspace.Workspace;
+import pt.ulisboa.tecnico.cmov.airdesk.view.fragment.Tab;
+import pt.ulisboa.tecnico.cmov.airdesk.data.AirdeskDataHolder;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
 
 public class WorkspaceAdapter<W extends Workspace> extends BaseAdapter {
 

@@ -4,8 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import pt.ulisboa.tecnico.cmov.airdesk.fragment.ForeignWorkspaceTab;
-import pt.ulisboa.tecnico.cmov.airdesk.fragment.LocalWorkspaceTab;
+import pt.ulisboa.tecnico.cmov.airdesk.view.fragment.ForeignWorkspaceTab;
+import pt.ulisboa.tecnico.cmov.airdesk.view.fragment.LocalWorkspaceTab;
 
 /**
  * Created by oliveira on 31/03/15.

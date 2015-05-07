@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.cmov.airdesk;
+package pt.ulisboa.tecnico.cmov.airdesk.view.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,10 +11,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import pt.ulisboa.tecnico.cmov.airdesk.WifiDirect.WiFiDirectNetwork;
+import pt.ulisboa.tecnico.cmov.airdesk.R;
+import pt.ulisboa.tecnico.cmov.airdesk.util.WifiDirect.WiFiDirectNetwork;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.ViewPagerAdapter;
-import pt.ulisboa.tecnico.cmov.airdesk.user.User;
-import pt.ulisboa.tecnico.cmov.airdesk.util.AirdeskDataHolder;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.User;
+import pt.ulisboa.tecnico.cmov.airdesk.data.AirdeskDataHolder;
 import pt.ulisboa.tecnico.cmov.airdesk.view.SlidingTabLayout;
 
 
