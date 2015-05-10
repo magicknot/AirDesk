@@ -149,6 +149,8 @@ public class AirdeskActivity extends ActionBarActivity {
             case R.id.wifi_on:
                 Toast.makeText(getBaseContext(), "Wifi On", Toast.LENGTH_SHORT).show();
                 WiFiDirectNetwork.getInstance().setWiFiDirectOn();
+                //WiFiDirectNetwork.getInstance().refreshPeerDevices();
+                //WiFiDirectNetwork.getInstance().refreshGroupDevices();
                 return true;
             case R.id.wifi_off:
                 Toast.makeText(getBaseContext(), "Wifi Off", Toast.LENGTH_SHORT).show();
@@ -156,6 +158,7 @@ public class AirdeskActivity extends ActionBarActivity {
                 return true;
             case R.id.wifi_direct:
                 WiFiDirectNetwork.getInstance().refreshPeerDevices();
+                WiFiDirectNetwork.getInstance().refreshGroupDevices();
                 intent = new Intent(this, WifiDirectActivity.class);
                 intent.putExtra("EXTRA_SESSION_ID", "WiFi Direct");
                 startActivity(intent);

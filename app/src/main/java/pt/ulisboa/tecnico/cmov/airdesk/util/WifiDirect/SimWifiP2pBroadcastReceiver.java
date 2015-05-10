@@ -20,6 +20,8 @@ public class SimWifiP2pBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
+        PeerDevice peerDevice;
+
         if (SimWifiP2pBroadcast.WIFI_P2P_STATE_CHANGED_ACTION.equals(action)) {
 
             // This action is triggered when the WDSim service changes state:
@@ -49,6 +51,18 @@ public class SimWifiP2pBroadcastReceiver extends BroadcastReceiver {
 
             SimWifiP2pInfo ginfo = (SimWifiP2pInfo) intent.getSerializableExtra(
                     SimWifiP2pBroadcast.EXTRA_GROUP_INFO);
+            for (String deviceName : ginfo.getDevicesInNetwork()) {
+
+/*
+
+                peerDevice = new PeerDevice();
+                peerDevice.setDeviceName(deviceName);
+                peerDevice.setIp(device.getVirtIp());
+                peerDevice.setPort(device.getVirtPort());
+                this.grouPeerDevices.add(peerDevice);
+*/
+            }
+
             ginfo.print();
             Toast.makeText(mActivity, "Network membership changed",
                     Toast.LENGTH_SHORT).show();

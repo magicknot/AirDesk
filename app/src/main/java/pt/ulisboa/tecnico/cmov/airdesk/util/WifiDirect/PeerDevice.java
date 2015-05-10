@@ -1,10 +1,21 @@
 package pt.ulisboa.tecnico.cmov.airdesk.util.WifiDirect;
 
 public class PeerDevice {
+    private String deviceName;
     private String mac;
     private String ip;
+    private int port;
     private String email;
     private String nickname;
+
+
+    public String getDeviceName() {
+        return deviceName;
+    }
+
+    public void setDeviceName(String deviceName) {
+        this.deviceName = deviceName;
+    }
 
     public String getMac() {
         return mac;
@@ -20,6 +31,14 @@ public class PeerDevice {
 
     public void setIp(String ip) {
         this.ip = ip;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
     }
 
     public String getEmail() {
@@ -41,8 +60,10 @@ public class PeerDevice {
     @Override
     public String toString() {
         return "PeerDevice{" +
-                "mac='" + mac + '\'' +
+                "deviceName='"+deviceName + '\'' +
+                ", mac='" + mac + '\'' +
                 ", ip='" + ip + '\'' +
+                ", port='" + port + '\'' +
                 ", email='" + email + '\'' +
                 ", nickname='" + nickname + '\'' +
                 '}';

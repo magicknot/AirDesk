@@ -50,8 +50,8 @@ public class PeerDevicesAdapter extends BaseAdapter {
             view = mLayoutInflater.inflate(mResourceId, parent, false);
             holder = new ViewHolder();
             assert view != null;
-            holder.title = (TextView) view.findViewById(R.id.peer_title);
-            holder.status = (TextView) view.findViewById(R.id.peer_status);
+            holder.deviceName = (TextView) view.findViewById(R.id.peer_title);
+            holder.deviceAddress = (TextView) view.findViewById(R.id.peer_status);
             holder.image = (ImageView) view.findViewById(R.id.peer_image);
             view.setTag(holder);
         } else {
@@ -74,14 +74,14 @@ public class PeerDevicesAdapter extends BaseAdapter {
     }
     public void bindView(ViewHolder holder, int position) {
         PeerDevice peer = (PeerDevice)getItem(position);
-        holder.title.setText(peer.getIp());
-        holder.status.setText(peer.getMac());
+        holder.deviceName.setText(peer.getDeviceName());
+        holder.deviceAddress.setText(peer.getIp()+"("+peer.getPort()+")");
         holder.image.setImageResource(R.drawable.ic_action_network_wifi);
     }
 
     public static class ViewHolder {
-        public TextView title;
-        public TextView status;
+        public TextView deviceName;
+        public TextView deviceAddress;
         public ImageView image;
     }
 
