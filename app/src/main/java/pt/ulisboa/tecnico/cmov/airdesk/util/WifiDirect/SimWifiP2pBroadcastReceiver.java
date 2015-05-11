@@ -51,18 +51,20 @@ public class SimWifiP2pBroadcastReceiver extends BroadcastReceiver {
 
             SimWifiP2pInfo ginfo = (SimWifiP2pInfo) intent.getSerializableExtra(
                     SimWifiP2pBroadcast.EXTRA_GROUP_INFO);
+            WiFiDirectNetwork.getInstance().refreshGroupDevices();
+/*
             for (String deviceName : ginfo.getDevicesInNetwork()) {
 
-/*
+
 
                 peerDevice = new PeerDevice();
                 peerDevice.setDeviceName(deviceName);
                 peerDevice.setIp(device.getVirtIp());
                 peerDevice.setPort(device.getVirtPort());
                 this.grouPeerDevices.add(peerDevice);
-*/
-            }
 
+            }
+*/
             ginfo.print();
             Toast.makeText(mActivity, "Network membership changed",
                     Toast.LENGTH_SHORT).show();

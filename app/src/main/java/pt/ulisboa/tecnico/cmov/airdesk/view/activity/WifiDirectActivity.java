@@ -108,34 +108,13 @@ public class WifiDirectActivity extends ActionBarActivity
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        OutgoingCommTask task;
 
         PeerDevice peer = (PeerDevice)groupDevicesAdapter.getItem(position);
         Log.i(TAG, "title of " + position + "th element clicked ("
-                + peer.getDeviceName() + " [" + peer.getIp()+ ":" +peer.getPort() + "])");
+                + peer.getDeviceName() + " [" + peer.getIp() + ":" + peer.getPort() + "])");
 
-        new OutgoingCommTask(peer.getIp(), peer.getPort()).executeOnExecutor(
-                AsyncTask.THREAD_POOL_EXECUTOR, peer.getIp());
-
-/*
-        try {
-
-            SimWifiP2pSocket socket = new SimWifiP2pSocket(peer.getIp(), Integer.parseInt( WiFiDirectNetwork.getInstance().getAppContext().getString(R.string.port)));
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-
-            // Send dto to server
-            writer.write(peer.getDeviceName()+": PING");
-            Log.i(TAG, "Wrote: " + peer.getDeviceName());
-            writer.newLine();
-            writer.flush();
-
-            // Close everything
-            writer.close();
-            socket.close();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-*/
+        task = new OutgoingCommTask(peer.getIp(), peer.getPort(), "PING", "Ping", peer.getDeviceName());
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 }

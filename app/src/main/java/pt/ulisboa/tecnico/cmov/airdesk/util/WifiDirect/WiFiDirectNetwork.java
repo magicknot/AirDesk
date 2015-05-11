@@ -31,6 +31,7 @@ import pt.inesc.termite.wifidirect.service.SimWifiP2pService;
 import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocket;
 import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocketManager;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.User;
 
 public class WiFiDirectNetwork
         implements SimWifiP2pManager.PeerListListener, SimWifiP2pManager.GroupInfoListener {
@@ -58,12 +59,12 @@ public class WiFiDirectNetwork
 
     private String deviceName;
     private List<PeerDevice> peerDevices;
-    private List<PeerDevice> grouPeerDevices;
+    private List<PeerDevice> groupPeerDevices;
 
     public WiFiDirectNetwork(Context context) {
         this.appContext = context;
         this.peerDevices = new ArrayList<>();
-        this.grouPeerDevices = new ArrayList<>();
+        this.groupPeerDevices = new ArrayList<>();
         deviceName = new String();
 
         appConnection = new ServiceConnection() {
@@ -164,12 +165,21 @@ public class WiFiDirectNetwork
 //
 //    }
 
+    public boolean groupContainDevice(String deviceName) {
+        for (PeerDevice p : groupPeerDevices) {
+            if (p.getDeviceName().toLowerCase().equals(deviceName.toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public List<PeerDevice> getPeerDevices(){
         return this.peerDevices;
     }
 
     public List<PeerDevice> getGroupDevices(){
-        return this.grouPeerDevices;
+        return this.groupPeerDevices;
     }
 
     @Override
@@ -196,10 +206,11 @@ public class WiFiDirectNetwork
     @Override
     public void onGroupInfoAvailable(SimWifiP2pDeviceList simWifiP2pDeviceList, SimWifiP2pInfo simWifiP2pInfo) {
         PeerDevice peerDevice;
+        OutgoingCommTask task;
 
         StringBuilder peersStr = new StringBuilder();
 
-        this.grouPeerDevices.clear();
+        //this.grouPeerDevices.clear();
 
         //Print Group Information
         //simWifiP2pInfo.print();
@@ -208,38 +219,19 @@ public class WiFiDirectNetwork
         Log.i(TAG + "deviceName", this.getDeviceName());
 
         for (String deviceName : simWifiP2pInfo.getDevicesInNetwork()) {
+            if(!groupContainDevice(deviceName)){
+                SimWifiP2pDevice device = simWifiP2pDeviceList.getByName(deviceName);
+                peerDevice = new PeerDevice();
+                peerDevice.setDeviceName(deviceName);
+                peerDevice.setIp(device.getVirtIp());
+                peerDevice.setPort(device.getVirtPort());
+                this.groupPeerDevices.add(peerDevice);
+                String devstr = "" + deviceName + " (" + ((device == null) ? "??" : device.getVirtIp()) + ":" + device.getVirtPort() + "); ";
+                peersStr.append(devstr);
 
-            SimWifiP2pDevice device = simWifiP2pDeviceList.getByName(deviceName);
-            String devstr = "" + deviceName + " (" + ((device == null)?"??":device.getVirtIp()) + ":"+ device.getVirtPort() +"); ";
-            peersStr.append(devstr);
-
-            peerDevice = new PeerDevice();
-            peerDevice.setDeviceName(deviceName);
-            peerDevice.setIp(device.getVirtIp());
-            peerDevice.setPort(device.getVirtPort());
-            this.grouPeerDevices.add(peerDevice);
-/*
-            //
-            try {
-                Log.i(TAG, "new SimWifiP2pSocket("+device.getVirtIp()+")\n");
-                SimWifiP2pSocket socket = new SimWifiP2pSocket(device.getVirtIp(), Integer.parseInt(appContext.getString(R.string.port)));
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-
-                // Send dto to server
-                writer.write(this.getDeviceName());
-                Log.i(TAG, "Wrote: " + this.getDeviceName());
-                writer.newLine();
-                writer.flush();
-
-                // Close everything
-                writer.close();
-                socket.close();
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
+                task = new OutgoingCommTask(peerDevice.getIp(), peerDevice.getPort(), "ANNOUNCE", getDeviceName());
+                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
-*/
         }
         Log.i(TAG + " - onGroupInfoAvailable", peersStr.toString());
 
