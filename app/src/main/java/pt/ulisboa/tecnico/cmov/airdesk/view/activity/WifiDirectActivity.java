@@ -1,22 +1,36 @@
 package pt.ulisboa.tecnico.cmov.airdesk.view.activity;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.net.UnknownHostException;
+
+import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocket;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
+import pt.ulisboa.tecnico.cmov.airdesk.util.WifiDirect.OutgoingCommTask;
+import pt.ulisboa.tecnico.cmov.airdesk.util.WifiDirect.PeerDevice;
 import pt.ulisboa.tecnico.cmov.airdesk.util.WifiDirect.WiFiDirectNetwork;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.PeerDevicesAdapter;
 
 
-public class WifiDirectActivity extends ActionBarActivity {
+public class WifiDirectActivity extends ActionBarActivity
+        implements AdapterView.OnItemClickListener, View.OnClickListener{
+
+    private String TAG = WifiDirectActivity.class.getSimpleName();
     private Toolbar toolbar;
 
     TextView deviceName;
@@ -57,6 +71,7 @@ public class WifiDirectActivity extends ActionBarActivity {
         // Inflate the layout with a GridView in it.
         ListView listViewGroupDevices = (ListView) findViewById(R.id.rememberGroupsList);
         listViewGroupDevices.setAdapter(groupDevicesAdapter);
+        listViewGroupDevices.setOnItemClickListener(this);
 
     }
 
@@ -84,5 +99,43 @@ public class WifiDirectActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View v) {
+
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+        PeerDevice peer = (PeerDevice)groupDevicesAdapter.getItem(position);
+        Log.i(TAG, "title of " + position + "th element clicked ("
+                + peer.getDeviceName() + " [" + peer.getIp()+ ":" +peer.getPort() + "])");
+
+        new OutgoingCommTask(peer.getIp(), peer.getPort()).executeOnExecutor(
+                AsyncTask.THREAD_POOL_EXECUTOR, peer.getIp());
+
+/*
+        try {
+
+            SimWifiP2pSocket socket = new SimWifiP2pSocket(peer.getIp(), Integer.parseInt( WiFiDirectNetwork.getInstance().getAppContext().getString(R.string.port)));
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+
+            // Send dto to server
+            writer.write(peer.getDeviceName()+": PING");
+            Log.i(TAG, "Wrote: " + peer.getDeviceName());
+            writer.newLine();
+            writer.flush();
+
+            // Close everything
+            writer.close();
+            socket.close();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+*/
     }
 }

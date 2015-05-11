@@ -5,11 +5,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.os.AsyncTask;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Messenger;
 import android.util.Log;
 
+import org.json.JSONException;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,12 +28,14 @@ import pt.inesc.termite.wifidirect.SimWifiP2pDeviceList;
 import pt.inesc.termite.wifidirect.SimWifiP2pInfo;
 import pt.inesc.termite.wifidirect.SimWifiP2pManager;
 import pt.inesc.termite.wifidirect.service.SimWifiP2pService;
+import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocket;
 import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocketManager;
+import pt.ulisboa.tecnico.cmov.airdesk.R;
 
 public class WiFiDirectNetwork
         implements SimWifiP2pManager.PeerListListener, SimWifiP2pManager.GroupInfoListener {
 
-    private static String TAG = "WiFiDirectNetwork";
+    private static String TAG = WiFiDirectNetwork.class.getSimpleName();
     private static WiFiDirectNetwork holder;
 
     private Context appContext;
@@ -35,6 +46,7 @@ public class WiFiDirectNetwork
     private SimWifiP2pManager.Channel mChannel = null;
     private Messenger mService = null;
     private boolean mBound = false;
+    private IncommingCommTask mServer = null;
 
     public String getDeviceName() {
         return deviceName;
@@ -50,6 +62,9 @@ public class WiFiDirectNetwork
 
     public WiFiDirectNetwork(Context context) {
         this.appContext = context;
+        this.peerDevices = new ArrayList<>();
+        this.grouPeerDevices = new ArrayList<>();
+        deviceName = new String();
 
         appConnection = new ServiceConnection() {
             // callbacks for service binding, passed to bindService()
@@ -83,10 +98,10 @@ public class WiFiDirectNetwork
         SimWifiP2pBroadcastReceiver receiver = new SimWifiP2pBroadcastReceiver(context);
         context.registerReceiver(receiver, filter);
 
-        this.peerDevices = new ArrayList<>();
-        this.grouPeerDevices = new ArrayList<>();
-        deviceName = new String();
+        int port = Integer.parseInt(appContext.getString(R.string.port));
+        mServer = new IncommingCommTask(port);
 
+        this.setWiFiDirectOn();
     }
 
     public static WiFiDirectNetwork getInstance() {
@@ -101,6 +116,10 @@ public class WiFiDirectNetwork
         return mManager;
     }
 
+    public Context getAppContext(){
+        return this.appContext;
+    }
+
     public ServiceConnection getConnection() {
         return appConnection;
     }
@@ -109,12 +128,14 @@ public class WiFiDirectNetwork
         if (!isWiFiDirectOn()) {
             Intent intent = new Intent(appContext, SimWifiP2pService.class);
             appContext.bindService(intent, appConnection, Context.BIND_AUTO_CREATE);
+            mServer.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             mBound = true;
         }
     }
 
     public void setWiFiDirectOff(){
         if (mBound) {
+            mServer.cancel(true);
             this.appContext.unbindService(getConnection());
             mBound = false;
         }
@@ -152,6 +173,27 @@ public class WiFiDirectNetwork
     }
 
     @Override
+    public void onPeersAvailable(SimWifiP2pDeviceList peers) {
+        PeerDevice peerDevice;
+        //StringBuilder peersStr = new StringBuilder();
+
+        this.peerDevices.clear();
+
+        // compile list of devices in range
+        for (SimWifiP2pDevice device : peers.getDeviceList()) {
+            String devstr = "" + device.deviceName + " (" + device.getVirtIp() + ", " + device.realDeviceAddress + ")\n";
+            //peersStr.append(devstr);
+            Log.i(TAG + " - onPeersAvailable", devstr);
+
+            peerDevice = new PeerDevice();
+            peerDevice.setDeviceName(device.deviceName);
+            peerDevice.setIp(device.getVirtIp());
+            peerDevice.setPort(device.getVirtPort());
+            addPeerDevices(peerDevice);
+        }
+    }
+
+    @Override
     public void onGroupInfoAvailable(SimWifiP2pDeviceList simWifiP2pDeviceList, SimWifiP2pInfo simWifiP2pInfo) {
         PeerDevice peerDevice;
 
@@ -176,29 +218,30 @@ public class WiFiDirectNetwork
             peerDevice.setIp(device.getVirtIp());
             peerDevice.setPort(device.getVirtPort());
             this.grouPeerDevices.add(peerDevice);
+/*
+            //
+            try {
+                Log.i(TAG, "new SimWifiP2pSocket("+device.getVirtIp()+")\n");
+                SimWifiP2pSocket socket = new SimWifiP2pSocket(device.getVirtIp(), Integer.parseInt(appContext.getString(R.string.port)));
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+
+                // Send dto to server
+                writer.write(this.getDeviceName());
+                Log.i(TAG, "Wrote: " + this.getDeviceName());
+                writer.newLine();
+                writer.flush();
+
+                // Close everything
+                writer.close();
+                socket.close();
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+*/
         }
         Log.i(TAG + " - onGroupInfoAvailable", peersStr.toString());
 
-    }
-
-    @Override
-    public void onPeersAvailable(SimWifiP2pDeviceList peers) {
-        PeerDevice peerDevice;
-        //StringBuilder peersStr = new StringBuilder();
-
-       this.peerDevices.clear();
-
-        // compile list of devices in range
-        for (SimWifiP2pDevice device : peers.getDeviceList()) {
-            String devstr = "" + device.deviceName + " (" + device.getVirtIp() + ", " + device.realDeviceAddress + ")\n";
-            //peersStr.append(devstr);
-            Log.i(TAG + " - onPeersAvailable", devstr);
-
-            peerDevice = new PeerDevice();
-            peerDevice.setDeviceName(device.deviceName);
-            peerDevice.setIp(device.getVirtIp());
-            peerDevice.setPort(device.getVirtPort());
-            addPeerDevices(peerDevice);
-        }
     }
 }
