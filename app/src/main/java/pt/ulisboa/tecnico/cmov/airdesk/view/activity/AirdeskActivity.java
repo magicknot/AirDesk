@@ -35,12 +35,10 @@ public class AirdeskActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
         // initialize the UI
         setContentView(R.layout.activity_airdesk);
 
         validateUserRegistration();
-//        createWorkspaceTabs();
     }
 
     @Override
@@ -62,8 +60,6 @@ public class AirdeskActivity extends ActionBarActivity {
         } else {
             email = myPrefs.getString("userEmail", "userEmail");
             nickname = myPrefs.getString("userNickname", "userNickname");
-            //currentUser = new User(email, nickname);
-
             DataHolder.getInstance().setEmail(email);
             DataHolder.getInstance().setNickname(nickname);
             createWorkspaceTabs();
@@ -149,8 +145,6 @@ public class AirdeskActivity extends ActionBarActivity {
             case R.id.wifi_on:
                 Toast.makeText(getBaseContext(), "Wifi On", Toast.LENGTH_SHORT).show();
                 WiFiDirectNetwork.getInstance().setWiFiDirectOn();
-                //WiFiDirectNetwork.getInstance().refreshPeerDevices();
-                //WiFiDirectNetwork.getInstance().refreshGroupDevices();
                 return true;
             case R.id.wifi_off:
                 Toast.makeText(getBaseContext(), "Wifi Off", Toast.LENGTH_SHORT).show();
@@ -167,5 +161,4 @@ public class AirdeskActivity extends ActionBarActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
 }

@@ -64,25 +64,11 @@ abstract public class Tab extends Fragment implements AdapterView.OnItemClickLis
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         final String ACTIVITY_WORKSPACE_FILES_PARCEL = "ACTIVITY_WORKSPACE_FILES_PARCEL";
         Workspace workspace = getWorkspaceAdapter().getItem(i);
-
-        //Workspace workspace = new Workspace(getWorkspace().getItem(i).getName(), getWorkspace().getItem(i).getOwner());
-        //LocalWorkspace workspace = new LocalWorkspace(getWorkspace().getItem(i).getOwner(), getWorkspace().getItem(i).getName(), 100);
-        //workspace.setWorkspaceId(getWorkspace().getItem(i).getWorkspaceId());
-        //workspace.setFiles(getWorkspace().getItem(i).getFiles());
-
         Log.i(getLogTag(), "title of " + i + "th element clicked ("+ workspace+")");
 
         Intent intent = new Intent(getActivity(), WorkspaceFilesActivity.class);
         intent.putExtra("EXTRA_SESSION_ID", workspace);
         startActivity(intent);
-/*
-        Intent intent = new Intent();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(ACTIVITY_WORKSPACE_FILES_PARCEL, workspace);
-        intent.putExtras(bundle);
-        intent.setClass(getActivity(), WorkspaceFilesActivity.class);
-        getActivity().startActivityForResult(intent, ACTIVITY_WORKSPACE_FILES);
-*/
     }
 
     public abstract String getLogTag();
