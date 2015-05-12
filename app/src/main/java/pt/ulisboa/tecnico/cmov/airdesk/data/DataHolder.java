@@ -8,33 +8,38 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
-import pt.ulisboa.tecnico.cmov.airdesk.util.WifiDirect.PeerDevice;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceAdapter;
-import pt.ulisboa.tecnico.cmov.airdesk.domain.User;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.ForeignWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.LocalWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.WorkspaceTag;
+import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
 
-public class AirdeskDataHolder {
-    private static final String TAG = "AirdeskDataHolder";
+public class DataHolder {
+    private static final String TAG = "AirdeskApp";
 
-    private static AirdeskDataHolder holder;
+    private static DataHolder holder = null;
 
-    private AirdeskDataSource db;
     private Context context;
-    private User currentUser;
+    private AirdeskDataSource db;
+    private String nickname;
+    private String email;
     private List<LocalWorkspace> localWorkspaces;
     private List<ForeignWorkspace> foreignWorkspaces;
     private Map<String, WorkspaceAdapter<ForeignWorkspace>> activeUsers;
 
-    public AirdeskDataHolder(Context context, User currentUser) {
+    public static DataHolder getInstance() {
+        if (holder == null) {
+            holder = new DataHolder();
+        }
+        return holder;
+    }
+
+    public void init(Context context) {
         this.context = context;
-        this.currentUser = currentUser;
         this.activeUsers = new HashMap<>();
 
-        this.db = new AirdeskDataSource(this.context);
+        this.db = new AirdeskDataSource(context);
         this.db.open();
         this.localWorkspaces = this.db.fetchAllWorkspaces();
         Log.i(TAG, "this.db.fetchAllWorkspaces(): " + this.localWorkspaces.size());
@@ -42,23 +47,23 @@ public class AirdeskDataHolder {
         db.close();
     }
 
-    public static AirdeskDataHolder getInstance() {
-        return holder;
+    public String getNickname() {
+        return nickname;
     }
 
-    public static synchronized void init(Context context, User user) {
-        holder = new AirdeskDataHolder(context, user);
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
-    public User getCurrentUser() {
-        return currentUser;
+    public String getEmail() {
+        return email;
     }
 
-    public void setCurrentUser(User user) {
-        this.currentUser = user;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public List<LocalWorkspace> getLocalWorkspaces(User owner) {
+    public List<LocalWorkspace> getLocalWorkspaces() {
         return this.localWorkspaces;
     }
 
@@ -68,7 +73,7 @@ public class AirdeskDataHolder {
     }
 
     public void addLocalWorkspace(String owner, String name, long quota, boolean isNotPrivate,
-                                  List<WorkspaceTag> tags, List<User> clients) {
+                                  List<WorkspaceTag> tags, List<String> clients) {
         for (LocalWorkspace ws : localWorkspaces) {
             if (ws.getName().toLowerCase().equals(name.toLowerCase())) {
                 // TODO Show a popup message saying that name is already in use
@@ -77,7 +82,7 @@ public class AirdeskDataHolder {
         }
 
         LocalWorkspace lw = new LocalWorkspace(owner, name, Math.min(quota,
-                FileManager.getFreeSpace(context)/1024));
+                FileManager.getFreeSpace(context) / 1024));
 //                FileManager.getFreeSpace(context)));
 
         if (isNotPrivate) {
@@ -115,7 +120,7 @@ public class AirdeskDataHolder {
         db.close();
     }
 
-    public void updateLocalWorkspaceClients(LocalWorkspace workspace, List<User> listClients) {
+    public void updateLocalWorkspaceClients(LocalWorkspace workspace, List<String> listClients) {
         int i;
 
         db.open();
@@ -170,7 +175,7 @@ public class AirdeskDataHolder {
         }
 
         if (localWs != null) {
-            localWs.removeClient(this.currentUser);
+            //localWs.removeClient(this.currentUser);
             db.open();
             db.updateLocalWorkspaceClients(localWs.getWorkspaceId(), localWs.getClients());
             db.close();
@@ -181,11 +186,13 @@ public class AirdeskDataHolder {
 
     public void fetchForeignWorkspaces() {
         this.foreignWorkspaces = new ArrayList<>();
+/*
         for (LocalWorkspace ws : localWorkspaces) {
             if (ws.containClient(currentUser)) {
                 addForeignWorkspace(ws.getOwner(), ws.getName(), ws.getQuota());
             }
         }
+*/
     }
 
     public void registerActiveUser(String email, WorkspaceAdapter<ForeignWorkspace> workspace) {

@@ -16,8 +16,7 @@ import android.widget.TextView;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.ClientsAdapter;
-import pt.ulisboa.tecnico.cmov.airdesk.domain.User;
-import pt.ulisboa.tecnico.cmov.airdesk.data.AirdeskDataHolder;
+import pt.ulisboa.tecnico.cmov.airdesk.data.DataHolder;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.LocalWorkspace;
 
 
@@ -87,8 +86,7 @@ public class InviteClientFragment extends DialogFragment {
             public void onClick(View v) {
                 // Do something in response to button click
                 if (!tItem.getText().toString().trim().isEmpty()) {
-                    User client = new User(tItem.getText().toString().trim());
-                    mClientsListAdapter.add(client);
+                    mClientsListAdapter.add(tItem.getText().toString().trim());
                     tItem.getText().clear();
                 }
             }
@@ -108,7 +106,7 @@ public class InviteClientFragment extends DialogFragment {
             public void onClick(View v) {
                 // Do something in response to button click
                 Log.i(TAG, "[onCheckedChanged] Update");
-                AirdeskDataHolder.getInstance().updateLocalWorkspaceClients(mWorkspace, mClientsListAdapter.getListWorkspaceClients());
+                DataHolder.getInstance().updateLocalWorkspaceClients(mWorkspace, mClientsListAdapter.getListWorkspaceClients());
                 dismiss();
             }
         });

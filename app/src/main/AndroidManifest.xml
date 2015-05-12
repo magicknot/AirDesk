@@ -16,7 +16,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
         tools:replace="android:icon"
-        android:name="AirdeskApp">
+        android:name=".AirDeskApp">
         <activity
             android:name=".view.activity.AirdeskActivity"
             android:label="@string/app_name" >

@@ -178,7 +178,7 @@ public class WorkspaceFilesActivity extends ActionBarActivity implements Adapter
             fragment.setText(link);
         }
     */
-        Log.i(TAG, "onRssItemSelected : "+fileName);
+        Log.i(TAG, "onNewFileItemSelected : "+fileName);
         fileWorkspaceAdapter.setListWorkspaceFiles(this.workspace.listFiles(getBaseContext()));
         fileWorkspaceAdapter.notifyDataSetChanged();
 

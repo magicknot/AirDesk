@@ -17,7 +17,7 @@ import java.lang.reflect.Field;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceAdapter;
-import pt.ulisboa.tecnico.cmov.airdesk.data.AirdeskDataHolder;
+import pt.ulisboa.tecnico.cmov.airdesk.data.DataHolder;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.ForeignWorkspace;
 
 public class ForeignWorkspaceTab extends Tab {
@@ -29,10 +29,10 @@ public class ForeignWorkspaceTab extends Tab {
         // This is the adapter we use to populate the grid.
         WorkspaceAdapter<ForeignWorkspace> adapter = new WorkspaceAdapter<>(this, getActivity(),
                 R.layout.item_workspace_grid,
-                AirdeskDataHolder.getInstance().getForeignWorkspaces());
+                DataHolder.getInstance().getForeignWorkspaces());
 
-        AirdeskDataHolder.getInstance().registerActiveUser(
-                AirdeskDataHolder.getInstance().getCurrentUser().getEmail(), adapter);
+        DataHolder.getInstance().registerActiveUser(
+                DataHolder.getInstance().getEmail(), adapter);
 
         setWorkspaceAdapter(adapter);
         // Inflate the layout with a GridView in it.
@@ -46,7 +46,7 @@ public class ForeignWorkspaceTab extends Tab {
         // Get ListView object from xml
         ListView listViewOwned = (ListView) view.findViewById(R.id.list_foreign_workspaces);
         // Assign adapter to ListView
-        WorkspaceAdapter adapter = getWorkspace();
+        WorkspaceAdapter adapter = getWorkspaceAdapter();
         listViewOwned.setAdapter(adapter);
         listViewOwned.setOnItemClickListener(this);
     }
@@ -92,10 +92,10 @@ public class ForeignWorkspaceTab extends Tab {
 
                     case R.id.workspace_overflow_unsubscribe:
                         Log.i(getLogTag(), " clicked. unsubscribe " +
-                                getWorkspace().getItem(position).toString());
-                        AirdeskDataHolder.getInstance()
-                                .removeForeignWorkspace(getWorkspace().getItem(position));
-                        getWorkspace().notifyDataSetChanged();
+                                getWorkspaceAdapter().getItem(position).toString());
+                        DataHolder.getInstance()
+                                .removeForeignWorkspace(getWorkspaceAdapter().getItem(position));
+                        getWorkspaceAdapter().notifyDataSetChanged();
                         return true;
 
                     default:

@@ -18,8 +18,7 @@ import java.lang.reflect.Field;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceAdapter;
-import pt.ulisboa.tecnico.cmov.airdesk.domain.User;
-import pt.ulisboa.tecnico.cmov.airdesk.data.AirdeskDataHolder;
+import pt.ulisboa.tecnico.cmov.airdesk.data.DataHolder;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.LocalWorkspace;
 
 public class LocalWorkspaceTab extends Tab {
@@ -31,7 +30,7 @@ public class LocalWorkspaceTab extends Tab {
         // This is the adapter we use to populate the grid.
         WorkspaceAdapter adapter = new WorkspaceAdapter<>(this, getActivity(),
                 R.layout.item_workspace_grid,
-                AirdeskDataHolder.getInstance().getLocalWorkspaces(null));
+                DataHolder.getInstance().getLocalWorkspaces());
 
         setWorkspaceAdapter(adapter);
         // Inflate the layout with a GridView in it.
@@ -50,7 +49,7 @@ public class LocalWorkspaceTab extends Tab {
         ListView listViewOwned = (ListView) view.findViewById(R.id.list_owned_workspaces);
         Log.i(getLogTag(), "onViewCreated: listViewOwned = null? " + String.valueOf(listViewOwned == null));
         // Assign adapter to ListView
-        WorkspaceAdapter adapter = getWorkspace();
+        WorkspaceAdapter adapter = getWorkspaceAdapter();
         listViewOwned.setAdapter(adapter);
         listViewOwned.setOnItemClickListener(this);
     }
@@ -100,7 +99,7 @@ public class LocalWorkspaceTab extends Tab {
                                 "You selected workspace_overflow_edit", Toast.LENGTH_SHORT).show();
                         fm = getActivity().getSupportFragmentManager();
                         EditLocalWorkspaceFragment dFragmentEditLocalWorkspace =
-                                EditLocalWorkspaceFragment.newInstance(getWorkspace()
+                                EditLocalWorkspaceFragment.newInstance(getWorkspaceAdapter()
                                         .getItem(position));
                         dFragmentEditLocalWorkspace.setTargetFragment(LocalWorkspaceTab.this,
                                 DIALOG_FRAGMENT_NEW_WORKSPACE);
@@ -108,17 +107,17 @@ public class LocalWorkspaceTab extends Tab {
                         return true;
 
                     case R.id.workspace_overflow_delete:
-                        Log.i(getLogTag(), " clicked. delete "+ getWorkspace()
+                        Log.i(getLogTag(), " clicked. delete "+ getWorkspaceAdapter()
                                 .getItem(position).toString());
 
-                        LocalWorkspace ws = (LocalWorkspace) getWorkspace().getItem(position);
+                        LocalWorkspace ws = (LocalWorkspace) getWorkspaceAdapter().getItem(position);
 
-                        AirdeskDataHolder.getInstance().removeLocalWorkspace(ws);
+                        DataHolder.getInstance().removeLocalWorkspace(ws);
 
                         // TODO Update this to fetch user location from network
-                        for (User client : ws.getClients()) {
-                            WorkspaceAdapter workspace = AirdeskDataHolder.getInstance()
-                                    .getWorkspaceAdapterByUser(client.getEmail());
+                        for (String client : ws.getClients()) {
+                            WorkspaceAdapter workspace = DataHolder.getInstance()
+                                    .getWorkspaceAdapterByUser(client);
 
                             if (workspace != null) {
                                 workspace.reloadForeignWorkspaces();
@@ -126,7 +125,7 @@ public class LocalWorkspaceTab extends Tab {
                             }
                         }
 
-                        getWorkspace().notifyDataSetChanged();
+                        getWorkspaceAdapter().notifyDataSetChanged();
                         return true;
 
                     case R.id.workspace_overflow_invite:
@@ -135,7 +134,7 @@ public class LocalWorkspaceTab extends Tab {
                                 "You selected action_new_local_workspace", Toast.LENGTH_SHORT).show();
                         fm = getActivity().getSupportFragmentManager();
                         InviteClientFragment dFragmentInviteClient =
-                                InviteClientFragment.newInstance((LocalWorkspace)getWorkspace().getItem(position));
+                                InviteClientFragment.newInstance((LocalWorkspace) getWorkspaceAdapter().getItem(position));
                         dFragmentInviteClient.setTargetFragment(LocalWorkspaceTab.this,
                                 DIALOG_FRAGMENT_NEW_WORKSPACE);
                         dFragmentInviteClient.show(fm, "Dialog Fragment");

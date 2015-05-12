@@ -12,8 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
+import pt.ulisboa.tecnico.cmov.airdesk.data.DataHolder;
 import pt.ulisboa.tecnico.cmov.airdesk.view.fragment.Tab;
-import pt.ulisboa.tecnico.cmov.airdesk.data.AirdeskDataHolder;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
 
 public class WorkspaceAdapter<W extends Workspace> extends BaseAdapter {
@@ -88,6 +88,6 @@ public class WorkspaceAdapter<W extends Workspace> extends BaseAdapter {
     }
 
     public void reloadForeignWorkspaces() {
-        workspaces = (ArrayList<W>)AirdeskDataHolder.getInstance().getForeignWorkspaces();
+        workspaces = (ArrayList<W>) DataHolder.getInstance().getForeignWorkspaces();
     }
 }
