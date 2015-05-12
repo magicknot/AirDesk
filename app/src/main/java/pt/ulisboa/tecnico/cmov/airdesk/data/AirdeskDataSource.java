@@ -10,7 +10,6 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-import pt.ulisboa.tecnico.cmov.airdesk.domain.User;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.LocalWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.WorkspaceTag;
@@ -61,28 +60,6 @@ public class AirdeskDataSource {
      * successfully created return the new rowId for that note, otherwise return
      * a -1 to indicate failure.
      *
-     * @param user the workspace object
-
-     * @return rowId or -1 if failed
-     */
-    public User insertUser(User user){
-        long insertid;
-
-        ContentValues initialValues = new ContentValues();
-        initialValues.put(AirdeskDbContract.UsersTable.COLUMN_EMAIL, user.getEmail());
-        initialValues.put(AirdeskDbContract.UsersTable.COLUMN_NICKNAME, user.getNickname());
-
-        insertid = mDb.insert(AirdeskDbContract.UsersTable.TABLE_NAME, null, initialValues);
-        Log.i(TAG, "User Cretead with email: " + user.getEmail() + "(" +  insertid + ")");
-
-        return user;
-    }
-
-    /**
-     * Create a new note using the title and body provided. If the note is
-     * successfully created return the new rowId for that note, otherwise return
-     * a -1 to indicate failure.
-     *
      * @param workspace the workspace object
 
      * @return rowId or -1 if failed
@@ -106,9 +83,9 @@ public class AirdeskDataSource {
             //insert Clients
             for (int i=0; i<workspace.getClients().size(); i++) {
                 initialValues.put(AirdeskDbContract.WorkspaceClientsTable.COLUMN_WORKSPACE_KEY, workspace.getWorkspaceId());
-                initialValues.put(AirdeskDbContract.WorkspaceClientsTable.COLUMN_CLIENT_KEY, workspace.getClients().get(i).getEmail());
+                initialValues.put(AirdeskDbContract.WorkspaceClientsTable.COLUMN_CLIENT_KEY, workspace.getClients().get(i));
                 insertid = mDb.insert(AirdeskDbContract.WorkspaceClientsTable.TABLE_NAME, null, initialValues);
-                Log.i(TAG, "Workspace Client(" + workspace.getClients().get(i).getEmail() + ")created with id " + insertid);
+                Log.i(TAG, "Workspace Client(" + workspace.getClients().get(i) + ")created with id " + insertid);
             }
         } else {
             //insert tags
@@ -148,17 +125,11 @@ public class AirdeskDataSource {
      *
      * @return Cursor over all workspaces
      */
-
-//    public Cursor fetchAllWorkspaces() {
-//
-//        return mDb.query(AirdeskDbContract.WorkspacesTable.TABLE_NAME, new String[] {AirdeskDbContract.WorkspacesTable._ID, AirdeskDbContract.WorkspacesTable.COLUMN_WORKSPACE_NAME,
-//                AirdeskDbContract.WorkspacesTable.COLUMN_OWNER, AirdeskDbContract.WorkspacesTable.COLUMN_QUOTA, AirdeskDbContract.WorkspacesTable.COLUMN_PRIVACY}, null, null, null, null, null);
-//    }
-
+    
     public ArrayList<LocalWorkspace>fetchAllWorkspaces() {
 
         LocalWorkspace w;
-        User u;
+        String u;
         WorkspaceTag t;
         Cursor cursor;
         String where_clause;
@@ -191,7 +162,7 @@ public class AirdeskDataSource {
                 Log.i(TAG, AirdeskDbContract.WorkspaceClientsTable.TABLE_NAME + " Returned " + cursor.getCount() + " rows");
                 if (cursor.getCount() > 0) {
                     while (cursor.moveToNext()) {
-                        u = new User(cursor.getString(cursor.getColumnIndex(AirdeskDbContract.WorkspaceClientsTable.COLUMN_CLIENT_KEY)));
+                        u = cursor.getString(cursor.getColumnIndex(AirdeskDbContract.WorkspaceClientsTable.COLUMN_CLIENT_KEY));
                         w.addClient(u);
                     }
                 }
@@ -255,7 +226,7 @@ public class AirdeskDataSource {
         return mDb.update(AirdeskDbContract.WorkspacesTable.TABLE_NAME, args, AirdeskDbContract.WorkspacesTable._ID + "=" + rowId, null) > 0;
     }
 
-    public  void updateLocalWorkspaceClients(long workspaceId, List<User> listClients) {
+    public  void updateLocalWorkspaceClients(long workspaceId, List<String> listClients) {
         long insertid;
         ContentValues clientValues = new ContentValues();
 
@@ -263,10 +234,10 @@ public class AirdeskDataSource {
 
         for (int i=0; i<listClients.size(); i++) {
             clientValues.put(AirdeskDbContract.WorkspaceClientsTable.COLUMN_WORKSPACE_KEY, workspaceId);
-            clientValues.put(AirdeskDbContract.WorkspaceClientsTable.COLUMN_CLIENT_KEY, listClients.get(i).getEmail());
+            clientValues.put(AirdeskDbContract.WorkspaceClientsTable.COLUMN_CLIENT_KEY, listClients.get(i));
 
             insertid = mDb.insert(AirdeskDbContract.WorkspaceClientsTable.TABLE_NAME, null, clientValues);
-            Log.i(TAG, "Workspace Client(" + listClients.get(i).getEmail() + ")created with id " + insertid);
+            Log.i(TAG, "Workspace Client(" + listClients.get(i) + ")created with id " + insertid);
         }
     }
 

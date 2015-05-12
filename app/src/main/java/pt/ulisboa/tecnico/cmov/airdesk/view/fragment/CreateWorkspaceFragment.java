@@ -22,8 +22,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.ClientsAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.TagsAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceAdapter;
-import pt.ulisboa.tecnico.cmov.airdesk.domain.User;
-import pt.ulisboa.tecnico.cmov.airdesk.data.AirdeskDataHolder;
+import pt.ulisboa.tecnico.cmov.airdesk.data.DataHolder;
 import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.WorkspaceTag;
 
@@ -105,8 +104,7 @@ public class CreateWorkspaceFragment extends DialogFragment {
                     }
                 } else {
                     if (!tItem.getText().toString().trim().isEmpty()) {
-                        User client = new User(tItem.getText().toString().trim());
-                        mClientsListAdapter.add(client);
+                        mClientsListAdapter.add(tItem.getText().toString().trim());
                         tItem.getText().clear();
                     }
                 }
@@ -130,7 +128,7 @@ public class CreateWorkspaceFragment extends DialogFragment {
                 Log.i(TAG, "[onCheckedChanged] Create");
                 SharedPreferences myPrefs = getActivity().getSharedPreferences(PREFS_NAME, 0);
                 String email = myPrefs.getString("userEmail", "userEmail");
-                AirdeskDataHolder.getInstance().addLocalWorkspace(email,
+                DataHolder.getInstance().addLocalWorkspace(email,
                         tName.getText().toString().trim(),
                         Long.parseLong(tQuota.getText().toString()),
                         sPrivacy.isChecked(), mTagListAdapter.getListWorkspacesTags(),
@@ -139,9 +137,9 @@ public class CreateWorkspaceFragment extends DialogFragment {
                         Activity.RESULT_OK, getActivity().getIntent());
 
                 // TODO Update this to fetch user location from network
-                for (User client : mClientsListAdapter.getListWorkspaceClients()) {
-                    WorkspaceAdapter workspace = AirdeskDataHolder.getInstance()
-                            .getWorkspaceAdapterByUser(client.getEmail());
+                for (String client : mClientsListAdapter.getListWorkspaceClients()) {
+                    WorkspaceAdapter workspace = DataHolder.getInstance()
+                            .getWorkspaceAdapterByUser(client);
 
                     if (workspace != null) {
                         workspace.reloadForeignWorkspaces();

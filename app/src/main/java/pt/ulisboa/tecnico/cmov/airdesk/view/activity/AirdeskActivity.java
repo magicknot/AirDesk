@@ -14,8 +14,7 @@ import android.widget.Toast;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.util.WifiDirect.WiFiDirectNetwork;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.ViewPagerAdapter;
-import pt.ulisboa.tecnico.cmov.airdesk.domain.User;
-import pt.ulisboa.tecnico.cmov.airdesk.data.AirdeskDataHolder;
+import pt.ulisboa.tecnico.cmov.airdesk.data.DataHolder;
 import pt.ulisboa.tecnico.cmov.airdesk.view.SlidingTabLayout;
 
 
@@ -31,7 +30,6 @@ public class AirdeskActivity extends ActionBarActivity {
     private SlidingTabLayout tabs;
     private CharSequence Titles[] = {"Owned Workspaces", "Foreign Workspaces"};
     private int numberOfTabs = 2;
-    private User currentUser = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,8 +62,10 @@ public class AirdeskActivity extends ActionBarActivity {
         } else {
             email = myPrefs.getString("userEmail", "userEmail");
             nickname = myPrefs.getString("userNickname", "userNickname");
-            currentUser = new User(email, nickname);
-            AirdeskDataHolder.init(this, currentUser);
+            //currentUser = new User(email, nickname);
+
+            DataHolder.getInstance().setEmail(email);
+            DataHolder.getInstance().setNickname(nickname);
             createWorkspaceTabs();
             Log.i(TAG, "User Login: " + nickname + "/" + email);
         }
@@ -110,8 +110,8 @@ public class AirdeskActivity extends ActionBarActivity {
             SharedPreferences myPrefs = getSharedPreferences(PREFS_NAME, 0);
             String email = myPrefs.getString("userEmail", "userEmail");
             String nickname = myPrefs.getString("userNickname", "userNickname");
-            currentUser = new User(email, nickname);
-            AirdeskDataHolder.init(this, currentUser);
+            DataHolder.getInstance().setEmail(email);
+            DataHolder.getInstance().setNickname(nickname);
             Log.i(TAG, "User Login " + email + " - " + nickname);
             createWorkspaceTabs();
         }

@@ -28,7 +28,7 @@ abstract public class Tab extends Fragment implements AdapterView.OnItemClickLis
         this.workspace = workspace;
     }
 
-    protected WorkspaceAdapter getWorkspace() {
+    protected WorkspaceAdapter getWorkspaceAdapter() {
         return workspace;
     }
 
@@ -63,7 +63,7 @@ abstract public class Tab extends Fragment implements AdapterView.OnItemClickLis
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         final String ACTIVITY_WORKSPACE_FILES_PARCEL = "ACTIVITY_WORKSPACE_FILES_PARCEL";
-        Workspace workspace = getWorkspace().getItem(i);
+        Workspace workspace = getWorkspaceAdapter().getItem(i);
 
         //Workspace workspace = new Workspace(getWorkspace().getItem(i).getName(), getWorkspace().getItem(i).getOwner());
         //LocalWorkspace workspace = new LocalWorkspace(getWorkspace().getItem(i).getOwner(), getWorkspace().getItem(i).getName(), 100);

@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
-import pt.ulisboa.tecnico.cmov.airdesk.domain.User;
 
 /**
  * Created by oliveira on 08/04/15.
@@ -23,7 +22,7 @@ public class ClientsAdapter extends BaseAdapter {
 
     private final LayoutInflater mLayoutInflater;
     private final int mResourceId;
-    private List<User> mListWorkspaceClients;
+    private List<String> mListWorkspaceClients;
 
     public ClientsAdapter(LayoutInflater inflater, int resourceId) {
         mListWorkspaceClients = new ArrayList<>();
@@ -66,7 +65,7 @@ public class ClientsAdapter extends BaseAdapter {
         }
         bindView(holder, position);
 
-        ImageView imgRemoveTag = (ImageView)view.findViewById(R.id.removeTagImage);
+        ImageView imgRemoveTag = (ImageView) view.findViewById(R.id.removeTagImage);
         imgRemoveTag.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Do something in response to button click
@@ -78,11 +77,12 @@ public class ClientsAdapter extends BaseAdapter {
 
         return view;
     }
+
     public void bindView(ViewHolder holder, int position) {
-        User client = (User)getItem(position);
+        String client = (String) getItem(position);
 
 //        holder.image.setImageResource(w.getWorkspaceId());
-        holder.title.setText(client.getEmail());
+        holder.title.setText(client);
     }
 
     public static class ViewHolder {
@@ -91,25 +91,25 @@ public class ClientsAdapter extends BaseAdapter {
     }
 
 
-    public void add(User cliente){
-        mListWorkspaceClients.add(cliente);
+    public void add(String client) {
+        mListWorkspaceClients.add(client);
         notifyDataSetChanged();
     }
 
-    public void clear(){
+    public void clear() {
         mListWorkspaceClients.clear();
         notifyDataSetChanged();
     }
 
-    public List<User> getListWorkspaceClients(){
+    public List<String> getListWorkspaceClients() {
         return mListWorkspaceClients;
     }
 
-    public void setListWorkspaceClients(List<User> listClients){
+    public void setListWorkspaceClients(List<String> listClients) {
         if (listClients == null)
             mListWorkspaceClients = new ArrayList<>();
         else
-            mListWorkspaceClients=listClients;
+            mListWorkspaceClients = listClients;
         Log.i(TAG, "setListWorkspaceClients " + mListWorkspaceClients.size() + " clients");
     }
 

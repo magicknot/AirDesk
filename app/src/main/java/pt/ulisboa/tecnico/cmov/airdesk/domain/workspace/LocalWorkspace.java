@@ -6,10 +6,8 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 import java.util.List;
 
-import pt.ulisboa.tecnico.cmov.airdesk.domain.User;
-
 public class LocalWorkspace extends Workspace implements Parcelable {
-    private List<User> clients;
+    private List<String> clients;
 
     @Override
     public String toString() {
@@ -29,11 +27,11 @@ public class LocalWorkspace extends Workspace implements Parcelable {
         clients = new ArrayList<>();
     }
 
-    public List<User> getClients() {
+    public List<String> getClients() {
         return clients;
     }
 
-    public void setClients(List<User> clients) {
+    public void setClients(List<String> clients) {
         if (clients == null) {
             this.clients = new ArrayList<>();
         } else {
@@ -41,7 +39,7 @@ public class LocalWorkspace extends Workspace implements Parcelable {
         }
     }
 
-    public void addClient(User client) {
+    public void addClient(String client) {
         if (this.clients == null) {
             clients = new ArrayList<>();
         }
@@ -49,20 +47,20 @@ public class LocalWorkspace extends Workspace implements Parcelable {
         this.clients.add(client);
     }
 
-    public boolean containClient(User client) {
-        for (User c : clients) {
-            if (c.getEmail().toLowerCase().equals(client.getEmail().toLowerCase())) {
+    public boolean containClient(String client) {
+        for (String c : clients) {
+            if (c.toLowerCase().equals(client.toLowerCase())) {
                 return true;
             }
         }
         return false;
     }
 
-    public void removeClient(User client) {
+    public void removeClient(String client) {
         int i = 0;
 
-        for (User user : clients) {
-            if (user.getEmail().toLowerCase().equals(client.getEmail().toLowerCase())) {
+        for (String user : clients) {
+            if (user.toLowerCase().equals(client.toLowerCase())) {
                 clients.remove(i);
             }
             i++;
@@ -82,7 +80,7 @@ public class LocalWorkspace extends Workspace implements Parcelable {
         super.setPrivate(source.readInt()==1);
         source.readList(super.tags, WorkspaceTag.class.getClassLoader());
         // FIXME: source.readList(super.files, User.class.getClassLoader());
-        source.readList(clients, User.class.getClassLoader());
+        source.readList(clients, String.class.getClassLoader());
     }
 
     @Override
