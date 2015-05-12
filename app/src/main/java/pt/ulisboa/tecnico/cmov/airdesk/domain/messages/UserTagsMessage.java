@@ -5,28 +5,21 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class AnnounceMessage extends Message {
-    public static final String TAG = "ANNOUNCE";
+public class UserTagsMessage extends Message {
+    public static final String TAG = "USER_TAGS";
 
     private String email;
 
-    private String nickname;
-
     private JSONObject tags;
 
-    public AnnounceMessage(String email, String nickname, JSONObject tags) {
+    public UserTagsMessage(String email, JSONObject tags) {
         super(TAG);
         this.email = email;
-        this.nickname = nickname;
         this.tags = tags;
     }
 
     public String getEmail() {
         return this.email;
-    }
-
-    public String getNickname() {
-        return this.nickname;
     }
 
     public JSONObject getTags() {
@@ -38,7 +31,6 @@ public class AnnounceMessage extends Message {
         JSONObject obj = super.toJson();
         try {
             obj.put("e-mail", email);
-            obj.put("nickname", nickname);
             obj.put("tags", tags);
         } catch (JSONException e) {
             Log.e(TAG, "toJson() - could not add attribute to Json object\n\t" + e.getCause().toString());
