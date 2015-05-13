@@ -10,6 +10,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+import pt.ulisboa.tecnico.cmov.airdesk.domain.TextFile;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.LocalWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.WorkspaceTag;
@@ -69,11 +70,11 @@ public class AirdeskDataSource {
         ContentValues initialValues;
 
         initialValues = new ContentValues();
-        initialValues.put(AirdeskDbContract.WorkspacesTable.COLUMN_WORKSPACE_NAME, workspace.getName());
-        initialValues.put(AirdeskDbContract.WorkspacesTable.COLUMN_OWNER, workspace.getOwner());
-        initialValues.put(AirdeskDbContract.WorkspacesTable.COLUMN_QUOTA, workspace.getQuota());
-        initialValues.put(AirdeskDbContract.WorkspacesTable.COLUMN_PRIVACY, workspace.isPrivate() ? 1 : 0);
-        insertid = mDb.insert(AirdeskDbContract.WorkspacesTable.TABLE_NAME, null, initialValues);
+        initialValues.put(AirDeskDbContract.WorkspacesTable.COLUMN_WORKSPACE_NAME, workspace.getName());
+        initialValues.put(AirDeskDbContract.WorkspacesTable.COLUMN_OWNER, workspace.getOwner());
+        initialValues.put(AirDeskDbContract.WorkspacesTable.COLUMN_QUOTA, workspace.getQuota());
+        initialValues.put(AirDeskDbContract.WorkspacesTable.COLUMN_PRIVACY, workspace.isPrivate() ? 1 : 0);
+        insertid = mDb.insert(AirDeskDbContract.WorkspacesTable.TABLE_NAME, null, initialValues);
         //
         workspace.setWorkspaceId(insertid);
         Log.i(TAG, "Workspace created with id " + insertid);
@@ -82,17 +83,17 @@ public class AirdeskDataSource {
         if (workspace.isPrivate()){
             //insert Clients
             for (int i=0; i<workspace.getClients().size(); i++) {
-                initialValues.put(AirdeskDbContract.WorkspaceClientsTable.COLUMN_WORKSPACE_KEY, workspace.getWorkspaceId());
-                initialValues.put(AirdeskDbContract.WorkspaceClientsTable.COLUMN_CLIENT_KEY, workspace.getClients().get(i));
-                insertid = mDb.insert(AirdeskDbContract.WorkspaceClientsTable.TABLE_NAME, null, initialValues);
+                initialValues.put(AirDeskDbContract.WorkspaceClientsTable.COLUMN_WORKSPACE_KEY, workspace.getWorkspaceId());
+                initialValues.put(AirDeskDbContract.WorkspaceClientsTable.COLUMN_CLIENT_KEY, workspace.getClients().get(i));
+                insertid = mDb.insert(AirDeskDbContract.WorkspaceClientsTable.TABLE_NAME, null, initialValues);
                 Log.i(TAG, "Workspace Client(" + workspace.getClients().get(i) + ")created with id " + insertid);
             }
         } else {
             //insert tags
             for (int i=0; i<workspace.getTags().size(); i++) {
-                initialValues.put(AirdeskDbContract.WorkspaceTagsTable.COLUMN_WORKSPACE_KEY, workspace.getWorkspaceId());
-                initialValues.put(AirdeskDbContract.WorkspaceTagsTable.COLUMN_TAG, workspace.getTags().get(i).getTag());
-                insertid = mDb.insert(AirdeskDbContract.WorkspaceTagsTable.TABLE_NAME, null, initialValues);
+                initialValues.put(AirDeskDbContract.WorkspaceTagsTable.COLUMN_WORKSPACE_KEY, workspace.getWorkspaceId());
+                initialValues.put(AirDeskDbContract.WorkspaceTagsTable.COLUMN_TAG, workspace.getTags().get(i).getTag());
+                insertid = mDb.insert(AirDeskDbContract.WorkspaceTagsTable.TABLE_NAME, null, initialValues);
                 Log.i(TAG, "Workspace Tag(" + workspace.getTags().get(i).getTag() + ")created with id " + insertid);
             }
         }
@@ -108,16 +109,16 @@ public class AirdeskDataSource {
     public boolean deleteWorkspace(long rowId) {
 
         // Delete all files association
-        mDb.delete(AirdeskDbContract.WorkspaceFilesTable.TABLE_NAME, AirdeskDbContract.WorkspaceFilesTable.COLUMN_WORKSPACE_KEY + "='" + rowId + "'", null);
+        mDb.delete(AirDeskDbContract.WorkspaceFilesTable.TABLE_NAME, AirDeskDbContract.WorkspaceFilesTable.COLUMN_WORKSPACE_KEY + "='" + rowId + "'", null);
 
         // Delete all tag association
-        mDb.delete(AirdeskDbContract.WorkspaceTagsTable.TABLE_NAME, AirdeskDbContract.WorkspaceTagsTable.COLUMN_WORKSPACE_KEY + "='" + rowId + "'", null);
+        mDb.delete(AirDeskDbContract.WorkspaceTagsTable.TABLE_NAME, AirDeskDbContract.WorkspaceTagsTable.COLUMN_WORKSPACE_KEY + "='" + rowId + "'", null);
 
         // Delete all user association
-        mDb.delete(AirdeskDbContract.WorkspaceClientsTable.TABLE_NAME, AirdeskDbContract.WorkspaceClientsTable.COLUMN_WORKSPACE_KEY + "='" + rowId + "'", null);
+        mDb.delete(AirDeskDbContract.WorkspaceClientsTable.TABLE_NAME, AirDeskDbContract.WorkspaceClientsTable.COLUMN_WORKSPACE_KEY + "='" + rowId + "'", null);
 
         // Delete workspace
-        return mDb.delete(AirdeskDbContract.WorkspacesTable.TABLE_NAME, AirdeskDbContract.WorkspacesTable._ID + "=" + rowId, null) > 0;
+        return mDb.delete(AirDeskDbContract.WorkspacesTable.TABLE_NAME, AirDeskDbContract.WorkspacesTable._ID + "=" + rowId, null) > 0;
     }
 
     /**
@@ -135,17 +136,17 @@ public class AirdeskDataSource {
         String where_clause;
 
         ArrayList<LocalWorkspace> workspaces = new ArrayList<LocalWorkspace>();
-        cursor = mDb.query(AirdeskDbContract.WorkspacesTable.TABLE_NAME, AirdeskDbContract.workspaceAllColls, null, null, null, null, null);
+        cursor = mDb.query(AirDeskDbContract.WorkspacesTable.TABLE_NAME, AirDeskDbContract.workspaceAllColls, null, null, null, null, null);
 
         Log.i(TAG, "Returned " + cursor.getCount() + " rows");
         if (cursor.getCount() > 0){
             while (cursor.moveToNext()){
                 w = new LocalWorkspace();
-                w.setWorkspaceId(cursor.getLong(cursor.getColumnIndex(AirdeskDbContract.WorkspacesTable._ID)));
-                w.setName(cursor.getString(cursor.getColumnIndex(AirdeskDbContract.WorkspacesTable.COLUMN_WORKSPACE_NAME)));
-                w.setQuota(cursor.getLong(cursor.getColumnIndex(AirdeskDbContract.WorkspacesTable.COLUMN_QUOTA)), mCtx);
-                w.setOwner(cursor.getString(cursor.getColumnIndex(AirdeskDbContract.WorkspacesTable.COLUMN_OWNER)));
-                if(cursor.getInt(cursor.getColumnIndex(AirdeskDbContract.WorkspacesTable.COLUMN_PRIVACY)) == 1)
+                w.setWorkspaceId(cursor.getLong(cursor.getColumnIndex(AirDeskDbContract.WorkspacesTable._ID)));
+                w.setName(cursor.getString(cursor.getColumnIndex(AirDeskDbContract.WorkspacesTable.COLUMN_WORKSPACE_NAME)));
+                w.setQuota(cursor.getLong(cursor.getColumnIndex(AirDeskDbContract.WorkspacesTable.COLUMN_QUOTA)), mCtx);
+                w.setOwner(cursor.getString(cursor.getColumnIndex(AirDeskDbContract.WorkspacesTable.COLUMN_OWNER)));
+                if(cursor.getInt(cursor.getColumnIndex(AirDeskDbContract.WorkspacesTable.COLUMN_PRIVACY)) == 1)
                     w.setPrivate(true);
                 else
                     w.setPrivate(false);
@@ -157,24 +158,24 @@ public class AirdeskDataSource {
             w = workspaces.get(i);
             if (w.isPrivate()) {
                 //insert Clients
-                where_clause =  AirdeskDbContract.WorkspaceClientsTable.COLUMN_WORKSPACE_KEY + "=" + String.valueOf(w.getWorkspaceId());
-                cursor = mDb.query(AirdeskDbContract.WorkspaceClientsTable.TABLE_NAME, AirdeskDbContract.workspaceClientsAllColls, where_clause, null, null, null, null);
-                Log.i(TAG, AirdeskDbContract.WorkspaceClientsTable.TABLE_NAME + " Returned " + cursor.getCount() + " rows");
+                where_clause =  AirDeskDbContract.WorkspaceClientsTable.COLUMN_WORKSPACE_KEY + "=" + String.valueOf(w.getWorkspaceId());
+                cursor = mDb.query(AirDeskDbContract.WorkspaceClientsTable.TABLE_NAME, AirDeskDbContract.workspaceClientsAllColls, where_clause, null, null, null, null);
+                Log.i(TAG, AirDeskDbContract.WorkspaceClientsTable.TABLE_NAME + " Returned " + cursor.getCount() + " rows");
                 if (cursor.getCount() > 0) {
                     while (cursor.moveToNext()) {
-                        u = cursor.getString(cursor.getColumnIndex(AirdeskDbContract.WorkspaceClientsTable.COLUMN_CLIENT_KEY));
+                        u = cursor.getString(cursor.getColumnIndex(AirDeskDbContract.WorkspaceClientsTable.COLUMN_CLIENT_KEY));
                         w.addClient(u);
                     }
                 }
             } else {
                 //insert Clients
-                where_clause =  AirdeskDbContract.WorkspaceTagsTable.COLUMN_WORKSPACE_KEY + "=" + String.valueOf(w.getWorkspaceId());
-                cursor = mDb.query(AirdeskDbContract.WorkspaceTagsTable.TABLE_NAME, AirdeskDbContract.workspaceTagsAllColls, where_clause, null, null, null, null);
-                Log.i(TAG, AirdeskDbContract.WorkspaceTagsTable.TABLE_NAME + " Returned " + cursor.getCount() + " rows");
+                where_clause =  AirDeskDbContract.WorkspaceTagsTable.COLUMN_WORKSPACE_KEY + "=" + String.valueOf(w.getWorkspaceId());
+                cursor = mDb.query(AirDeskDbContract.WorkspaceTagsTable.TABLE_NAME, AirDeskDbContract.workspaceTagsAllColls, where_clause, null, null, null, null);
+                Log.i(TAG, AirDeskDbContract.WorkspaceTagsTable.TABLE_NAME + " Returned " + cursor.getCount() + " rows");
                 if (cursor.getCount() > 0) {
                     while (cursor.moveToNext()) {
                         t = new WorkspaceTag();
-                        t.setTag(cursor.getString(cursor.getColumnIndex(AirdeskDbContract.WorkspaceTagsTable.COLUMN_TAG)));
+                        t.setTag(cursor.getString(cursor.getColumnIndex(AirDeskDbContract.WorkspaceTagsTable.COLUMN_TAG)));
                         w.addTag(t);
                     }
                 }
@@ -194,8 +195,8 @@ public class AirdeskDataSource {
 
         Cursor mCursor;
 
-        mCursor = mDb.query(true, AirdeskDbContract.WorkspacesTable.TABLE_NAME, new String[]  {AirdeskDbContract.WorkspacesTable._ID, AirdeskDbContract.WorkspacesTable.COLUMN_WORKSPACE_NAME,
-                        AirdeskDbContract.WorkspacesTable.COLUMN_OWNER, AirdeskDbContract.WorkspacesTable.COLUMN_QUOTA, AirdeskDbContract.WorkspacesTable.COLUMN_PRIVACY}, AirdeskDbContract.WorkspacesTable._ID + "=" + rowId, null,
+        mCursor = mDb.query(true, AirDeskDbContract.WorkspacesTable.TABLE_NAME, new String[]  {AirDeskDbContract.WorkspacesTable._ID, AirDeskDbContract.WorkspacesTable.COLUMN_WORKSPACE_NAME,
+                        AirDeskDbContract.WorkspacesTable.COLUMN_OWNER, AirDeskDbContract.WorkspacesTable.COLUMN_QUOTA, AirDeskDbContract.WorkspacesTable.COLUMN_PRIVACY}, AirDeskDbContract.WorkspacesTable._ID + "=" + rowId, null,
                 null, null, null, null);
         if (mCursor != null) {
             mCursor.moveToFirst();
@@ -218,25 +219,25 @@ public class AirdeskDataSource {
     public boolean updateLocalWorkspace(long rowId, String workspaceName, String workspaceOwner, long workspaceQuota, boolean workspacePrivacy) {
 
         ContentValues args = new ContentValues();
-        args.put(AirdeskDbContract.WorkspacesTable.COLUMN_WORKSPACE_NAME, workspaceName);
-        args.put(AirdeskDbContract.WorkspacesTable.COLUMN_OWNER, workspaceOwner);
-        args.put(AirdeskDbContract.WorkspacesTable.COLUMN_QUOTA, workspaceQuota);
-        args.put(AirdeskDbContract.WorkspacesTable.COLUMN_PRIVACY, workspacePrivacy ? 1 : 0);
+        args.put(AirDeskDbContract.WorkspacesTable.COLUMN_WORKSPACE_NAME, workspaceName);
+        args.put(AirDeskDbContract.WorkspacesTable.COLUMN_OWNER, workspaceOwner);
+        args.put(AirDeskDbContract.WorkspacesTable.COLUMN_QUOTA, workspaceQuota);
+        args.put(AirDeskDbContract.WorkspacesTable.COLUMN_PRIVACY, workspacePrivacy ? 1 : 0);
 
-        return mDb.update(AirdeskDbContract.WorkspacesTable.TABLE_NAME, args, AirdeskDbContract.WorkspacesTable._ID + "=" + rowId, null) > 0;
+        return mDb.update(AirDeskDbContract.WorkspacesTable.TABLE_NAME, args, AirDeskDbContract.WorkspacesTable._ID + "=" + rowId, null) > 0;
     }
 
     public  void updateLocalWorkspaceClients(long workspaceId, List<String> listClients) {
         long insertid;
         ContentValues clientValues = new ContentValues();
 
-        mDb.delete(AirdeskDbContract.WorkspaceClientsTable.TABLE_NAME, AirdeskDbContract.WorkspaceClientsTable.COLUMN_WORKSPACE_KEY + "='" + workspaceId + "'", null);
+        mDb.delete(AirDeskDbContract.WorkspaceClientsTable.TABLE_NAME, AirDeskDbContract.WorkspaceClientsTable.COLUMN_WORKSPACE_KEY + "='" + workspaceId + "'", null);
 
         for (int i=0; i<listClients.size(); i++) {
-            clientValues.put(AirdeskDbContract.WorkspaceClientsTable.COLUMN_WORKSPACE_KEY, workspaceId);
-            clientValues.put(AirdeskDbContract.WorkspaceClientsTable.COLUMN_CLIENT_KEY, listClients.get(i));
+            clientValues.put(AirDeskDbContract.WorkspaceClientsTable.COLUMN_WORKSPACE_KEY, workspaceId);
+            clientValues.put(AirDeskDbContract.WorkspaceClientsTable.COLUMN_CLIENT_KEY, listClients.get(i));
 
-            insertid = mDb.insert(AirdeskDbContract.WorkspaceClientsTable.TABLE_NAME, null, clientValues);
+            insertid = mDb.insert(AirDeskDbContract.WorkspaceClientsTable.TABLE_NAME, null, clientValues);
             Log.i(TAG, "Workspace Client(" + listClients.get(i) + ")created with id " + insertid);
         }
     }
@@ -245,13 +246,30 @@ public class AirdeskDataSource {
         long insertid;
         ContentValues clientValues = new ContentValues();
 
-        mDb.delete(AirdeskDbContract.WorkspaceTagsTable.TABLE_NAME, AirdeskDbContract.WorkspaceTagsTable.COLUMN_WORKSPACE_KEY + "='" + workspaceId + "'", null);
+        mDb.delete(AirDeskDbContract.WorkspaceTagsTable.TABLE_NAME, AirDeskDbContract.WorkspaceTagsTable.COLUMN_WORKSPACE_KEY + "='" + workspaceId + "'", null);
 
         for (int i=0; i<listTags.size(); i++) {
-            clientValues.put(AirdeskDbContract.WorkspaceTagsTable.COLUMN_WORKSPACE_KEY, workspaceId);
-            clientValues.put(AirdeskDbContract.WorkspaceTagsTable.COLUMN_TAG, listTags.get(i).getTag());
-            insertid = mDb.insert(AirdeskDbContract.WorkspaceTagsTable.TABLE_NAME, null, clientValues);
+            clientValues.put(AirDeskDbContract.WorkspaceTagsTable.COLUMN_WORKSPACE_KEY, workspaceId);
+            clientValues.put(AirDeskDbContract.WorkspaceTagsTable.COLUMN_TAG, listTags.get(i).getTag());
+            insertid = mDb.insert(AirDeskDbContract.WorkspaceTagsTable.TABLE_NAME, null, clientValues);
             Log.i(TAG, "Workspace Tag(" + listTags.get(i).getTag() + ")created with id " + insertid);
+        }
+
+    }
+
+    public void updateWorkspaceFiles(long workspaceId, List<TextFile> files) {
+        long insertId;
+        ContentValues values = new ContentValues();
+
+        mDb.delete(AirDeskDbContract.WorkspaceFilesTable.TABLE_NAME, AirDeskDbContract.WorkspaceTagsTable.COLUMN_WORKSPACE_KEY + "='" + workspaceId + "'", null);
+
+        for (TextFile file : files) {
+            values.put(AirDeskDbContract.WorkspaceFilesTable.COLUMN_WORKSPACE_KEY, workspaceId);
+            values.put(AirDeskDbContract.WorkspaceFilesTable.COLUMN_FILE_NAME, file.getName());
+            values.put(AirDeskDbContract.WorkspaceFilesTable.COLUMN_PATH, file.getPath());
+            values.put(AirDeskDbContract.WorkspaceFilesTable.COLUMN_ACL, file.getACL());
+            insertId = mDb.insert(AirDeskDbContract.WorkspaceTagsTable.TABLE_NAME, null, values);
+            Log.i(TAG, "Workspace Tag(" + file.getName() + ")created with id " + insertId);
         }
 
     }

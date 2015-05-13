@@ -2,17 +2,14 @@ package pt.ulisboa.tecnico.cmov.airdesk.data;
 
 import android.provider.BaseColumns;
 
-/**
- * Created by oliveira on 28/03/15.
- */
-public final class AirdeskDbContract {
+public final class AirDeskDbContract {
 
-    public static final  int    DATABASE_VERSION   = 3;
+    public static final  int    DATABASE_VERSION   = 4;
     public static final  String DATABASE_NAME      = "airdesk.db";
 
     // To prevent someone from accidentally instantiating the contract class,
     // give it an empty constructor.
-    private AirdeskDbContract() {}
+    private AirDeskDbContract() {}
 
     /* Inner class for Users table */
     public static abstract class UsersTable implements BaseColumns {
@@ -50,8 +47,8 @@ public final class AirdeskDbContract {
         public static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
     }
 
-    public static final String[] workspaceAllColls =  {AirdeskDbContract.WorkspacesTable._ID, AirdeskDbContract.WorkspacesTable.COLUMN_WORKSPACE_NAME,
-            AirdeskDbContract.WorkspacesTable.COLUMN_OWNER, AirdeskDbContract.WorkspacesTable.COLUMN_QUOTA, AirdeskDbContract.WorkspacesTable.COLUMN_PRIVACY};
+    public static final String[] workspaceAllColls =  {AirDeskDbContract.WorkspacesTable._ID, AirDeskDbContract.WorkspacesTable.COLUMN_WORKSPACE_NAME,
+            AirDeskDbContract.WorkspacesTable.COLUMN_OWNER, AirDeskDbContract.WorkspacesTable.COLUMN_QUOTA, AirDeskDbContract.WorkspacesTable.COLUMN_PRIVACY};
 
     /* Inner class for relation between Workspaces and Clients table */
     public static abstract class WorkspaceClientsTable implements BaseColumns {
@@ -99,11 +96,15 @@ public final class AirdeskDbContract {
         //columns
         public static final String COLUMN_WORKSPACE_KEY = "workspace_id";
         public static final String COLUMN_FILE_NAME = "file_name";
+        public static final String COLUMN_PATH = "path";
+        public static final String COLUMN_ACL = "acl";
 
         public static final String CREATE_TABLE = "CREATE TABLE " +
                 TABLE_NAME + " (" +
                 COLUMN_WORKSPACE_KEY + " INTEGER NOT NULL, " +
                 COLUMN_FILE_NAME + " TEXT NOT NULL, " +
+                COLUMN_PATH + " TEXT NOT NULL, " +
+                COLUMN_ACL + " TEXT NOT NULL, " +
                 "PRIMARY KEY (" + COLUMN_WORKSPACE_KEY  + ", " + COLUMN_FILE_NAME + "), " +
                 "FOREIGN KEY (" + COLUMN_WORKSPACE_KEY  + ") REFERENCES " + WorkspacesTable.TABLE_NAME + "( " +  WorkspacesTable._ID + " )" +
                 " )";

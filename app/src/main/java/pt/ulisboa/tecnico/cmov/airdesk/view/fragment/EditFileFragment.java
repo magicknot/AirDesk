@@ -13,16 +13,15 @@ import android.widget.EditText;
 import java.io.IOException;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.TextFile;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
 
 
 public class EditFileFragment extends DialogFragment {
 
     private EditText tName;
-    private Button bCreate;
-
-    private Workspace mWorkspace;
-    private String fileName;
+    private Workspace workspace;
+    private TextFile file;
     private String content;
 
     public EditFileFragment() {
@@ -44,9 +43,9 @@ public class EditFileFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mWorkspace = getArguments().getParcelable("workspace");
-        fileName = getArguments().getString("filename");
-        Log.i("EditFileFragment", "file name: " + fileName);
+        workspace = getArguments().getParcelable("workspace");
+        file = workspace.getTextFile(getArguments().getString("filename"));
+        Log.i("EditFileFragment", "file name: " + file.getName());
     }
 
     @Override
@@ -54,13 +53,13 @@ public class EditFileFragment extends DialogFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_edit_file, container, false);
-        getDialog().setTitle(fileName);
+        getDialog().setTitle(file.getName());
 
-        tName = (EditText)rootView.findViewById(R.id.textEditFileName);
-        bCreate = (Button)rootView.findViewById(R.id.buttonSave);
+        tName = (EditText) rootView.findViewById(R.id.textEditFileName);
+        Button bCreate = (Button) rootView.findViewById(R.id.buttonSave);
 
         try {
-            content = mWorkspace.readFile(fileName, getActivity().getBaseContext());
+            content = workspace.readFile(file, getActivity().getBaseContext());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -72,7 +71,7 @@ public class EditFileFragment extends DialogFragment {
                 if (!tName.getText().toString().trim().isEmpty()) {
                     content = tName.getText().toString();
                     try {
-                        mWorkspace.writeFile(fileName, content, getActivity().getBaseContext());
+                        workspace.writeFile(file, content, getActivity().getBaseContext());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

@@ -9,24 +9,24 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.List;
+
 import pt.ulisboa.tecnico.cmov.airdesk.R;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.TextFile;
 import pt.ulisboa.tecnico.cmov.airdesk.view.activity.WorkspaceFilesActivity;
 
-
-public class FileWorkspaceAdapter extends BaseAdapter{
+public class TextFileAdapter extends BaseAdapter {
     private final LayoutInflater layoutInflater;
-    private final Context context;
     private final int resourceId;
     private final WorkspaceFilesActivity filesActivity;
+    private List<TextFile> files;
 
-    private String[] mListWorkspaceFiles;
-
-    public FileWorkspaceAdapter(WorkspaceFilesActivity filesActivity, Context context, int resourceId, String[] mListWorkspaceFiles) {
-        this.mListWorkspaceFiles = mListWorkspaceFiles;
-        this.context = context;
+    public TextFileAdapter(WorkspaceFilesActivity filesActivity, Context context, int resourceId,
+                           List<TextFile> files) {
         this.resourceId = resourceId;
         this.filesActivity = filesActivity;
         this.layoutInflater = LayoutInflater.from(context);
+        this.files = files;
     }
 
     public static class ViewHolder {
@@ -34,14 +34,18 @@ public class FileWorkspaceAdapter extends BaseAdapter{
         public TextView title;
     }
 
-    @Override
-    public int getCount() {
-        return mListWorkspaceFiles.length;
+    public void setTextFiles(List<TextFile> files) {
+        this.files = files;
     }
 
     @Override
-    public Object getItem(int position) {
-        return mListWorkspaceFiles[position];
+    public int getCount() {
+        return files.size();
+    }
+
+    @Override
+    public TextFile getItem(int position) {
+        return files.get(position);
     }
 
     @Override
@@ -72,19 +76,15 @@ public class FileWorkspaceAdapter extends BaseAdapter{
             holder = (ViewHolder) currentView.getTag();
         }
         bindView(holder, position);
-        Log.i("WorkspaceAdapter", " int: " + position + ", View: " + currentView.toString() + ", ViewGroup: " + parent.toString());
+        Log.i("WorkspaceAdapter", " int: " + position + ", View: " + currentView.toString() +
+                ", ViewGroup: " + parent.toString());
 
         return currentView;
     }
 
     public void bindView(ViewHolder holder, int position) {
         holder.image.setImageResource(R.drawable.ic_action_overflow);
-        holder.title.setText(mListWorkspaceFiles[position]);
-    }
-
-    public void setListWorkspaceFiles(String[] listWorkspaceFiles){
-        mListWorkspaceFiles = listWorkspaceFiles;
-
+        holder.title.setText(getItem(position).getName());
     }
 
 }

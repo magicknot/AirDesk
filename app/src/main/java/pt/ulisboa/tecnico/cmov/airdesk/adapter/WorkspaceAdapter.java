@@ -33,7 +33,6 @@ public class WorkspaceAdapter<W extends Workspace> extends BaseAdapter {
 
     private List<W> workspaces;
 
-
     public WorkspaceAdapter(Tab tab, Context context, int resourceId, List<W> workspaces) {
         this.tab = tab;
         this.context = context;

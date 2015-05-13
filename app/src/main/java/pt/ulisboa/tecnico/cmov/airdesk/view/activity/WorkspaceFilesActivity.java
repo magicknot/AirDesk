@@ -1,8 +1,8 @@
 package pt.ulisboa.tecnico.cmov.airdesk.view.activity;
 
+import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.support.v7.internal.view.menu.MenuBuilder;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
@@ -17,20 +17,19 @@ import android.widget.Toast;
 import java.lang.reflect.Field;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
-import pt.ulisboa.tecnico.cmov.airdesk.adapter.FileWorkspaceAdapter;
+import pt.ulisboa.tecnico.cmov.airdesk.adapter.TextFileAdapter;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.view.fragment.EditFileFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.view.fragment.NewFileFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.view.fragment.showFileFragment;
-import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
-
 
 public class WorkspaceFilesActivity extends ActionBarActivity implements AdapterView.OnItemClickListener,
-        View.OnClickListener,  NewFileFragment.OnItemSelectedListener {
+        View.OnClickListener, NewFileFragment.OnItemSelectedListener {
     private final String ACTIVITY_WORKSPACE_FILES_PARCEL = "ACTIVITY_WORKSPACE_FILES_PARCEL";
     private final int DIALOG_FRAGMENT_EDIT_FILE = 7;
     private final int DIALOG_FRAGMENT_SHOW_FILE = 8;
     private static final String TAG = "WorkspaceFilesActivity";
-    private FileWorkspaceAdapter fileWorkspaceAdapter;
+    private TextFileAdapter textFileAdapter;
     private Workspace workspace;
     Toolbar toolbar;
 
@@ -48,25 +47,21 @@ public class WorkspaceFilesActivity extends ActionBarActivity implements Adapter
             setSupportActionBar(toolbar);
         }
 
-        int i;
         Bundle b = this.getIntent().getExtras();
-        if(b!=null) {
+        if (b != null) {
             //i = b.getInt("EXTRA_SESSION_ID");
             //Log.i("WorkspaceFilesActivity", "onCreate: getParcelableExtra: " + i);
-           workspace = b.getParcelable("EXTRA_SESSION_ID");
-           Log.i("WorkspaceFilesActivity", "onCreate: getParcelableExtra: " + workspace);
+            workspace = b.getParcelable("EXTRA_SESSION_ID");
+            Log.i("WorkspaceFilesActivity", "onCreate: getParcelableExtra: " + workspace);
         }
 
-        String filelist[] = this.workspace.listFiles(getBaseContext());
-
-
         // This is the adapter we use to populate the grid.
-       fileWorkspaceAdapter = new FileWorkspaceAdapter(this, getBaseContext(),R.layout.item_workspace_grid, filelist);
+        textFileAdapter = new TextFileAdapter(this, getBaseContext(), R.layout.item_workspace_grid,
+                this.workspace.getTextFiles());
 
         // Inflate the layout with a GridView in it.
-
         ListView listView = (ListView) findViewById(R.id.filesList);
-        listView.setAdapter(fileWorkspaceAdapter);
+        listView.setAdapter(textFileAdapter);
         listView.setOnItemClickListener(this);
 
         Log.i("WorkspaceFilesActivity", "onCreate: end");
@@ -87,7 +82,7 @@ public class WorkspaceFilesActivity extends ActionBarActivity implements Adapter
         int id = item.getItemId();
         FragmentManager fm;
         //noinspection SimplifiableIfStatement
-        switch (id){
+        switch (id) {
             case R.id.action_settings:
                 return true;
             case R.id.action_new_file:
@@ -109,8 +104,10 @@ public class WorkspaceFilesActivity extends ActionBarActivity implements Adapter
 
         FragmentManager fm = getSupportFragmentManager();
 
-        showFileFragment dFragmentShowFileFragment = showFileFragment.newInstance(workspace, (String) fileWorkspaceAdapter.getItem(position));
-        dFragmentShowFileFragment.setTargetFragment(dFragmentShowFileFragment, DIALOG_FRAGMENT_SHOW_FILE);
+        showFileFragment dFragmentShowFileFragment = showFileFragment.newInstance(workspace,
+                textFileAdapter.getItem(position).getName());
+        dFragmentShowFileFragment.setTargetFragment(dFragmentShowFileFragment,
+                DIALOG_FRAGMENT_SHOW_FILE);
         dFragmentShowFileFragment.show(fm, "Dialog Fragment");
 
     }
@@ -121,7 +118,7 @@ public class WorkspaceFilesActivity extends ActionBarActivity implements Adapter
         final int position = Integer.valueOf(v.getTag().toString());
 
         Log.w(TAG, "onClick" + position);
-        PopupMenu popupMenu = new PopupMenu(this, v){
+        PopupMenu popupMenu = new PopupMenu(this, v) {
             @Override
             public boolean onMenuItemSelected(MenuBuilder menu, MenuItem item) {
                 FragmentManager fm;
@@ -131,17 +128,19 @@ public class WorkspaceFilesActivity extends ActionBarActivity implements Adapter
                         Log.i(TAG, " clicked. edit ");
                         fm = getSupportFragmentManager();
 
-                        EditFileFragment dFragmentEditFileFragment = EditFileFragment.newInstance(workspace, (String)fileWorkspaceAdapter.getItem(position) );
-                        dFragmentEditFileFragment.setTargetFragment(dFragmentEditFileFragment, DIALOG_FRAGMENT_NEW_WORKSPACE);
-                        dFragmentEditFileFragment.show(fm, "Dialog Fragment");
+                        EditFileFragment fragment = EditFileFragment.newInstance(workspace,
+                                textFileAdapter.getItem(position).getName());
+                        fragment.setTargetFragment(fragment, DIALOG_FRAGMENT_NEW_WORKSPACE);
+                        fragment.show(fm, "Dialog Fragment");
 
                         return true;
 
                     case R.id.workspace_overflow_delete:
-                        Log.i(TAG, " clicked. delete " + String.valueOf(position)+ " : "+ (String)fileWorkspaceAdapter.getItem(position));
-                        workspace.deleteFile((String)fileWorkspaceAdapter.getItem(position), getBaseContext());
-                        fileWorkspaceAdapter.setListWorkspaceFiles(workspace.listFiles(getBaseContext()));
-                        fileWorkspaceAdapter.notifyDataSetChanged();
+                        Log.i(TAG, " clicked. delete " + String.valueOf(position) + " : " +
+                                textFileAdapter.getItem(position).getName());
+                        workspace.deleteFile(textFileAdapter.getItem(position), getBaseContext());
+                        textFileAdapter.setTextFiles(workspace.getTextFiles());
+                        textFileAdapter.notifyDataSetChanged();
                         return true;
 
                     default:
@@ -158,7 +157,7 @@ public class WorkspaceFilesActivity extends ActionBarActivity implements Adapter
             Field fMenuHelper = PopupMenu.class.getDeclaredField("mPopup");
             fMenuHelper.setAccessible(true);
             menuHelper = fMenuHelper.get(popupMenu);
-            argTypes = new Class[] { boolean.class };
+            argTypes = new Class[]{boolean.class};
             menuHelper.getClass().getDeclaredMethod("setForceShowIcon", argTypes).invoke(menuHelper,
                     true);
         } catch (Exception e) {
@@ -178,11 +177,10 @@ public class WorkspaceFilesActivity extends ActionBarActivity implements Adapter
             fragment.setText(link);
         }
     */
-        Log.i(TAG, "onNewFileItemSelected : "+fileName);
-        fileWorkspaceAdapter.setListWorkspaceFiles(this.workspace.listFiles(getBaseContext()));
-        fileWorkspaceAdapter.notifyDataSetChanged();
+        Log.i(TAG, "onNewFileItemSelected : " + fileName);
+        textFileAdapter.setTextFiles(this.workspace.getTextFiles());
+        textFileAdapter.notifyDataSetChanged();
 
     }
-
 
 }

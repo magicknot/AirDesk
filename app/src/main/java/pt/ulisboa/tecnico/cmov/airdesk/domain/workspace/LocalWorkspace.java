@@ -6,6 +6,8 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 import java.util.List;
 
+import pt.ulisboa.tecnico.cmov.airdesk.domain.TextFile;
+
 public class LocalWorkspace extends Workspace implements Parcelable {
     private List<String> clients;
 
@@ -73,9 +75,9 @@ public class LocalWorkspace extends Workspace implements Parcelable {
         super.setQuota(source.readLong());
         super.setName(source.readString());
         super.setOwner(source.readString());
-        super.setPrivate(source.readInt()==1);
-        source.readList(super.tags, WorkspaceTag.class.getClassLoader());
-
+        super.setPrivate(source.readInt() == 1);
+        source.readList(tags, WorkspaceTag.class.getClassLoader());
+        source.readList(files, TextFile.class.getClassLoader());
         source.readList(clients, String.class.getClassLoader());
     }
 
@@ -86,17 +88,14 @@ public class LocalWorkspace extends Workspace implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-//        super.writeToParcel(dest, flags);
-//        dest.writeList(clients);
         dest.writeLong(super.getWorkspaceId());
         dest.writeLong(super.getQuota());
         dest.writeString(super.getName());
         dest.writeString(super.getOwner());
         dest.writeInt(super.isPrivate() ? 1 : 0);
         dest.writeList(super.getTags());
-        // FIXME: dest.writeList(super.getFiles());
+        dest.writeList(super.getTextFiles());
         dest.writeList(clients);
-
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator<LocalWorkspace>() {

@@ -3,11 +3,12 @@ package pt.ulisboa.tecnico.cmov.airdesk.domain.workspace;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import pt.ulisboa.tecnico.cmov.airdesk.domain.TextFile;
+
 
 public class ForeignWorkspace extends Workspace {
 
-
-    public ForeignWorkspace() {
+    private ForeignWorkspace() {
         super();
     }
 
@@ -22,8 +23,8 @@ public class ForeignWorkspace extends Workspace {
         super.setName(source.readString());
         super.setOwner(source.readString());
         super.setPrivate(source.readInt() == 1);
-        source.readList(super.tags, WorkspaceTag.class.getClassLoader());
-//        super(source);
+        source.readList(tags, WorkspaceTag.class.getClassLoader());
+        source.readList(files, TextFile.class.getClassLoader());
     }
 
     @Override
@@ -39,7 +40,7 @@ public class ForeignWorkspace extends Workspace {
         dest.writeString(super.getOwner());
         dest.writeInt(super.isPrivate() ? 1 : 0);
         dest.writeList(super.getTags());
-//        super.writeToParcel(dest, flags);
+        dest.writeList(super.getTextFiles());
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator<ForeignWorkspace>() {

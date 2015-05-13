@@ -2,94 +2,53 @@ package pt.ulisboa.tecnico.cmov.airdesk.domain;
 
 import android.util.Log;
 
-import java.io.BufferedReader;
-import java.io.Externalizable;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-public class TextFile implements Externalizable {
-    public static final String TAG = "TextFile";
+public class TextFile {
+    public static final String TAG = "TEXT_FILE";
 
     private String name;
-    private File file;
+
+    private String path;
+
+    private String acl;
 
     //TODO ACL - ACL will be a a Map[User, Permissions] and this will be used to know when a File
     //           should not be sent to the user. When externalizing this class, the ACL externalized
     //           should be the one matching the remote user
 
-    public TextFile(String path, String name) {
+    public TextFile(String name, String path, String acl) {
         this.name = name;
-        this.file = new File(path, name);
-    }
-
-    public TextFile(String path, String name, String content) {
-        this(path, name);
-        write(content);
+        this.path = path;
+        this.acl = acl;
     }
 
     public String getName() {
         return this.name;
     }
 
-    public File getFile() {
-        return this.file;
+    public String getPath() {
+        return this.path;
     }
 
-    public void write(String content) {
-        if (content.length() <= 0) {
-            return;
-        }
+    public String getACL() {
+        return this.acl;
+    }
+
+    public JSONObject toJson() {
+        JSONObject obj = new JSONObject();
 
         try {
-            FileOutputStream out = new FileOutputStream(file);
-            out.write(content.getBytes());
-            out.close();
-        } catch (FileNotFoundException e) {
-            Log.e(TAG, "write() - could not find file " + this.name);
-        } catch (IOException e) {
-            Log.e(TAG, "write() - could not write to file " + this.name);
+            obj.put("name", name);
+            obj.put("path", path);
+            obj.put("acl", path);
+        } catch (JSONException e) {
+            Log.e(TAG, "toJson() - could not add type to Json object\n\t" + e.getCause().toString());
         }
+
+        return obj;
     }
 
-    public String read() {
-        StringBuilder text = new StringBuilder();
-        try {
-            BufferedReader in = new BufferedReader(new FileReader(file));
-            String line;
 
-            while ((line = in.readLine()) != null) {
-                text.append(line);
-                text.append('\n');
-            }
-            in.close();
-        } catch (FileNotFoundException e) {
-            Log.e(TAG, "read() - could not find file " + this.name);
-        } catch (IOException e) {
-            Log.e(TAG, "write() - could not read file " + this.name);
-        }
-        return text.toString();
-    }
-
-    public boolean delete() {
-        return file.delete();
-    }
-
-    @Override
-    public void readExternal(ObjectInput objectInput) throws IOException, ClassNotFoundException {
-        this.name = objectInput.readUTF();
-        this.file = (File) objectInput.readObject();
-        //TODO ACL
-    }
-
-    @Override
-    public void writeExternal(ObjectOutput objectOutput) throws IOException {
-        objectOutput.writeUTF(this.name);
-        objectOutput.writeObject(file);
-        //TODO ACL
-    }
 }

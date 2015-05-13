@@ -1,6 +1,5 @@
 package pt.ulisboa.tecnico.cmov.airdesk.view.fragment;
 
-
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
@@ -13,16 +12,15 @@ import android.widget.TextView;
 import java.io.IOException;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.TextFile;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
-
 
 public class showFileFragment extends DialogFragment {
 
-    private TextView tName;
     private Button bCreate;
 
     private Workspace mWorkspace;
-    private String fileName;
+    private TextFile file;
     private String content;
 
     public showFileFragment() {
@@ -45,27 +43,26 @@ public class showFileFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mWorkspace = getArguments().getParcelable("workspace");
-        fileName = getArguments().getString("filename");
-        Log.i("EditFileFragment", "file name: " + fileName);
+        file = mWorkspace.getTextFile(getArguments().getString("filename"));
+        Log.i("EditFileFragment", "file name: " + file);
     }
-
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-            View rootView = inflater.inflate(R.layout.fragment_show_file, container, false);
-            getDialog().setTitle(fileName);
+        View rootView = inflater.inflate(R.layout.fragment_show_file, container, false);
+        getDialog().setTitle(file.getName());
 
-            tName = (TextView)rootView.findViewById(R.id.textViewFileName);
+        TextView tName = (TextView) rootView.findViewById(R.id.textViewFileName);
 
-            try {
-                content = mWorkspace.readFile(fileName, getActivity().getBaseContext());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            tName.setText(content);
+        try {
+            content = mWorkspace.readFile(file, getActivity().getBaseContext());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        tName.setText(content);
         return rootView;
     }
 

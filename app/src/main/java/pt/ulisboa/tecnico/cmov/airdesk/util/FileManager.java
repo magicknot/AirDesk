@@ -3,88 +3,82 @@ package pt.ulisboa.tecnico.cmov.airdesk.util;
 import android.content.Context;
 import android.util.Log;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+
+import pt.ulisboa.tecnico.cmov.airdesk.domain.TextFile;
 
 public final class FileManager {
 
-    private FileManager () {}
+    public static final String TAG = "FileManager";
 
-    public static void saveFile(String workspaceName, String filename, String content, Context context) throws IOException {
+    private FileManager() {
+        // We deliberately do nothing
+    }
 
-        File workspaceDirectory = new File(context.getDir(workspaceName, Context.MODE_PRIVATE).getAbsolutePath());
-        Log.i("Storage", workspaceDirectory.getAbsolutePath());
-        File outputFile = new File(workspaceDirectory, filename);
-        Log.i("Storage(outputFile)", outputFile.getAbsolutePath());
+    private static File getFile(TextFile file, Context context) {
+        return new File(context.getDir(file.getPath(), Context.MODE_PRIVATE).getAbsolutePath(),
+                file.getName());
+    }
 
-        if ( content.isEmpty() && outputFile.exists() ) {
-            // if we are creating an empty file overwritting an existing file, we do nothing
+    public static void save(TextFile file, Context context) {
+        Log.i(TAG, "save() - creating empty file");
+        save(file, "", context);
+    }
 
-        } else { // otherwise we write to the file
-            FileOutputStream fos;
-            fos = new FileOutputStream(outputFile);
-            fos.write(content.getBytes());
-            fos.close();
+    public static void save(TextFile file, String content, Context context) {
+        File f = getFile(file, context);
+
+        try {
+            BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream(f));
+            output.write(content.getBytes());
+            output.close();
+        } catch (FileNotFoundException e) {
+            Log.e(TAG, "save() - file not found " + f.getAbsolutePath());
+        } catch (IOException e) {
+            Log.e(TAG, "save() - could not save changes on " + f.getAbsolutePath());
         }
-
-
     }
 
-    public static String[] listFiles(String workspaceName, Context context) {
+    public static String read(TextFile file, Context context) {
+        File f = getFile(file, context);
+        StringBuilder result  = new StringBuilder();
 
-        File workspaceDirectory = new File(context.getDir(workspaceName, Context.MODE_PRIVATE).getAbsolutePath());
-        return workspaceDirectory.list();
-
-    }
-
-    public static String readFile(String workspaceName, String filename, Context context) throws IOException {
-
-        String filePath = context.getDir(workspaceName, Context.MODE_PRIVATE).getAbsolutePath() + "/" + filename;
-
-        //FileInputStream fis = context.openFileInput(filePath);
-
-        FileInputStream fis = new FileInputStream (new File(filePath));
-        InputStreamReader isr = new InputStreamReader(fis);
-
-
-        //Read text from file
-        StringBuilder text = new StringBuilder();
-
-        BufferedReader br = new BufferedReader(isr);
-        String line;
-
-        while ((line = br.readLine()) != null) {
-            text.append(line);
-            text.append('\n');
+        try {
+            BufferedReader in = new BufferedReader(new FileReader(f));
+            String line;
+            while ((line = in.readLine()) != null) {
+                result.append(line).append('\n');
+            }
+        } catch (FileNotFoundException e) {
+            Log.e(TAG, "read() - file not found " + f.getAbsolutePath());
+        } catch (IOException e) {
+            Log.e(TAG, "read() - could not read line in file " + f.getAbsolutePath());
         }
-        br.close();
-
-        return text.toString();
+        return result.toString();
     }
 
-    public static void deleteFile(String workspaceName, String filename, Context context) {
-        File file = new File (context.getDir(workspaceName, Context.MODE_PRIVATE).getAbsolutePath() + "/" + filename);
-        Log.i("deleteFile", "fileName:"+context.getDir(workspaceName, Context.MODE_PRIVATE).getAbsolutePath() + "/" + filename);
-        file.delete();
+    public static boolean delete(TextFile file, Context context) {
+        return getFile(file, context).delete();
     }
 
-    public static void deleteWorkspace(String workspaceName, Context context) {
-        File file = new File (context.getDir(workspaceName, Context.MODE_PRIVATE).getAbsolutePath());
-        file.delete();
+    public static boolean deleteWorkspace(String name, Context context) {
+        return context.getDir(name, Context.MODE_PRIVATE).delete();
     }
 
     public static long getFreeSpace(Context context) {
-        File homeDir = new File (context.getFilesDir().getAbsolutePath());
-        return homeDir.getUsableSpace();
+        return context.getFilesDir().getUsableSpace();
     }
 
-    public static long getWorkspaceUsedSpace(String workspaceName, Context context) {
+    public static long getUsedSpace(String workspaceName, Context context) {
         long totalSize = 0;
-        File workspaceDirectory = new File (context.getDir(workspaceName, Context.MODE_PRIVATE).getAbsolutePath());
+        File workspaceDirectory = new File(context.getDir(workspaceName, Context.MODE_PRIVATE)
+                .getAbsolutePath());
 
         if (workspaceDirectory.isDirectory()) {
             for (File f : workspaceDirectory.listFiles()) {

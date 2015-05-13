@@ -4,27 +4,29 @@ import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import org.w3c.dom.Text;
-
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
+import pt.ulisboa.tecnico.cmov.airdesk.data.AirdeskDataSource;
+import pt.ulisboa.tecnico.cmov.airdesk.data.DataHolder;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.TextFile;
 import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
 
-//FIXME This should be abstract
-public abstract class Workspace implements Parcelable {
+public class Workspace implements Parcelable {
 
     private long workspaceId;
+
     private long quota;
+
     private String name;
+
     private String owner;
+
     private boolean isPrivate;
+
     protected List<WorkspaceTag> tags;
-    private List<TextFile> files;
+    protected List<TextFile> files;
 
     protected Workspace() {
         // Nothing to do here...
@@ -37,8 +39,8 @@ public abstract class Workspace implements Parcelable {
         this.name = name;
         this.owner = owner;
         this.isPrivate = isPrivate;
-        this.tags = new ArrayList<WorkspaceTag>();
-        this.files = new ArrayList<TextFile>();
+        this.tags = new ArrayList<>();
+        this.files = new ArrayList<>();
     }
 
     public long getWorkspaceId() {
@@ -58,7 +60,7 @@ public abstract class Workspace implements Parcelable {
     }
 
     public void setQuota(long quota, Context context) {
-        long minimumValue = FileManager.getWorkspaceUsedSpace(name, context);
+        long minimumValue = FileManager.getUsedSpace(name, context);
         long maximumValue = FileManager.getFreeSpace(context);
 
         if (quota >= minimumValue && quota <= maximumValue) {
@@ -82,25 +84,49 @@ public abstract class Workspace implements Parcelable {
         this.owner = owner;
     }
 
-    public void createFile(String filename, Context context) throws IOException {
-        FileManager.saveFile(this.name, filename, "", context);
+    public List<TextFile> getTextFiles() {
+        return files;
     }
 
-    public void writeFile(String filename, String content , Context context) throws IOException {
-        Long usedSpace = FileManager.getWorkspaceUsedSpace(name, context);
-        if (usedSpace + 2 * content.length() < quota) {
-            FileManager.saveFile(this.name, filename, content, context);
-        } else {
-           throw new IOException("Quota exceeded (" + usedSpace + " + 2 * " + content.length() + " < " + quota + " = false)");
+    public TextFile getTextFile(String name) {
+        for (TextFile file : files) {
+            if (file.getName().equals(name))
+                return file;
+        }
+
+        return null;
+    }
+
+    public void createFile(String filename, Context context) throws IOException {
+        TextFile file = new TextFile(filename, name, "TODO_ACL"); //FIXME
+        if (files.contains(file)) {
+            //TODO Throw exception when file exists
+            return;
+        }
+
+        files.add(file);
+        FileManager.save(file, context); //FIXME isto tem que passar para o LW
+
+    }
+
+    public void writeFile(TextFile file, String content, Context context) throws IOException {
+        if (files.contains(file)) {
+            Long usedSpace = FileManager.getUsedSpace(name, context);
+            if (usedSpace + 2 * content.length() < quota) {
+                FileManager.save(file, content, context);
+            } else {
+                throw new IOException("Quota exceeded (" + usedSpace + " + 2 * " +
+                        content.length() + " < " + quota + " = false)");
+            }
         }
     }
 
-    public String readFile(String filename, Context context) throws IOException {
-        return FileManager.readFile(this.name, filename, context);
+    public String readFile(TextFile file, Context context) throws IOException {
+        return FileManager.read(file, context);
     }
 
-    public void deleteFile(String filename, Context context) {
-        FileManager.deleteFile(this.name, filename, context);
+    public void deleteFile(TextFile file, Context context) {
+        FileManager.delete(file, context);
     }
 
     public void deleteWorkspaceDirectory(Context context) {
@@ -108,11 +134,7 @@ public abstract class Workspace implements Parcelable {
     }
 
     public long getUsedSpaceByWorkspace(Context context) {
-        return FileManager.getWorkspaceUsedSpace(this.name, context);
-    }
-
-    public String[] listFiles(Context context) {
-        return FileManager.listFiles(this.name, context);
+        return FileManager.getUsedSpace(this.name, context);
     }
 
     public List<WorkspaceTag> getTags() {
@@ -148,7 +170,7 @@ public abstract class Workspace implements Parcelable {
                 "quota=" + quota +
                 ", name='" + getName() + '\'' +
                 ", owner=" + getOwner() +
-               //FIXME:  ", files=" + getFiles() +
+                //FIXME:  ", files=" + getFiles() +
                 ", tags=" + getTags() +
                 '}';
     }
@@ -179,4 +201,15 @@ public abstract class Workspace implements Parcelable {
         dest.writeList(tags);
         dest.writeList(files);
     }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator<Workspace>() {
+        public Workspace createFromParcel(Parcel in) {
+            return new Workspace(in);
+        }
+
+        public Workspace[] newArray(int size) {
+            return new Workspace[size];
+        }
+    };
+
 }
