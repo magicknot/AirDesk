@@ -81,8 +81,8 @@ public class DataHolder {
             }
         }
 
-        LocalWorkspace lw = new LocalWorkspace(owner, name, Math.min(quota,
-                FileManager.getFreeSpace(context) / 1024));
+        LocalWorkspace lw = new LocalWorkspace( Math.min(quota,
+                FileManager.getFreeSpace(context) / 1024), name, owner, !isNotPrivate);
 //                FileManager.getFreeSpace(context)));
 
         if (isNotPrivate) {
@@ -161,7 +161,7 @@ public class DataHolder {
             }
         }
 
-        foreignWorkspaces.add(new ForeignWorkspace(name, owner, quota));
+        foreignWorkspaces.add(new ForeignWorkspace(quota, owner, name, false));
     }
 
     public void removeForeignWorkspace(Workspace workspace) {

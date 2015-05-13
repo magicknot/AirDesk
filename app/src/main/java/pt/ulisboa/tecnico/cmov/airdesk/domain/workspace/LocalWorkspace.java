@@ -9,22 +9,14 @@ import java.util.List;
 public class LocalWorkspace extends Workspace implements Parcelable {
     private List<String> clients;
 
-    @Override
-    public String toString() {
-        return super.toString() +
-                " LocalWorkspace{" +
-                ", clients=" + clients +
-                '}';
-    }
-
     public LocalWorkspace() {
         super();
-        clients = new ArrayList<>();
+        this.clients = new ArrayList<>();
     }
 
-    public LocalWorkspace(String owner, String name, long quota) {
-        super(name, owner, quota);
-        clients = new ArrayList<>();
+    public LocalWorkspace(long quota, String name, String owner, boolean isPrivate) {
+        super(quota, name, owner, isPrivate);
+        this.clients = new ArrayList<>();
     }
 
     public List<String> getClients() {
@@ -67,9 +59,13 @@ public class LocalWorkspace extends Workspace implements Parcelable {
         }
     }
 
-    /////////////////////////////////////////
-    // Implementation of Parcelable interface
-    @SuppressWarnings("unused")
+    @Override
+     public String toString() {
+        return super.toString() +
+                " LocalWorkspace{" +
+                ", clients=" + clients +
+                '}';
+    }
 
     public LocalWorkspace(Parcel source) {
         this();
@@ -79,7 +75,7 @@ public class LocalWorkspace extends Workspace implements Parcelable {
         super.setOwner(source.readString());
         super.setPrivate(source.readInt()==1);
         source.readList(super.tags, WorkspaceTag.class.getClassLoader());
-        // FIXME: source.readList(super.files, User.class.getClassLoader());
+
         source.readList(clients, String.class.getClassLoader());
     }
 
@@ -90,6 +86,8 @@ public class LocalWorkspace extends Workspace implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+//        super.writeToParcel(dest, flags);
+//        dest.writeList(clients);
         dest.writeLong(super.getWorkspaceId());
         dest.writeLong(super.getQuota());
         dest.writeString(super.getName());
@@ -98,6 +96,7 @@ public class LocalWorkspace extends Workspace implements Parcelable {
         dest.writeList(super.getTags());
         // FIXME: dest.writeList(super.getFiles());
         dest.writeList(clients);
+
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator<LocalWorkspace>() {

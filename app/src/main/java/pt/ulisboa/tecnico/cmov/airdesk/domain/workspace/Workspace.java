@@ -4,12 +4,18 @@ import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.w3c.dom.Text;
+
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import pt.ulisboa.tecnico.cmov.airdesk.domain.TextFile;
 import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
 
+//FIXME This should be abstract
 public class Workspace implements Parcelable {
 
     private long workspaceId;
@@ -18,17 +24,21 @@ public class Workspace implements Parcelable {
     private String owner;
     private boolean isPrivate;
     protected List<WorkspaceTag> tags;
+    private List<TextFile> files;
 
-    public Workspace() {
-        super();
+    protected Workspace() {
+        // Nothing to do here...
     }
 
-    public Workspace(String name, String owner, long quota) {
+    public Workspace(long quota, String name, String owner, boolean isPrivate) {
+        super();
+        this.workspaceId = -1;
         this.quota = quota;
         this.name = name;
         this.owner = owner;
-        this.isPrivate = true;
-        this.setTags(null);
+        this.isPrivate = isPrivate;
+        this.tags = new ArrayList<WorkspaceTag>();
+        this.files = new ArrayList<TextFile>();
     }
 
     public long getWorkspaceId() {
@@ -143,10 +153,6 @@ public class Workspace implements Parcelable {
                 '}';
     }
 
-    /////////////////////////////////////////
-    // Implementation of Parcelable interface
-    @SuppressWarnings("unused")
-
     public Workspace(Parcel source) {
         this();
         workspaceId = source.readLong();
@@ -155,8 +161,7 @@ public class Workspace implements Parcelable {
         owner = source.readString();
         isPrivate = source.readInt() == 1;
         source.readList(tags, WorkspaceTag.class.getClassLoader());
-        // FIXME: source.readList(files, User.class.getClassLoader());
-
+        source.readList(files, TextFile.class.getClassLoader());
     }
 
     @Override
@@ -172,7 +177,7 @@ public class Workspace implements Parcelable {
         dest.writeString(owner);
         dest.writeInt(isPrivate ? 1 : 0);
         dest.writeList(tags);
-        // FIXME: dest.writeList(files);
+        dest.writeList(files);
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator<Workspace>() {

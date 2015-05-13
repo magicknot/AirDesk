@@ -69,6 +69,8 @@ public class ForeignWorkspaceTab extends Tab {
                 dFragment.setTargetFragment(this, DIALOG_FRAGMENT_NEW_WORKSPACE);
                 dFragment.show(fm, "Dialog Fragment");
                 return true;
+            default:
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

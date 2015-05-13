@@ -3,14 +3,16 @@ package pt.ulisboa.tecnico.cmov.airdesk.domain.workspace;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+
 public class ForeignWorkspace extends Workspace {
+
 
     public ForeignWorkspace() {
         super();
     }
 
-    public ForeignWorkspace(String workspaceName, String owner, long quota) {
-        super(workspaceName, owner, quota);
+    public ForeignWorkspace(long quota, String name, String owner, boolean isPrivate) {
+        super(quota, name, owner, isPrivate);
     }
 
     public ForeignWorkspace(Parcel source) {
@@ -19,8 +21,9 @@ public class ForeignWorkspace extends Workspace {
         super.setQuota(source.readLong());
         super.setName(source.readString());
         super.setOwner(source.readString());
-        super.setPrivate(source.readInt()==1);
+        super.setPrivate(source.readInt() == 1);
         source.readList(super.tags, WorkspaceTag.class.getClassLoader());
+//        super(source);
     }
 
     @Override
@@ -36,6 +39,7 @@ public class ForeignWorkspace extends Workspace {
         dest.writeString(super.getOwner());
         dest.writeInt(super.isPrivate() ? 1 : 0);
         dest.writeList(super.getTags());
+//        super.writeToParcel(dest, flags);
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator<ForeignWorkspace>() {
