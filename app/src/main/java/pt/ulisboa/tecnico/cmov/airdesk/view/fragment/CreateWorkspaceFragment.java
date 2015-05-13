@@ -23,6 +23,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.adapter.ClientsAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.TagsAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.data.DataHolder;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.LocalWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.WorkspaceTag;
 
@@ -30,7 +31,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.WorkspaceTag;
 public class CreateWorkspaceFragment extends DialogFragment {
 
     public static final String PREFS_NAME = "MyPrefsFile";
-    private static final String TAG = "CreateWorkspaceFragment";
+    private static final String TAG = CreateWorkspaceFragment.class.getSimpleName();
 
     private TextView tItemTitle;
     private EditText tName, tQuota, tItem;
@@ -44,6 +45,16 @@ public class CreateWorkspaceFragment extends DialogFragment {
 
     private TagsAdapter mTagListAdapter;
     private ClientsAdapter mClientsListAdapter;
+
+    private OnItemSelectedListener listener;
+
+    public interface OnItemSelectedListener {
+        public void onCreateWorkspaceSelected(LocalWorkspace newWorkspace);
+    }
+
+    public CreateWorkspaceFragment() {
+        // Required empty public constructor
+    }
 
     public static CreateWorkspaceFragment newInstance() {
         return new CreateWorkspaceFragment();
@@ -128,11 +139,13 @@ public class CreateWorkspaceFragment extends DialogFragment {
                 Log.i(TAG, "[onCheckedChanged] Create");
                 SharedPreferences myPrefs = getActivity().getSharedPreferences(PREFS_NAME, 0);
                 String email = myPrefs.getString("userEmail", "userEmail");
+
                 DataHolder.getInstance().addLocalWorkspace(email,
                         tName.getText().toString().trim(),
                         Long.parseLong(tQuota.getText().toString()),
                         sPrivacy.isChecked(), mTagListAdapter.getListWorkspacesTags(),
                         mClientsListAdapter.getListWorkspaceClients());
+
                 getTargetFragment().onActivityResult(getTargetRequestCode(),
                         Activity.RESULT_OK, getActivity().getIntent());
 
@@ -151,6 +164,19 @@ public class CreateWorkspaceFragment extends DialogFragment {
             }
         });
         return rootView;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        if (activity instanceof OnItemSelectedListener) {
+            listener = (OnItemSelectedListener) activity;
+        } else {
+            throw new ClassCastException(activity.toString()
+                    + " must implemenet CreateWorkspaceFragment.OnItemSelectedListener");
+        }
+
     }
 
     private void setWorkspacePublic(){

@@ -18,6 +18,8 @@ import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
 
 public class NewFileFragment extends DialogFragment {
 
+    private static final String TAG = NewFileFragment.class.getSimpleName();
+
     private EditText tName;
     private Button bCreate;
 
