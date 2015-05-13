@@ -7,9 +7,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.view.fragment.ForeignWorkspaceTab;
 import pt.ulisboa.tecnico.cmov.airdesk.view.fragment.LocalWorkspaceTab;
 
-/**
- * Created by oliveira on 31/03/15.
- */
+
 public class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
     CharSequence Titles[]; // This will Store the Titles of the Tabs which are Going to be passed when ViewPagerAdapter is created

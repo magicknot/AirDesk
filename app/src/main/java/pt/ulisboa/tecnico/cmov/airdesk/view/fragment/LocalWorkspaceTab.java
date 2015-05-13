@@ -18,8 +18,8 @@ import java.lang.reflect.Field;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceAdapter;
-import pt.ulisboa.tecnico.cmov.airdesk.data.DataHolder;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.LocalWorkspaceManager;
 
 public class LocalWorkspaceTab extends Tab {
 
@@ -30,13 +30,13 @@ public class LocalWorkspaceTab extends Tab {
         // This is the adapter we use to populate the grid.
         WorkspaceAdapter adapter = new WorkspaceAdapter(this, getActivity(),
                 R.layout.item_workspace_grid,
-                DataHolder.getInstance().getLocalWorkspaces());
+                LocalWorkspaceManager.getInstance().getWorkspaces());
 
         setWorkspaceAdapter(adapter);
         // Inflate the layout with a GridView in it.
         View v = inflater.inflate(R.layout.tab_1, container, false);
 
-        Log.i(getLogTag(), "onCreateView: v = null? " + String.valueOf(v == null));
+        Log.i(getLogTag(), "[LocalWorkspaceTab]onCreateView: v = null? " + String.valueOf(v == null));
 
         return v;
     }
@@ -110,11 +110,11 @@ public class LocalWorkspaceTab extends Tab {
                         Log.i(getLogTag(), " clicked. delete "+ getWorkspaceAdapter()
                                 .getItem(position).toString());
 
-                        Workspace ws = (Workspace) getWorkspaceAdapter().getItem(position);
-
-                        DataHolder.getInstance().removeLocalWorkspace(ws);
+                        Workspace ws = getWorkspaceAdapter().getItem(position);
+                        LocalWorkspaceManager.getInstance().removeWorkspace(ws);
 
                         // TODO Update this to fetch user location from network
+/*
                         for (String client : ws.getClients()) {
                             WorkspaceAdapter workspace = DataHolder.getInstance()
                                     .getWorkspaceAdapterByUser(client);
@@ -125,6 +125,7 @@ public class LocalWorkspaceTab extends Tab {
                             }
                         }
 
+*/
                         getWorkspaceAdapter().notifyDataSetChanged();
                         return true;
 

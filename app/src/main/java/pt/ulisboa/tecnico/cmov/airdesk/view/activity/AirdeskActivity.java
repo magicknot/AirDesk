@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.ForeignWorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.util.WifiDirect.WiFiDirectNetwork;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.ViewPagerAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.data.DataHolder;
@@ -35,10 +36,12 @@ public class AirdeskActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
         // initialize the UI
         setContentView(R.layout.activity_airdesk);
 
         validateUserRegistration();
+//        createWorkspaceTabs();
     }
 
     @Override
@@ -48,8 +51,6 @@ public class AirdeskActivity extends ActionBarActivity {
     }
 
     private void validateUserRegistration(){
-        String email;
-        String nickname;
 
         // Restore preferences
         SharedPreferences myPrefs = getSharedPreferences(PREFS_NAME, 0);
@@ -58,13 +59,26 @@ public class AirdeskActivity extends ActionBarActivity {
             Intent intent = new Intent(this, UserRegistrationActivity.class);
             startActivityForResult(intent, ACTIVITY_USER_REGISTRATION);
         } else {
-            email = myPrefs.getString("userEmail", "userEmail");
-            nickname = myPrefs.getString("userNickname", "userNickname");
-            DataHolder.getInstance().setEmail(email);
-            DataHolder.getInstance().setNickname(nickname);
-            createWorkspaceTabs();
-            Log.i(TAG, "User Login: " + nickname + "/" + email);
+            initiateApplication();
         }
+    }
+
+    private void initiateApplication(){
+        String email;
+        String nickname;
+
+        // Restore preferences
+        SharedPreferences myPrefs = getSharedPreferences(PREFS_NAME, 0);
+        email = myPrefs.getString("userEmail", "userEmail");
+        nickname = myPrefs.getString("userNickname", "userNickname");
+        //currentUser = new User(email, nickname);
+
+        DataHolder.getInstance().setEmail(email);
+        DataHolder.getInstance().setNickname(nickname);
+        //FIXME Remove when Network Implementation
+        ForeignWorkspaceManager.getInstance().init(this);
+        createWorkspaceTabs();
+        Log.i(TAG, "User Login: " + nickname + "/" + email);
     }
 
     private void createWorkspaceTabs(){
@@ -103,13 +117,7 @@ public class AirdeskActivity extends ActionBarActivity {
             if (resultCode != RESULT_OK) {
                 finish();
             }
-            SharedPreferences myPrefs = getSharedPreferences(PREFS_NAME, 0);
-            String email = myPrefs.getString("userEmail", "userEmail");
-            String nickname = myPrefs.getString("userNickname", "userNickname");
-            DataHolder.getInstance().setEmail(email);
-            DataHolder.getInstance().setNickname(nickname);
-            Log.i(TAG, "User Login " + email + " - " + nickname);
-            createWorkspaceTabs();
+            initiateApplication();
         }
         Log.i(TAG, "onActivityResult " + requestCode);
 
@@ -145,6 +153,8 @@ public class AirdeskActivity extends ActionBarActivity {
             case R.id.wifi_on:
                 Toast.makeText(getBaseContext(), "Wifi On", Toast.LENGTH_SHORT).show();
                 WiFiDirectNetwork.getInstance().setWiFiDirectOn();
+                //WiFiDirectNetwork.getInstance().refreshPeerDevices();
+                //WiFiDirectNetwork.getInstance().refreshGroupDevices();
                 return true;
             case R.id.wifi_off:
                 Toast.makeText(getBaseContext(), "Wifi Off", Toast.LENGTH_SHORT).show();
@@ -161,4 +171,5 @@ public class AirdeskActivity extends ActionBarActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

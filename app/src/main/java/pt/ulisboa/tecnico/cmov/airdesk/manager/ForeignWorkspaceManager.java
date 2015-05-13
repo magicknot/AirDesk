@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceAdapter;
+import pt.ulisboa.tecnico.cmov.airdesk.data.DataHolder;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.WorkspaceTag;
 
@@ -27,11 +28,28 @@ public class ForeignWorkspaceManager extends WorkspaceManager {
     }
 
     public void init(Context context) {
-        context = context;
+        super.context = context;
 
-        workspaces = new ArrayList<>();
-
+        fetchWorkspaces();
         this.activeUsers = new HashMap<>();
+    }
+
+    public List<Workspace> getWorkspaces() {
+        fetchWorkspaces();
+        return workspaces;
+    }
+
+    // TODO Network
+    public void fetchWorkspaces() {
+        if (workspaces == null)
+            workspaces = new ArrayList<>();
+
+
+        for (Workspace ws : LocalWorkspaceManager.getInstance().getWorkspaces()) {
+            if (ws.containClient(DataHolder.getInstance().getEmail())) {
+                addWorkspace(ws.getOwner(), ws.getName(), ws.getQuota(), ws.isPrivate(), null, null);
+            }
+        }
     }
 
     @Override
@@ -50,6 +68,8 @@ public class ForeignWorkspaceManager extends WorkspaceManager {
     public boolean removeWorkspace(Workspace workspace) {
         Workspace localWs = null;
 
+        //TODO: Send Message unSubscribe
+        //apenas remove localmente, necessário notificar owner para remover workspace
         for (Workspace ws : workspaces) {
             if (ws.getName().equals(workspace.getName())) {
                 localWs = ws;

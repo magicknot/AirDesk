@@ -20,10 +20,9 @@ import android.widget.TextView;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.ClientsAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.TagsAdapter;
-import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceAdapter;
-import pt.ulisboa.tecnico.cmov.airdesk.data.DataHolder;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.WorkspaceTag;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.LocalWorkspaceManager;
 
 
 public class EditLocalWorkspaceFragment extends DialogFragment {
@@ -157,12 +156,13 @@ public class EditLocalWorkspaceFragment extends DialogFragment {
                 mWorkspace.setQuota(Long.parseLong(tQuota.getText().toString()), getActivity().getBaseContext());
                 Log.i(TAG, "onClick - updateLocalWorkspaceClients - isPrivate: " +
                         String.valueOf(mWorkspace.isPrivate()));
-                DataHolder.getInstance().updateLocalWorkspaceClients(mWorkspace);
+                LocalWorkspaceManager.getInstance().updateWorkspaceClients(mWorkspace);
                 getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK,
                         getActivity().getIntent());
 
                 // TODO Update this to fetch user location from network
                 // FIXME
+/*
                 WorkspaceAdapter workspace = DataHolder.getInstance()
                         .getWorkspaceAdapterByUser(DataHolder.getInstance().getEmail());
 
@@ -170,7 +170,7 @@ public class EditLocalWorkspaceFragment extends DialogFragment {
                     workspace.reloadForeignWorkspaces();
                     workspace.notifyDataSetChanged();
                 }
-                
+*/
 
                 dismiss();
             }

@@ -18,6 +18,7 @@ import java.lang.reflect.Field;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.data.DataHolder;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.ForeignWorkspaceManager;
 
 public class ForeignWorkspaceTab extends Tab {
 
@@ -28,10 +29,11 @@ public class ForeignWorkspaceTab extends Tab {
         // This is the adapter we use to populate the grid.
         WorkspaceAdapter adapter = new WorkspaceAdapter(this, getActivity(),
                 R.layout.item_workspace_grid,
-                DataHolder.getInstance().getForeignWorkspaces());
+                ForeignWorkspaceManager.getInstance().getWorkspaces());
 
-        DataHolder.getInstance().registerActiveUser(
-                DataHolder.getInstance().getEmail(), adapter);
+
+//        DataHolder.getInstance().registerActiveUser(
+//                DataHolder.getInstance().getEmail(), adapter);
 
         setWorkspaceAdapter(adapter);
         // Inflate the layout with a GridView in it.
@@ -94,8 +96,7 @@ public class ForeignWorkspaceTab extends Tab {
                     case R.id.workspace_overflow_unsubscribe:
                         Log.i(getLogTag(), " clicked. unsubscribe " +
                                 getWorkspaceAdapter().getItem(position).toString());
-                        DataHolder.getInstance()
-                                .removeForeignWorkspace(getWorkspaceAdapter().getItem(position));
+                        ForeignWorkspaceManager.getInstance().removeWorkspace(getWorkspaceAdapter().getItem(position));
                         getWorkspaceAdapter().notifyDataSetChanged();
                         return true;
 

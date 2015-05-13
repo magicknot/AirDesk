@@ -86,7 +86,4 @@ public class WorkspaceAdapter extends BaseAdapter {
         holder.title.setText(w.getName());
     }
 
-    public void reloadForeignWorkspaces() {
-        workspaces = (ArrayList<Workspace>) DataHolder.getInstance().getForeignWorkspaces();
-    }
 }

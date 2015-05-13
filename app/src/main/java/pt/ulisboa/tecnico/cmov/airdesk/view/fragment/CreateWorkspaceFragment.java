@@ -21,9 +21,7 @@ import android.widget.TextView;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.ClientsAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.TagsAdapter;
-import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceAdapter;
-import pt.ulisboa.tecnico.cmov.airdesk.data.DataHolder;
-import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.LocalWorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.WorkspaceTag;
 
@@ -134,7 +132,7 @@ public class CreateWorkspaceFragment extends DialogFragment {
                 SharedPreferences myPrefs = getActivity().getSharedPreferences(PREFS_NAME, 0);
                 String email = myPrefs.getString("userEmail", "userEmail");
 
-                DataHolder.getInstance().addLocalWorkspace(email,
+                LocalWorkspaceManager.getInstance().addWorkspace(email,
                         tName.getText().toString().trim(),
                         Long.parseLong(tQuota.getText().toString()),
                         sPrivacy.isChecked(), mTagListAdapter.getListWorkspacesTags(),
@@ -144,6 +142,7 @@ public class CreateWorkspaceFragment extends DialogFragment {
                         Activity.RESULT_OK, getActivity().getIntent());
 
                 // TODO Update this to fetch user location from network
+/*
                 for (String client : mClientsListAdapter.getListWorkspaceClients()) {
                     WorkspaceAdapter workspace = DataHolder.getInstance()
                             .getWorkspaceAdapterByUser(client);
@@ -153,7 +152,7 @@ public class CreateWorkspaceFragment extends DialogFragment {
                         workspace.notifyDataSetChanged();
                     }
                 }
-
+*/
                 dismiss();
             }
         });
@@ -173,26 +172,5 @@ public class CreateWorkspaceFragment extends DialogFragment {
         tItem.setHint("new email client");
         mTagListAdapter.clear();
     }
-/*
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        return new AlertDialog.Builder(getActivity())
-                .setTitle("R.string.ERROR")
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .setPositiveButton("R.string.ok_button",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, getActivity().getIntent());
-                            }
-                        }
-                )
-                .setNegativeButton("R.string.cancel_button", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_CANCELED, getActivity().getIntent());
-                    }
-                })
-                .create();
-    }
-*/
 }

@@ -25,7 +25,7 @@ public class LocalWorkspaceManager extends WorkspaceManager {
     }
 
     public void init(Context context) {
-        context = context;
+        super.context = context;
 
         this.db = new AirdeskDataSource(context);
         this.db.open();
@@ -57,7 +57,7 @@ public class LocalWorkspaceManager extends WorkspaceManager {
 
         //TODO:Create Workspace Folder
         db.open();
-        lw = (Workspace) db.insertWorkspace(lw);
+        lw = db.insertWorkspace(lw);
         db.close();
         workspaces.add(lw);
     }
