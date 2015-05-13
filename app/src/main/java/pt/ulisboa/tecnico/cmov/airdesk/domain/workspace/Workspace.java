@@ -16,7 +16,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.domain.TextFile;
 import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
 
 //FIXME This should be abstract
-public class Workspace implements Parcelable {
+public abstract class Workspace implements Parcelable {
 
     private long workspaceId;
     private long quota;
@@ -179,14 +179,4 @@ public class Workspace implements Parcelable {
         dest.writeList(tags);
         dest.writeList(files);
     }
-
-    public static final Parcelable.Creator CREATOR = new Parcelable.Creator<Workspace>() {
-        public Workspace createFromParcel(Parcel in) {
-            return new Workspace(in);
-        }
-
-        public Workspace[] newArray(int size) {
-            return new Workspace[size];
-        }
-    };
 }

@@ -161,7 +161,7 @@ public class DataHolder {
             }
         }
 
-        foreignWorkspaces.add(new ForeignWorkspace(quota, owner, name, false));
+        foreignWorkspaces.add(new ForeignWorkspace(quota, name, owner, false));
     }
 
     public void removeForeignWorkspace(Workspace workspace) {
@@ -184,15 +184,16 @@ public class DataHolder {
         foreignWorkspaces.remove(workspace);
     }
 
+    // TODO Network
     public void fetchForeignWorkspaces() {
         this.foreignWorkspaces = new ArrayList<>();
-/*
+
+
         for (LocalWorkspace ws : localWorkspaces) {
-            if (ws.containClient(currentUser)) {
+            if (ws.containClient(email)) {
                 addForeignWorkspace(ws.getOwner(), ws.getName(), ws.getQuota());
             }
         }
-*/
     }
 
     public void registerActiveUser(String email, WorkspaceAdapter<ForeignWorkspace> workspace) {
