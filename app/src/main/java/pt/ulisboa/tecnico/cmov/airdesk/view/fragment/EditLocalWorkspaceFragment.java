@@ -22,7 +22,6 @@ import pt.ulisboa.tecnico.cmov.airdesk.adapter.ClientsAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.TagsAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.data.DataHolder;
-import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.LocalWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.WorkspaceTag;
 
@@ -31,7 +30,7 @@ public class EditLocalWorkspaceFragment extends DialogFragment {
 
     private static final String TAG = "EditLocalWorkspaceFrag";
 
-    private LocalWorkspace mWorkspace;
+    private Workspace mWorkspace;
 
     private TextView tItemTitlePrivacy, tName;
     private EditText tQuota, tItem;

@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceAdapter;
-import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.ForeignWorkspace;
-import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.LocalWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.WorkspaceTag;
 import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
@@ -24,9 +22,9 @@ public class DataHolder {
     private AirdeskDataSource db;
     private String nickname;
     private String email;
-    private List<LocalWorkspace> localWorkspaces;
-    private List<ForeignWorkspace> foreignWorkspaces;
-    private Map<String, WorkspaceAdapter<ForeignWorkspace>> activeUsers;
+    private List<Workspace> localWorkspaces;
+    private List<Workspace> foreignWorkspaces;
+    private Map<String, WorkspaceAdapter> activeUsers;
 
     public static DataHolder getInstance() {
         if (holder == null) {
@@ -63,25 +61,25 @@ public class DataHolder {
         this.email = email;
     }
 
-    public List<LocalWorkspace> getLocalWorkspaces() {
+    public List<Workspace> getLocalWorkspaces() {
         return this.localWorkspaces;
     }
 
-    public List<ForeignWorkspace> getForeignWorkspaces() {
+    public List<Workspace> getForeignWorkspaces() {
         fetchForeignWorkspaces();
         return this.foreignWorkspaces;
     }
 
     public void addLocalWorkspace(String owner, String name, long quota, boolean isNotPrivate,
                                   List<WorkspaceTag> tags, List<String> clients) {
-        for (LocalWorkspace ws : localWorkspaces) {
+        for (Workspace ws : localWorkspaces) {
             if (ws.getName().toLowerCase().equals(name.toLowerCase())) {
                 // TODO Show a popup message saying that name is already in use
                 return;
             }
         }
 
-        LocalWorkspace lw = new LocalWorkspace( Math.min(quota,
+        Workspace lw = new Workspace( Math.min(quota,
                 FileManager.getFreeSpace(context) / 1024), name, owner, !isNotPrivate);
 //                FileManager.getFreeSpace(context)));
 
@@ -95,7 +93,7 @@ public class DataHolder {
 
         //TODO:Create Workspace Folder
         db.open();
-        lw = (LocalWorkspace) db.insertWorkspace(lw);
+        lw = (Workspace) db.insertWorkspace(lw);
         db.close();
         localWorkspaces.add(lw);
     }
@@ -111,7 +109,7 @@ public class DataHolder {
         return isDeleted;
     }
 
-    public void updateLocalWorkspaceClients(LocalWorkspace workspace) {
+    public void updateLocalWorkspaceClients(Workspace workspace) {
         db.open();
         db.updateLocalWorkspace(workspace.getWorkspaceId(), workspace.getName(),
                 workspace.getOwner(), workspace.getQuota(), workspace.isPrivate());
@@ -120,7 +118,7 @@ public class DataHolder {
         db.close();
     }
 
-    public void updateLocalWorkspaceClients(LocalWorkspace workspace, List<String> listClients) {
+    public void updateLocalWorkspaceClients(Workspace workspace, List<String> listClients) {
         int i;
 
         db.open();
@@ -136,7 +134,7 @@ public class DataHolder {
         }
     }
 
-    public void updateLocalWorkspaceTags(LocalWorkspace workspace, List<WorkspaceTag> listTags) {
+    public void updateLocalWorkspaceTags(Workspace workspace, List<WorkspaceTag> listTags) {
         int i;
 
         db.open();
@@ -153,7 +151,7 @@ public class DataHolder {
     }
 
     public void addForeignWorkspace(String owner, String name, long quota) {
-        for (ForeignWorkspace ws : foreignWorkspaces) {
+        for (Workspace ws : foreignWorkspaces) {
             if (ws.getName().toLowerCase().equals(name.toLowerCase())
                     && ws.getOwner().toLowerCase().equals(owner.toLowerCase())) {
                 // TODO Show a popup message saying that name is already in use
@@ -161,13 +159,13 @@ public class DataHolder {
             }
         }
 
-        foreignWorkspaces.add(new ForeignWorkspace(quota, name, owner, false));
+        foreignWorkspaces.add(new Workspace(quota, name, owner, false));
     }
 
     public void removeForeignWorkspace(Workspace workspace) {
-        LocalWorkspace localWs = null;
+        Workspace localWs = null;
 
-        for (LocalWorkspace ws : localWorkspaces) {
+        for (Workspace ws : localWorkspaces) {
             if (ws.getName().equals(workspace.getName())) {
                 localWs = ws;
                 break;
@@ -189,20 +187,20 @@ public class DataHolder {
         this.foreignWorkspaces = new ArrayList<>();
 
 
-        for (LocalWorkspace ws : localWorkspaces) {
+        for (Workspace ws : localWorkspaces) {
             if (ws.containClient(email)) {
                 addForeignWorkspace(ws.getOwner(), ws.getName(), ws.getQuota());
             }
         }
     }
 
-    public void registerActiveUser(String email, WorkspaceAdapter<ForeignWorkspace> workspace) {
+    public void registerActiveUser(String email, WorkspaceAdapter workspace) {
         Log.i(TAG, "registerActiveUser - adding:\n\t email " + email + "\n\tworkspace: "
                 + workspace.toString());
         activeUsers.put(email, workspace);
     }
 
-    public WorkspaceAdapter<ForeignWorkspace> getWorkspaceAdapterByUser(String email) {
+    public WorkspaceAdapter getWorkspaceAdapterByUser(String email) {
         return activeUsers.get(email);
     }
 

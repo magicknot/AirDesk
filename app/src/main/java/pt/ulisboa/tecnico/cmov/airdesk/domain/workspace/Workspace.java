@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import pt.ulisboa.tecnico.cmov.airdesk.data.AirdeskDataSource;
-import pt.ulisboa.tecnico.cmov.airdesk.data.DataHolder;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.TextFile;
 import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
 
@@ -25,15 +23,22 @@ public class Workspace implements Parcelable {
 
     private boolean isPrivate;
 
-    protected List<WorkspaceTag> tags;
-    protected List<TextFile> files;
+    private List<String> clients;
+    private List<WorkspaceTag> tags;
+    private List<TextFile> files;
 
-    protected Workspace() {
-        // Nothing to do here...
+    public Workspace() {
+        this.workspaceId = -1;
+        this.quota = -1;
+        this.name = new String();
+        this.owner = new String();
+        this.isPrivate = true;
+        this.clients = new ArrayList<>();
+        this.tags = new ArrayList<>();
+        this.files = new ArrayList<>();
     }
 
     public Workspace(long quota, String name, String owner, boolean isPrivate) {
-        super();
         this.workspaceId = -1;
         this.quota = quota;
         this.name = name;
@@ -82,6 +87,45 @@ public class Workspace implements Parcelable {
 
     public void setOwner(String owner) {
         this.owner = owner;
+    }
+
+    public List<String> getClients() {
+        return clients;
+    }
+
+    public void setClients(List<String> clients) {
+        if (clients == null) {
+            this.clients = new ArrayList<>();
+        } else {
+            this.clients = clients;
+        }
+    }
+
+    public void addClient(String client) {
+        if (this.clients == null) {
+            clients = new ArrayList<>();
+        }
+        this.clients.add(client);
+    }
+
+    public boolean containClient(String client) {
+        for (String c : clients) {
+            if (c.toLowerCase().equals(client.toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void removeClient(String client) {
+        int i = 0;
+
+        for (String c : clients) {
+            if (c.toLowerCase().equals(client.toLowerCase())) {
+                clients.remove(i);
+            }
+            i++;
+        }
     }
 
     public List<TextFile> getTextFiles() {
@@ -171,6 +215,7 @@ public class Workspace implements Parcelable {
                 ", name='" + getName() + '\'' +
                 ", owner=" + getOwner() +
                 //FIXME:  ", files=" + getFiles() +
+                //FIXME:  ", clients=" + getClients() +
                 ", tags=" + getTags() +
                 '}';
     }
@@ -184,6 +229,7 @@ public class Workspace implements Parcelable {
         isPrivate = source.readInt() == 1;
         source.readList(tags, WorkspaceTag.class.getClassLoader());
         source.readList(files, TextFile.class.getClassLoader());
+        source.readList(clients, String.class.getClassLoader());
     }
 
     @Override
@@ -200,13 +246,13 @@ public class Workspace implements Parcelable {
         dest.writeInt(isPrivate ? 1 : 0);
         dest.writeList(tags);
         dest.writeList(files);
+        dest.writeList(clients);
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator<Workspace>() {
         public Workspace createFromParcel(Parcel in) {
             return new Workspace(in);
         }
-
         public Workspace[] newArray(int size) {
             return new Workspace[size];
         }

@@ -2,14 +2,14 @@ package pt.ulisboa.tecnico.cmov.airdesk.data;
 
 import android.provider.BaseColumns;
 
-public final class AirDeskDbContract {
+public final class AirdeskDbContract {
 
     public static final  int    DATABASE_VERSION   = 4;
     public static final  String DATABASE_NAME      = "airdesk.db";
 
     // To prevent someone from accidentally instantiating the contract class,
     // give it an empty constructor.
-    private AirDeskDbContract() {}
+    private AirdeskDbContract() {}
 
     /* Inner class for Users table */
     public static abstract class UsersTable implements BaseColumns {
@@ -47,8 +47,8 @@ public final class AirDeskDbContract {
         public static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
     }
 
-    public static final String[] workspaceAllColls =  {AirDeskDbContract.WorkspacesTable._ID, AirDeskDbContract.WorkspacesTable.COLUMN_WORKSPACE_NAME,
-            AirDeskDbContract.WorkspacesTable.COLUMN_OWNER, AirDeskDbContract.WorkspacesTable.COLUMN_QUOTA, AirDeskDbContract.WorkspacesTable.COLUMN_PRIVACY};
+    public static final String[] workspaceAllColls =  {AirdeskDbContract.WorkspacesTable._ID, AirdeskDbContract.WorkspacesTable.COLUMN_WORKSPACE_NAME,
+            AirdeskDbContract.WorkspacesTable.COLUMN_OWNER, AirdeskDbContract.WorkspacesTable.COLUMN_QUOTA, AirdeskDbContract.WorkspacesTable.COLUMN_PRIVACY};
 
     /* Inner class for relation between Workspaces and Clients table */
     public static abstract class WorkspaceClientsTable implements BaseColumns {

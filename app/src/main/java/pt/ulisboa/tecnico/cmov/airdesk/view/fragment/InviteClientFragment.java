@@ -17,7 +17,7 @@ import android.widget.TextView;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.ClientsAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.data.DataHolder;
-import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.LocalWorkspace;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
 
 
 public class InviteClientFragment extends DialogFragment {
@@ -34,9 +34,9 @@ public class InviteClientFragment extends DialogFragment {
     private ClientsAdapter mClientsListAdapter;
 
     private TextView tvWorkspaceName;
-    private LocalWorkspace mWorkspace;
+    private Workspace mWorkspace;
 
-    public static InviteClientFragment newInstance(LocalWorkspace inWorkspace) {
+    public static InviteClientFragment newInstance(Workspace inWorkspace) {
         InviteClientFragment fragment = new InviteClientFragment();
 
         // Supply num input as an argument.

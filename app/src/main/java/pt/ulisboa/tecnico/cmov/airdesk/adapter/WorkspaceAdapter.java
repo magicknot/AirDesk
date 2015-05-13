@@ -16,7 +16,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.data.DataHolder;
 import pt.ulisboa.tecnico.cmov.airdesk.view.fragment.Tab;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
 
-public class WorkspaceAdapter<W extends Workspace> extends BaseAdapter {
+public class WorkspaceAdapter extends BaseAdapter {
 
     public static class ViewHolder {
         public ImageView image;
@@ -31,9 +31,9 @@ public class WorkspaceAdapter<W extends Workspace> extends BaseAdapter {
 
     private final Tab tab;
 
-    private List<W> workspaces;
+    private List<Workspace> workspaces;
 
-    public WorkspaceAdapter(Tab tab, Context context, int resourceId, List<W> workspaces) {
+    public WorkspaceAdapter(Tab tab, Context context, int resourceId, List<Workspace> workspaces) {
         this.tab = tab;
         this.context = context;
         this.resourceId = resourceId;
@@ -87,6 +87,6 @@ public class WorkspaceAdapter<W extends Workspace> extends BaseAdapter {
     }
 
     public void reloadForeignWorkspaces() {
-        workspaces = (ArrayList<W>) DataHolder.getInstance().getForeignWorkspaces();
+        workspaces = (ArrayList<Workspace>) DataHolder.getInstance().getForeignWorkspaces();
     }
 }

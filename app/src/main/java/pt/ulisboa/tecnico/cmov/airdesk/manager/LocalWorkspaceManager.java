@@ -6,7 +6,6 @@ import android.util.Log;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.data.AirdeskDataSource;
-import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.LocalWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.WorkspaceTag;
 import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
@@ -30,8 +29,7 @@ public class LocalWorkspaceManager extends WorkspaceManager {
 
         this.db = new AirdeskDataSource(context);
         this.db.open();
-        //FIXME: change datasource method fetchAllWorkspaces to return Workspace
-        //workspaces = this.db.fetchAllWorkspaces();
+        workspaces = this.db.fetchAllWorkspaces();
         Log.i(TAG, "this.db.fetchAllWorkspaces(): " + workspaces.size());
         this.db.close();
     }
@@ -54,14 +52,12 @@ public class LocalWorkspaceManager extends WorkspaceManager {
             lw.setTags(tags);
         } else {
             Log.i(TAG, "isPrivate: Private (Adding Clients to Workspace)");
-            //FIXME: move method setClients to Workspace
-            //lw.setClients(clients);
+            lw.setClients(clients);
         }
 
         //TODO:Create Workspace Folder
         db.open();
-        //FIXME: change datasource method insertWorkspace to receive Workspace
-        //lw = (Workspace) db.insertWorkspace(lw);
+        lw = (Workspace) db.insertWorkspace(lw);
         db.close();
         workspaces.add(lw);
     }
@@ -83,12 +79,11 @@ public class LocalWorkspaceManager extends WorkspaceManager {
         db.updateLocalWorkspace(workspace.getWorkspaceId(), workspace.getName(),
                 workspace.getOwner(), workspace.getQuota(), workspace.isPrivate());
         db.updateLocalWorkspaceTags(workspace.getWorkspaceId(), workspace.getTags());
-        //FIXME: move method getClients to Workspace
-        //db.updateLocalWorkspaceClients(workspace.getWorkspaceId(), workspace.getClients());
+        db.updateLocalWorkspaceClients(workspace.getWorkspaceId(), workspace.getClients());
         db.close();
     }
 
-    public void updateWorkspaceClients(LocalWorkspace workspace, List<String> listClients) {
+    public void updateWorkspaceClients(Workspace workspace, List<String> listClients) {
         int i;
 
         db.open();
@@ -100,8 +95,7 @@ public class LocalWorkspaceManager extends WorkspaceManager {
 
         if (i < workspaces.size()
                 && workspaces.get(i).getWorkspaceId() == workspace.getWorkspaceId()) {
-            //FIXME: move method setClients to Workspace
-            //workspaces.get(i).setClients(listClients);
+            workspaces.get(i).setClients(listClients);
         }
     }
 

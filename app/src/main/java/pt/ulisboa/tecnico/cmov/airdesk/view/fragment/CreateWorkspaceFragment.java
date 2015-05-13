@@ -23,7 +23,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.adapter.ClientsAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.TagsAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.data.DataHolder;
-import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.LocalWorkspace;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.WorkspaceTag;
 
@@ -45,12 +45,6 @@ public class CreateWorkspaceFragment extends DialogFragment {
 
     private TagsAdapter mTagListAdapter;
     private ClientsAdapter mClientsListAdapter;
-
-    private OnItemSelectedListener listener;
-
-    public interface OnItemSelectedListener {
-        public void onCreateWorkspaceSelected(LocalWorkspace newWorkspace);
-    }
 
     public CreateWorkspaceFragment() {
         // Required empty public constructor
@@ -164,19 +158,6 @@ public class CreateWorkspaceFragment extends DialogFragment {
             }
         });
         return rootView;
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-
-        if (activity instanceof OnItemSelectedListener) {
-            listener = (OnItemSelectedListener) activity;
-        } else {
-            throw new ClassCastException(activity.toString()
-                    + " must implemenet CreateWorkspaceFragment.OnItemSelectedListener");
-        }
-
     }
 
     private void setWorkspacePublic(){

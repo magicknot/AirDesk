@@ -1,7 +1,6 @@
 package pt.ulisboa.tecnico.cmov.airdesk.manager;
 
 import android.content.Context;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,9 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceAdapter;
-import pt.ulisboa.tecnico.cmov.airdesk.data.AirdeskDataSource;
-import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.ForeignWorkspace;
-import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.LocalWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.WorkspaceTag;
 
@@ -21,7 +17,7 @@ public class ForeignWorkspaceManager extends WorkspaceManager {
     private static ForeignWorkspaceManager holder = null;
 
 
-    private Map<String, WorkspaceAdapter<ForeignWorkspace>> activeUsers;
+    private Map<String, WorkspaceAdapter> activeUsers;
 
     public static ForeignWorkspaceManager getInstance() {
         if (holder == null) {

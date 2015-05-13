@@ -19,7 +19,7 @@ import java.lang.reflect.Field;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.data.DataHolder;
-import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.LocalWorkspace;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
 
 public class LocalWorkspaceTab extends Tab {
 
@@ -28,7 +28,7 @@ public class LocalWorkspaceTab extends Tab {
                              @Nullable Bundle savedInstanceState) {
         Log.i(getLogTag(), "onCreateView started");
         // This is the adapter we use to populate the grid.
-        WorkspaceAdapter adapter = new WorkspaceAdapter<>(this, getActivity(),
+        WorkspaceAdapter adapter = new WorkspaceAdapter(this, getActivity(),
                 R.layout.item_workspace_grid,
                 DataHolder.getInstance().getLocalWorkspaces());
 
@@ -110,7 +110,7 @@ public class LocalWorkspaceTab extends Tab {
                         Log.i(getLogTag(), " clicked. delete "+ getWorkspaceAdapter()
                                 .getItem(position).toString());
 
-                        LocalWorkspace ws = (LocalWorkspace) getWorkspaceAdapter().getItem(position);
+                        Workspace ws = (Workspace) getWorkspaceAdapter().getItem(position);
 
                         DataHolder.getInstance().removeLocalWorkspace(ws);
 
@@ -134,7 +134,7 @@ public class LocalWorkspaceTab extends Tab {
                                 "You selected action_new_local_workspace", Toast.LENGTH_SHORT).show();
                         fm = getActivity().getSupportFragmentManager();
                         InviteClientFragment dFragmentInviteClient =
-                                InviteClientFragment.newInstance((LocalWorkspace) getWorkspaceAdapter().getItem(position));
+                                InviteClientFragment.newInstance(getWorkspaceAdapter().getItem(position));
                         dFragmentInviteClient.setTargetFragment(LocalWorkspaceTab.this,
                                 DIALOG_FRAGMENT_NEW_WORKSPACE);
                         dFragmentInviteClient.show(fm, "Dialog Fragment");
