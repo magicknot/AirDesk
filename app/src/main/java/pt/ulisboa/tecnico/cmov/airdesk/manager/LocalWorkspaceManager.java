@@ -6,11 +6,11 @@ import android.util.Log;
 import java.io.IOException;
 import java.util.List;
 
+import pt.ulisboa.tecnico.cmov.airdesk.io.FileStorage;
 import pt.ulisboa.tecnico.cmov.airdesk.io.database.AirdeskDataSource;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.TextFile;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.WorkspaceTag;
-import pt.ulisboa.tecnico.cmov.airdesk.io.FileManager;
 
 public class LocalWorkspaceManager extends WorkspaceManager {
     private static final String TAG = LocalWorkspaceManager.class.getSimpleName();
@@ -45,7 +45,7 @@ public class LocalWorkspaceManager extends WorkspaceManager {
                 return;
             }
         }
-        long newQuota = Math.min(quota, FileManager.getFreeSpace(context) / 1024);
+        long newQuota = Math.min(quota, FileStorage.getFreeSpace(context) / 1024);
         Workspace lw = new Workspace(newQuota, name, owner, !isNotPrivate, true);
 
         if (isNotPrivate) {
@@ -129,7 +129,7 @@ public class LocalWorkspaceManager extends WorkspaceManager {
     public void createFile(Workspace workspace, String filename) {
         TextFile file = new TextFile(filename, filename, "TODO_ACL"); //FIXME
         if (workspace.addTextFile(file)) {
-            FileManager.save(file, context);
+            FileStorage.save(file, context);
             updateWorkspaceFiles(workspace);
         }
     }
@@ -137,9 +137,9 @@ public class LocalWorkspaceManager extends WorkspaceManager {
     @Override
     public void writeFile(Workspace workspace, TextFile file, String content) throws IOException {
         if (workspace.hasTextFile(file)) {
-            Long usedSpace = FileManager.getUsedSpace(file.getPath(), context);
+            Long usedSpace = FileStorage.getUsedSpace(file.getPath(), context);
             if (usedSpace + 2 * content.length() < workspace.getQuota()) {
-                FileManager.save(file, content, context);
+                FileStorage.save(file, content, context);
             } else {
                 throw new IOException("Quota exceeded (" + usedSpace + " + 2 * " +
                         content.length() + " < " + workspace.getQuota() + " = false)");
@@ -149,13 +149,13 @@ public class LocalWorkspaceManager extends WorkspaceManager {
 
     @Override
     public String readFile(TextFile file) {
-        return FileManager.read(file, context);
+        return FileStorage.read(file, context);
     }
 
     @Override
     public void deleteFile(Workspace workspace, TextFile file) {
         if (workspace.removeTextFile(file)) {
-            FileManager.delete(file, context);
+            FileStorage.delete(file, context);
             updateWorkspaceFiles(workspace);
         } else {
             Log.e(TAG, "deleteFile() - could not delete file " + file.getName());

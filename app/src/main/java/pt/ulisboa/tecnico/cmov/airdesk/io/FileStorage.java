@@ -13,11 +13,11 @@ import java.io.IOException;
 
 import pt.ulisboa.tecnico.cmov.airdesk.domain.TextFile;
 
-public final class FileManager {
+public final class FileStorage {
 
     public static final String TAG = "FileManager";
 
-    private FileManager() {
+    private FileStorage() {
         // We deliberately do nothing
     }
 

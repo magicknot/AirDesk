@@ -21,8 +21,8 @@ import android.widget.TextView;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.ClientsAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.TagsAdapter;
+import pt.ulisboa.tecnico.cmov.airdesk.io.FileStorage;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.LocalWorkspaceManager;
-import pt.ulisboa.tecnico.cmov.airdesk.io.FileManager;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.WorkspaceTag;
 
 
@@ -74,7 +74,7 @@ public class CreateWorkspaceFragment extends DialogFragment {
         mTagListAdapter = new TagsAdapter(inflater, R.layout.item_tag_grid);
         mClientsListAdapter = new ClientsAdapter(inflater, R.layout.item_tag_grid);
 
-        tQuota.setText(String.valueOf(FileManager.getFreeSpace(getActivity().getBaseContext())));
+        tQuota.setText(String.valueOf(FileStorage.getFreeSpace(getActivity().getBaseContext())));
 
         // Get ListView object from xml
         listViewItems = (ListView) rootView.findViewById(R.id.tagList);
