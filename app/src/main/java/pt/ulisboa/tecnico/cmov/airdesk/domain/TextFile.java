@@ -86,7 +86,7 @@ public class TextFile {
             String acl = obj.getString("acl");
             file = new TextFile(name, path, acl);
         } catch (JSONException e) {
-            Log.e(TAG, "fromJson() - could not add attribute to Json object\n\t" +
+            Log.e(TAG, "fromJson() - could not read attribute to Json object\n\t" +
                     e.getCause().toString());
         }
 
