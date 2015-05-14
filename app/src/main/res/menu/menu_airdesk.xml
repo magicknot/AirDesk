@@ -23,10 +23,10 @@
         />
 
     <item
-        android:id="@+id/action_user"
+        android:id="@+id/action_logout"
         android:orderInCategory="200"
         android:title="User"
-        android:icon="@drawable/ic_action_add_person"
+        android:icon="@drawable/ic_action_logout"
         app:showAsAction="ifRoom"
         />
     <item
