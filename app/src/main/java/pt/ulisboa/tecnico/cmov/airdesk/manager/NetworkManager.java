@@ -4,7 +4,6 @@ import android.os.AsyncTask;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import pt.ulisboa.tecnico.cmov.airdesk.domain.PeerDevice;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.messages.AnnounceMessage;
@@ -86,7 +85,7 @@ public class NetworkManager {
         }
 
         for(PeerDevice pd : toRemoveDevices) {
-            ForeignWorkspaceManager.getInstance().remoteWorkspaceByOwnerEmail(pd.getEmail());
+            ForeignWorkspaceManager.getInstance().removeWorkspaceByOwner(pd.getEmail());
         }
 
     }
@@ -100,4 +99,7 @@ public class NetworkManager {
         return false;
     }
 
+    public void requestFile(String filename) {
+        //
+    }
 }

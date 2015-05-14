@@ -3,6 +3,9 @@ package pt.ulisboa.tecnico.cmov.airdesk.manager;
 import android.content.Context;
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -179,5 +182,15 @@ public class LocalWorkspaceManager extends WorkspaceManager {
             Log.e(TAG, "deleteFile() - could not delete file " + file.getName());
         }
 
+    }
+
+    public JSONArray toJson() {
+        JSONArray array = new JSONArray();
+
+        for (Workspace ws : workspaces) {
+            array.put(ws.toJson());
+        }
+
+        return array;
     }
 }

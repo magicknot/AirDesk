@@ -71,8 +71,12 @@ public class ForeignWorkspaceManager extends WorkspaceManager {
         }
     }
 
-    public void remoteWorkspaceByOwnerEmail(String email) {
-        //TODO: Implement this!
+    public void removeWorkspaceByOwner(String email) {
+        for (Workspace ws : workspaces) {
+            if (ws.getOwner().equals(email)) {
+                workspaces.remove(ws);
+            }
+        }
     }
 
     @Override
@@ -96,7 +100,7 @@ public class ForeignWorkspaceManager extends WorkspaceManager {
 
     @Override
     public void createFile(String workspaceName, String filename) {
-        // TODO
+
     }
 
     @Override
