@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.cmov.airdesk.view.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.util.WifiDirect.WiFiDirectNetwork;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.ViewPagerAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.data.DataHolder;
 import pt.ulisboa.tecnico.cmov.airdesk.view.SlidingTabLayout;
+import pt.ulisboa.tecnico.cmov.airdesk.view.fragment.UserTagsFragment;
 
 
 public class AirdeskActivity extends ActionBarActivity {
@@ -132,7 +134,9 @@ public class AirdeskActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        final int DIALOG_FRAGMENT_USER_TAGS = 11;
         Intent intent;
+        FragmentManager fm;
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
@@ -170,6 +174,13 @@ public class AirdeskActivity extends ActionBarActivity {
                 return true;
             case R.id.user_prefs:
                 Toast.makeText(getBaseContext(), "User Settings", Toast.LENGTH_SHORT).show();
+                //UserTagsFragment
+                fm = getSupportFragmentManager();
+                UserTagsFragment dFragmentUserTagsFragment = new UserTagsFragment();
+                //EditLocalWorkspaceFragment.newInstance(getWorkspaceAdapter().getItem(position));
+                //dFragmentUserTagsFragment.setTargetFragment(AirdeskActivity.this, DIALOG_FRAGMENT_USER_TAGS);
+                dFragmentUserTagsFragment.show(fm, "Dialog Fragment");
+
                 return true;
         }
         return super.onOptionsItemSelected(item);
