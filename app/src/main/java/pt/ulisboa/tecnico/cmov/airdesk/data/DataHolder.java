@@ -4,14 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceAdapter;
-import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
-import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.WorkspaceTag;
-import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
 
 public class DataHolder {
     private static final String TAG = "AirdeskApp";
@@ -20,11 +13,10 @@ public class DataHolder {
 
     private Context context;
     private AirdeskDataSource db;
+
     private String nickname;
     private String email;
-    private List<Workspace> localWorkspaces;
-    private List<Workspace> foreignWorkspaces;
-    private Map<String, WorkspaceAdapter> activeUsers;
+    private List<String> userPreferenceTags;
 
     public static DataHolder getInstance() {
         if (holder == null) {
@@ -35,14 +27,12 @@ public class DataHolder {
 
     public void init(Context context) {
         this.context = context;
-//        this.activeUsers = new HashMap<>();
-//
-//        this.db = new AirdeskDataSource(context);
-//        this.db.open();
-//        this.localWorkspaces = this.db.fetchAllWorkspaces();
-//        Log.i(TAG, "this.db.fetchAllWorkspaces(): " + this.localWorkspaces.size());
-//        this.foreignWorkspaces = new ArrayList<>();
-//        db.close();
+        this.userPreferenceTags = new ArrayList<>();
+
+        this.db = new AirdeskDataSource(context);
+        this.db.open();
+        this.userPreferenceTags = this.db.fetchAllUserTags();
+        db.close();
     }
 
     public String getNickname() {
@@ -60,6 +50,62 @@ public class DataHolder {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public void addPreferenceTag(String newTag){
+        db.open();
+        db.insertUserTag(newTag);
+        db.close();
+        this.userPreferenceTags.add(newTag);
+        //TODO notify network
+    }
+
+    public void removePreferenceTag(String preferenceTag){
+        int i=0;
+
+        for(String tag : this.userPreferenceTags){
+            if(preferenceTag.toLowerCase().equals(tag.toLowerCase())) {
+                //TODO notify network
+                db.open();
+                db.deleteUserTag(tag);
+                db.close();
+                this.userPreferenceTags.remove(i);
+                return;
+            }
+            i++;
+        }
+    }
+
+    public void updatePreferenceTag(List<String> newPreferenceTags){
+        List<String> newTags, removeTags;
+        newTags = new ArrayList<>();
+        removeTags = new ArrayList<>();
+
+        for(String newTag : newPreferenceTags){
+            if(!this.userPreferenceTags.contains(newTag))
+                newTags.add(newTag);
+        }
+        Log.i(TAG, "[updatePreferenceTag]newTags:" + newTags);
+
+        for(String tag : userPreferenceTags){
+            if(!newPreferenceTags.contains(tag))
+                removeTags.add(tag);
+        }
+        Log.i(TAG, "[updatePreferenceTag]removeTags:" + removeTags);
+
+        //TODO notify network
+
+        db.open();
+        db.updateUserTag(newPreferenceTags);
+        db.close();
+        this.userPreferenceTags = newPreferenceTags;
+
+    }
+    public List<String> getPreferenceTags(){
+        return this.userPreferenceTags;
+    }
+
+
+
 
 //    public List<Workspace> getLocalWorkspaces() {
 //        return this.localWorkspaces;

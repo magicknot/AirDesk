@@ -55,6 +55,53 @@ public class AirdeskDataSource {
         mDbHelper.close();
     }
 
+    public void insertUserTag(String newTag){
+        ContentValues initialValues;
+
+        initialValues = new ContentValues();
+        initialValues.put(AirdeskDbContract.UserTagsTable.COLUMN_TAG, newTag);
+        mDb.insert(AirdeskDbContract.UserTagsTable.TABLE_NAME, null, initialValues);
+    }
+
+    public void updateUserTag(List <String> newTags){
+        long insertid;
+        ContentValues initialValues= new ContentValues();
+
+        mDb.delete(AirdeskDbContract.UserTagsTable.TABLE_NAME, null, null);
+
+        for (String tag : newTags) {
+            initialValues.put(AirdeskDbContract.UserTagsTable.COLUMN_TAG, tag);
+            insertid = mDb.insert(AirdeskDbContract.UserTagsTable.TABLE_NAME, null, initialValues);
+
+            Log.i(TAG, "Workspace Tag(" + tag + ")created with id " + insertid);
+        }
+
+
+        mDb.insert(AirdeskDbContract.UserTagsTable.TABLE_NAME, null, initialValues);
+    }
+
+    public void deleteUserTag(String tag){
+        ContentValues initialValues;
+
+        mDb.delete(AirdeskDbContract.UserTagsTable.TABLE_NAME, AirdeskDbContract.UserTagsTable.COLUMN_TAG + "='" + tag + "'", null);
+    }
+
+    public ArrayList<String>fetchAllUserTags() {
+        String tag;
+        Cursor cursor;
+        ArrayList<String> userTags = new ArrayList<String>();
+
+        cursor = mDb.query(AirdeskDbContract.UserTagsTable.TABLE_NAME, AirdeskDbContract.userTagsAllColls, null, null, null, null, null);
+        Log.i(TAG, "[fetchAllUserTags] Returned " + cursor.getCount() + " rows");
+        if (cursor.getCount() > 0) {
+            while (cursor.moveToNext()) {
+                tag =  cursor.getString(cursor.getColumnIndex(AirdeskDbContract.UserTagsTable.COLUMN_TAG));
+                userTags.add(tag);
+            }
+        }
+        return userTags;
+    }
+
     /**
      * Create a new note using the title and body provided. If the note is
      * successfully created return the new rowId for that note, otherwise return

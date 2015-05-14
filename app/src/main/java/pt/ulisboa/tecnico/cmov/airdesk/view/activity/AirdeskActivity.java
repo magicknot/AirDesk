@@ -168,6 +168,9 @@ public class AirdeskActivity extends ActionBarActivity {
                 startActivity(intent);
                 Toast.makeText(getBaseContext(), "Wifi Direct", Toast.LENGTH_SHORT).show();
                 return true;
+            case R.id.user_prefs:
+                Toast.makeText(getBaseContext(), "User Settings", Toast.LENGTH_SHORT).show();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }

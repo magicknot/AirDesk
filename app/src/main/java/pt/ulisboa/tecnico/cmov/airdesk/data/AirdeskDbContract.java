@@ -4,7 +4,7 @@ import android.provider.BaseColumns;
 
 public final class AirdeskDbContract {
 
-    public static final  int    DATABASE_VERSION   = 4;
+    public static final  int    DATABASE_VERSION   = 7;
     public static final  String DATABASE_NAME      = "airdesk.db";
 
     // To prevent someone from accidentally instantiating the contract class,
@@ -25,6 +25,25 @@ public final class AirdeskDbContract {
                 " )";
         public static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
     }
+
+
+    /* Inner class for relation between Workspaces and Tags table */
+    public static abstract class UserTagsTable implements BaseColumns {
+        public static final String TABLE_NAME       = "user_tags";
+        //columns
+        public static final String COLUMN_TAG = "tag_name";
+
+        public static final String CREATE_TABLE = "CREATE TABLE " +
+                TABLE_NAME + " (" +
+                COLUMN_TAG + " TEXT NOT NULL, " +
+                "PRIMARY KEY (" + COLUMN_TAG + ") " +
+                ")";
+
+        public static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
+    }
+
+    public static final String[] userTagsAllColls =  {UserTagsTable.COLUMN_TAG};
+
 
     /* Inner class for Workspaces table */
     public static abstract class WorkspacesTable implements BaseColumns {

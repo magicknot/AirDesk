@@ -36,4 +36,11 @@
         android:orderInCategory="100"
         app:showAsAction="ifRoom"
         />
+    <item
+        android:id="@+id/user_prefs"
+        android:title="User Preferences"
+        android:icon="@drawable/ic_action_settings"
+        android:orderInCategory="150"
+        app:showAsAction="ifRoom"
+        />
 </menu>

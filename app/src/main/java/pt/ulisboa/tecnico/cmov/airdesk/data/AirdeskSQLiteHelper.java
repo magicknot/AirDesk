@@ -20,6 +20,7 @@ public class AirdeskSQLiteHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase database) {
         Log.i(TAG, "Database Created ");
         database.execSQL(AirdeskDbContract.UsersTable.CREATE_TABLE);
+        database.execSQL(AirdeskDbContract.UserTagsTable.CREATE_TABLE);
         database.execSQL(AirdeskDbContract.WorkspacesTable.CREATE_TABLE);
         database.execSQL(AirdeskDbContract.WorkspaceClientsTable.CREATE_TABLE);
         database.execSQL(AirdeskDbContract.WorkspaceTagsTable.CREATE_TABLE);
@@ -31,6 +32,7 @@ public class AirdeskSQLiteHelper extends SQLiteOpenHelper {
         Log.i(TAG, "Upgrading database from version " + oldVersion + " to "
                 + newVersion + ", which will destroy all old data");
         database.execSQL(AirdeskDbContract.UsersTable.DELETE_TABLE);
+        database.execSQL(AirdeskDbContract.UserTagsTable.DELETE_TABLE);
         database.execSQL(AirdeskDbContract.WorkspacesTable.DELETE_TABLE);
         database.execSQL(AirdeskDbContract.WorkspaceClientsTable.DELETE_TABLE);
         database.execSQL(AirdeskDbContract.WorkspaceTagsTable.DELETE_TABLE);
