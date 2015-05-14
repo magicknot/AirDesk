@@ -22,6 +22,7 @@ import pt.inesc.termite.wifidirect.SimWifiP2pManager;
 import pt.inesc.termite.wifidirect.service.SimWifiP2pService;
 import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocketManager;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.PeerDevice;
 
 public class WiFiDirectNetwork
         implements SimWifiP2pManager.PeerListListener, SimWifiP2pManager.GroupInfoListener {

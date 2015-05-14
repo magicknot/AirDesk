@@ -11,7 +11,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
-import pt.ulisboa.tecnico.cmov.airdesk.io.WifiDirect.PeerDevice;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.PeerDevice;
 
 public class PeerDevicesAdapter extends BaseAdapter {
     private static final String TAG = "ClientsAdapter";
