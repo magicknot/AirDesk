@@ -1,11 +1,14 @@
 package pt.ulisboa.tecnico.cmov.airdesk.domain;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
-public class TextFile {
+public class TextFile implements Parcelable {
     public static final String TAG = "TEXT_FILE";
 
     private String name;
@@ -14,24 +17,11 @@ public class TextFile {
 
     private String acl;
 
-//    private String content;
-
-    //TODO ACL - ACL will be a a Map[User, Permissions] and this will be used to know when a File
-    //           should not be sent to the user. When externalizing this class, the ACL externalized
-    //           should be the one matching the remote user
-
     public TextFile(String name, String path, String acl) {
         this.name = name;
         this.path = path;
         this.acl = acl;
     }
-
-//    public TextFile(String name, String path, String acl, String content) {
-//        this.name = name;
-//        this.path = path;
-//        this.acl = acl;
-//        this.content = content;
-//    }
 
     public String getName() {
         return this.name;
@@ -44,14 +34,6 @@ public class TextFile {
     public String getACL() {
         return this.acl;
     }
-
-//    public String getContent() {
-//        return this.content;
-//    }
-//
-//    public void setContent(String content) {
-//        this.content = content;
-//    }
 
     public JSONObject toJson() {
         JSONObject obj = new JSONObject();
@@ -66,18 +48,6 @@ public class TextFile {
 
         return obj;
     }
-//
-//    public JSONObject toJsonWithContent() {
-//        JSONObject obj = toJson();
-//        try {
-//            obj.put("content", content);
-//        } catch (JSONException e) {
-//            Log.e(TAG, "toJsonWithContent() - could not add attribute to Json object\n\t" +
-//                    e.getCause().toString());
-//        }
-//
-//        return obj;
-//    }
 
     public static TextFile fromJson(String path, JSONObject obj) {
         TextFile file = null;
@@ -93,19 +63,26 @@ public class TextFile {
         return file;
     }
 
-//    public static TextFile fromJsonWithFile(String path, String content, JSONObject obj) {
-//        TextFile file = fromJson(path, obj);
-//
-//        if (file != null) {
-//            try {
-//                file.setContent(obj.getString("content"));
-//            } catch (JSONException e) {
-//                Log.e(TAG, "fromJsonWithFile() - could not add attribute to Json object\n\t" +
-//                        e.getCause().toString());
-//            }
-//        }
-//
-//        return file;
-//    }
+    @Override
+    public int describeContents() {
+        return hashCode();
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(name);
+        parcel.writeString(path);
+        parcel.writeString(acl);
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator<TextFile>() {
+        public TextFile createFromParcel(Parcel in) {
+            return new TextFile(in.readString(), in.readString(), in.readString());
+        }
+
+        public TextFile[] newArray(int size) {
+            return new TextFile[size];
+        }
+    };
 
 }
