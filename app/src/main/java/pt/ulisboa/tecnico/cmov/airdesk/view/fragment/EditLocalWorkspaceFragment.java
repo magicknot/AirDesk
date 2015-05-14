@@ -27,7 +27,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.manager.LocalWorkspaceManager;
 
 public class EditLocalWorkspaceFragment extends DialogFragment {
 
-    private static final String TAG = "EditLocalWorkspaceFrag";
+    private static final String TAG = EditLocalWorkspaceFragment.class.getSimpleName();
 
     private Workspace mWorkspace;
 

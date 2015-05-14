@@ -72,9 +72,6 @@ public class AirdeskDataSource {
 
             Log.i(TAG, "Workspace Tag(" + tag + ")created with id " + insertid);
         }
-
-
-        mDb.insert(AirdeskDbContract.UserTagsTable.TABLE_NAME, null, initialValues);
     }
 
     public void deleteUserTag(String tag) {
