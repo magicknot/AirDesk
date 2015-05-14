@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.cmov.airdesk.manager;
 
 import android.content.Context;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.Map;
 
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.data.DataHolder;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.TextFile;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.WorkspaceTag;
 
@@ -16,7 +18,6 @@ public class ForeignWorkspaceManager extends WorkspaceManager {
     private static final String TAG = ForeignWorkspaceManager.class.getSimpleName();
 
     private static ForeignWorkspaceManager holder = null;
-
 
     private Map<String, WorkspaceAdapter> activeUsers;
 
@@ -53,7 +54,8 @@ public class ForeignWorkspaceManager extends WorkspaceManager {
     }
 
     @Override
-    public void addWorkspace(String owner, String name, long quota, boolean isNotPrivate, List<WorkspaceTag> tags, List<String> clients) {
+    public void addWorkspace(String owner, String name, long quota, boolean isNotPrivate,
+                             List<WorkspaceTag> tags, List<String> clients) {
         for (Workspace ws : workspaces) {
             if (ws.getName().toLowerCase().equals(name.toLowerCase())
                     && ws.getOwner().toLowerCase().equals(owner.toLowerCase())) {
@@ -61,7 +63,8 @@ public class ForeignWorkspaceManager extends WorkspaceManager {
                 return;
             }
         }
-        workspaces.add(new Workspace(quota, name, owner, false));
+        Workspace ws = new Workspace(quota, name, owner, false, false);
+        workspaces.add(ws);
     }
 
     @Override
@@ -98,4 +101,28 @@ public class ForeignWorkspaceManager extends WorkspaceManager {
         }
     }
 
+    @Override
+    public void updateWorkspaceFiles(Workspace workspace) {
+        // TODO
+    }
+
+    @Override
+    public void createFile(Workspace workspace, String filename) {
+        // TODO
+    }
+
+    @Override
+    public void writeFile(Workspace workspace, TextFile file, String content) throws IOException {
+        // TODO
+    }
+
+    @Override
+    public String readFile(TextFile file) {
+        return "TODO"; //TODO
+    }
+
+    @Override
+    public void deleteFile(Workspace workspace, TextFile file) {
+        // TODO
+    }
 }

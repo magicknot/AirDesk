@@ -1,6 +1,5 @@
 package pt.ulisboa.tecnico.cmov.airdesk.view.fragment;
 
-
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
@@ -15,7 +14,8 @@ import java.io.IOException;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.TextFile;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
-
+import pt.ulisboa.tecnico.cmov.airdesk.manager.ForeignWorkspaceManager;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.LocalWorkspaceManager;
 
 public class EditFileFragment extends DialogFragment {
 
@@ -58,11 +58,12 @@ public class EditFileFragment extends DialogFragment {
         tName = (EditText) rootView.findViewById(R.id.textEditFileName);
         Button bCreate = (Button) rootView.findViewById(R.id.buttonSave);
 
-        try {
-            content = workspace.readFile(file, getActivity().getBaseContext());
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (workspace.isLocal()) {
+            content = LocalWorkspaceManager.getInstance().readFile(file);
+        } else {
+            content = ForeignWorkspaceManager.getInstance().readFile(file);
         }
+
         tName.setText(content);
 
         bCreate.setOnClickListener(new View.OnClickListener() {
@@ -70,8 +71,13 @@ public class EditFileFragment extends DialogFragment {
                 // Do something in response to button click
                 if (!tName.getText().toString().trim().isEmpty()) {
                     content = tName.getText().toString();
+
                     try {
-                        workspace.writeFile(file, content, getActivity().getBaseContext());
+                        if (workspace.isLocal()) {
+                            LocalWorkspaceManager.getInstance().writeFile(workspace, file, content);
+                        } else {
+                            ForeignWorkspaceManager.getInstance().writeFile(workspace, file, content);
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

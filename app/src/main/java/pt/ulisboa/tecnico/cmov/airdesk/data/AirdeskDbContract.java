@@ -4,7 +4,7 @@ import android.provider.BaseColumns;
 
 public final class AirdeskDbContract {
 
-    public static final  int    DATABASE_VERSION   = 7;
+    public static final  int    DATABASE_VERSION   = 8;
     public static final  String DATABASE_NAME      = "airdesk.db";
 
     // To prevent someone from accidentally instantiating the contract class,
@@ -53,6 +53,7 @@ public final class AirdeskDbContract {
         public static final String COLUMN_WORKSPACE_NAME = "name";
         public static final String COLUMN_QUOTA = "quota";
         public static final String COLUMN_PRIVACY = "privacy";
+        public static final String COLUMN_LOCATION = "location";
 
         public static final String CREATE_TABLE = "CREATE TABLE " +
                 TABLE_NAME + " (" +
@@ -61,6 +62,7 @@ public final class AirdeskDbContract {
                 COLUMN_WORKSPACE_NAME + " TEXT NOT NULL, " +
                 COLUMN_QUOTA + " INTEGER, " +
                 COLUMN_PRIVACY + " INTEGER, "  +
+                COLUMN_LOCATION + " INTEGER, "  +
                 "FOREIGN KEY (" + COLUMN_OWNER  + ") REFERENCES " + UsersTable.TABLE_NAME + "( " + UsersTable.COLUMN_EMAIL + " )" +
                 " )";
         public static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;

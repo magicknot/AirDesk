@@ -14,14 +14,15 @@ import java.io.IOException;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.TextFile;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.ForeignWorkspaceManager;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.LocalWorkspaceManager;
 
 public class showFileFragment extends DialogFragment {
 
     private Button bCreate;
 
-    private Workspace mWorkspace;
+    private Workspace workspace;
     private TextFile file;
-    private String content;
 
     public showFileFragment() {
         // Required empty public constructor
@@ -42,8 +43,8 @@ public class showFileFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mWorkspace = getArguments().getParcelable("workspace");
-        file = mWorkspace.getTextFile(getArguments().getString("filename"));
+        workspace = getArguments().getParcelable("workspace");
+        file = workspace.getTextFile(getArguments().getString("filename"));
         Log.i("EditFileFragment", "file name: " + file);
     }
 
@@ -57,11 +58,14 @@ public class showFileFragment extends DialogFragment {
 
         TextView tName = (TextView) rootView.findViewById(R.id.textViewFileName);
 
-        try {
-            content = mWorkspace.readFile(file, getActivity().getBaseContext());
-        } catch (IOException e) {
-            e.printStackTrace();
+        String content;
+
+        if (workspace.isLocal()) {
+            content = LocalWorkspaceManager.getInstance().readFile(file);
+        } else {
+            content = ForeignWorkspaceManager.getInstance().readFile(file);
         }
+
         tName.setText(content);
         return rootView;
     }

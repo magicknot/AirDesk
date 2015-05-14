@@ -3,47 +3,40 @@ package pt.ulisboa.tecnico.cmov.airdesk.domain.workspace;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.domain.TextFile;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
 
 public class Workspace implements Parcelable {
-
+    public static final String TAG = "Workspace";
     private long workspaceId;
-
     private long quota;
-
     private String name;
-
     private String owner;
-
     private boolean isPrivate;
-
+    private boolean isLocal;
     private List<String> clients;
     private List<WorkspaceTag> tags;
     private List<TextFile> files;
 
     public Workspace() {
-        this.workspaceId = -1;
-        this.quota = -1;
-        this.name = new String();
-        this.owner = new String();
-        this.isPrivate = true;
-        this.clients = new ArrayList<>();
-        this.tags = new ArrayList<>();
-        this.files = new ArrayList<>();
+        this(-1, "", "", true, true);
     }
 
-    public Workspace(long quota, String name, String owner, boolean isPrivate) {
+    public Workspace(long quota, String name, String owner, boolean isPrivate, boolean isLocal) {
         this.workspaceId = -1;
         this.quota = quota;
         this.name = name;
         this.owner = owner;
         this.isPrivate = isPrivate;
+        this.isLocal = isLocal;
+        this.clients = new ArrayList<>();
         this.tags = new ArrayList<>();
         this.files = new ArrayList<>();
     }
@@ -141,36 +134,20 @@ public class Workspace implements Parcelable {
         return null;
     }
 
-    public void createFile(String filename, Context context) throws IOException {
-        TextFile file = new TextFile(filename, name, "TODO_ACL"); //FIXME
+    public boolean addTextFile(TextFile file) {
         if (files.contains(file)) {
-            //TODO Throw exception when file exists
-            return;
-        }
-
-        files.add(file);
-        FileManager.save(file, context); //FIXME isto tem que passar para o LW
-
-    }
-
-    public void writeFile(TextFile file, String content, Context context) throws IOException {
-        if (files.contains(file)) {
-            Long usedSpace = FileManager.getUsedSpace(name, context);
-            if (usedSpace + 2 * content.length() < quota) {
-                FileManager.save(file, content, context);
-            } else {
-                throw new IOException("Quota exceeded (" + usedSpace + " + 2 * " +
-                        content.length() + " < " + quota + " = false)");
-            }
+            return false;
+        } else {
+            return files.add(file);
         }
     }
 
-    public String readFile(TextFile file, Context context) throws IOException {
-        return FileManager.read(file, context);
+    public boolean hasTextFile(TextFile file) {
+        return files.contains(file);
     }
 
-    public void deleteFile(TextFile file, Context context) {
-        FileManager.delete(file, context);
+    public boolean removeTextFile(TextFile file) {
+        return files.remove(file);
     }
 
     public void deleteWorkspaceDirectory(Context context) {
@@ -207,6 +184,14 @@ public class Workspace implements Parcelable {
         this.isPrivate = isPrivate;
     }
 
+    public boolean isLocal() {
+        return isLocal;
+    }
+
+    public void setLocal(boolean isLocal) {
+        this.isLocal = isLocal;
+    }
+
     @Override
     public String toString() {
         return "Workspace{" +
@@ -227,6 +212,7 @@ public class Workspace implements Parcelable {
         name = source.readString();
         owner = source.readString();
         isPrivate = source.readInt() == 1;
+        isLocal = source.readInt() == 1;
         source.readList(tags, WorkspaceTag.class.getClassLoader());
         source.readList(files, TextFile.class.getClassLoader());
         source.readList(clients, String.class.getClassLoader());
@@ -244,6 +230,7 @@ public class Workspace implements Parcelable {
         dest.writeString(name);
         dest.writeString(owner);
         dest.writeInt(isPrivate ? 1 : 0);
+        dest.writeInt(isLocal ? 1 : 0);
         dest.writeList(tags);
         dest.writeList(files);
         dest.writeList(clients);
@@ -253,6 +240,7 @@ public class Workspace implements Parcelable {
         public Workspace createFromParcel(Parcel in) {
             return new Workspace(in);
         }
+
         public Workspace[] newArray(int size) {
             return new Workspace[size];
         }

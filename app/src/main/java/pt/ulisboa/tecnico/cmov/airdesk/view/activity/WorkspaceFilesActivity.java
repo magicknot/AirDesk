@@ -19,6 +19,8 @@ import java.lang.reflect.Field;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.TextFileAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.ForeignWorkspaceManager;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.LocalWorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.view.fragment.EditFileFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.view.fragment.NewFileFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.view.fragment.showFileFragment;
@@ -138,7 +140,15 @@ public class WorkspaceFilesActivity extends ActionBarActivity implements Adapter
                     case R.id.workspace_overflow_delete:
                         Log.i(TAG, " clicked. delete " + String.valueOf(position) + " : " +
                                 textFileAdapter.getItem(position).getName());
-                        workspace.deleteFile(textFileAdapter.getItem(position), getBaseContext());
+
+                        if (workspace.isLocal()) {
+                            LocalWorkspaceManager.getInstance().deleteFile(workspace,
+                                    textFileAdapter.getItem(position));
+                        } else {
+                            ForeignWorkspaceManager.getInstance().deleteFile(workspace,
+                                    textFileAdapter.getItem(position));
+                        }
+
                         textFileAdapter.setTextFiles(workspace.getTextFiles());
                         textFileAdapter.notifyDataSetChanged();
                         return true;

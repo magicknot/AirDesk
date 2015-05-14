@@ -1,6 +1,5 @@
 package pt.ulisboa.tecnico.cmov.airdesk.view.fragment;
 
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -14,7 +13,8 @@ import java.io.IOException;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
-
+import pt.ulisboa.tecnico.cmov.airdesk.manager.ForeignWorkspaceManager;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.LocalWorkspaceManager;
 
 public class NewFileFragment extends DialogFragment {
 
@@ -60,8 +60,8 @@ public class NewFileFragment extends DialogFragment {
 
         getDialog().setTitle("Create File");
 
-        tName = (EditText)rootView.findViewById(R.id.textViewFileName);
-        bCreate = (Button)rootView.findViewById(R.id.buttonCreate);
+        tName = (EditText) rootView.findViewById(R.id.textViewFileName);
+        bCreate = (Button) rootView.findViewById(R.id.buttonCreate);
 
         bCreate.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -88,14 +88,14 @@ public class NewFileFragment extends DialogFragment {
     // May also be triggered from the Activity
     public void createFile() {
 
-        String fileName=new String();
+        String fileName = "";
         // Do something in response to button click
         if (!tName.getText().toString().trim().isEmpty()) {
-            fileName= tName.getText().toString().trim();
-            try {
-                mWorkspace.createFile(fileName, getActivity().getBaseContext());
-            } catch (IOException e) {
-                e.printStackTrace();
+            fileName = tName.getText().toString().trim();
+            if (mWorkspace.isLocal()) {
+                LocalWorkspaceManager.getInstance().createFile(mWorkspace, fileName);
+            } else {
+                ForeignWorkspaceManager.getInstance().createFile(mWorkspace, fileName);
             }
         }
         dismiss();
