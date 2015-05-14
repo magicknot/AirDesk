@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.cmov.airdesk;
 
 import android.app.Application;
 
+import pt.ulisboa.tecnico.cmov.airdesk.manager.ForeignWorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.NetworkManager;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.LocalWorkspaceManager;

@@ -21,7 +21,6 @@ import pt.ulisboa.tecnico.cmov.airdesk.manager.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.view.SlidingTabLayout;
 import pt.ulisboa.tecnico.cmov.airdesk.view.fragment.UserTagsFragment;
 
-
 public class AirdeskActivity extends ActionBarActivity {
 
     public static final String PREFS_NAME = "MyPrefsFile";
@@ -53,7 +52,7 @@ public class AirdeskActivity extends ActionBarActivity {
 
     }
 
-    private void validateUserRegistration(){
+    private void validateUserRegistration() {
 
         // Restore preferences
         SharedPreferences myPrefs = getSharedPreferences(PREFS_NAME, 0);
@@ -66,7 +65,7 @@ public class AirdeskActivity extends ActionBarActivity {
         }
     }
 
-    private void initiateApplication(){
+    private void initiateApplication() {
         String email;
         String nickname;
 
@@ -84,7 +83,7 @@ public class AirdeskActivity extends ActionBarActivity {
         Log.i(TAG, "User Login: " + nickname + "/" + email);
     }
 
-    private void exitApplication(){
+    private void exitApplication() {
         SharedPreferences pref = getSharedPreferences("MyPrefsFile", 0);
         pref.edit().clear().commit();
         this.deleteDatabase(AirdeskDbContract.DATABASE_NAME);
@@ -94,13 +93,13 @@ public class AirdeskActivity extends ActionBarActivity {
         // delete Files
     }
 
-    private void createWorkspaceTabs(){
+    private void createWorkspaceTabs() {
         // Creating The Toolbar and setting it as the Toolbar for the activity
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
 
         // Creating The ViewPagerAdapter and Passing Fragment Manager, Titles fot the Tabs and Number Of Tabs.
-        adapter =  new ViewPagerAdapter(getSupportFragmentManager(),Titles, numberOfTabs);
+        adapter = new ViewPagerAdapter(getSupportFragmentManager(), Titles, numberOfTabs);
 
         // Assigning ViewPager View and setting the adapter
         pager = (ViewPager) findViewById(R.id.pager);
@@ -154,7 +153,7 @@ public class AirdeskActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        switch (id){
+        switch (id) {
             case R.id.action_settings:
                 SharedPreferences myPrefs = getSharedPreferences(PREFS_NAME, 0);
                 String email = myPrefs.getString("userEmail", "userEmail");

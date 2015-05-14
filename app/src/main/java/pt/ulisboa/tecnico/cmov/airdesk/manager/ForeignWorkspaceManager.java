@@ -29,6 +29,7 @@ public class ForeignWorkspaceManager extends WorkspaceManager {
 
     public void init(Context context) {
         super.context = context;
+        this.workspaces = new ArrayList<>();
         this.activeUsers = new HashMap<>();
     }
 
