@@ -23,6 +23,7 @@ import pt.inesc.termite.wifidirect.service.SimWifiP2pService;
 import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocketManager;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.PeerDevice;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.NetworkManager;
 
 public class WiFiDirectNetwork
         implements SimWifiP2pManager.PeerListListener, SimWifiP2pManager.GroupInfoListener {
@@ -39,6 +40,8 @@ public class WiFiDirectNetwork
     private Messenger mService = null;
     private boolean mBound = false;
     private IncommingCommTask mServer = null;
+    private String deviceName;
+    private List<PeerDevice> peerDevices;
 
     public String getDeviceName() {
         return deviceName;
@@ -48,14 +51,11 @@ public class WiFiDirectNetwork
         this.deviceName = deviceName;
     }
 
-    private String deviceName;
-    private List<PeerDevice> peerDevices;
-    private List<PeerDevice> groupPeerDevices;
+
 
     public WiFiDirectNetwork(Context context) {
         this.appContext = context;
         this.peerDevices = new ArrayList<>();
-        this.groupPeerDevices = new ArrayList<>();
         deviceName = new String();
 
         appConnection = new ServiceConnection() {
@@ -157,7 +157,7 @@ public class WiFiDirectNetwork
 //    }
 
     public boolean groupContainDevice(String deviceName) {
-        for (PeerDevice p : groupPeerDevices) {
+        for (PeerDevice p : getGroupDevices()) {
             if (p.getDeviceName().toLowerCase().equals(deviceName.toLowerCase())) {
                 return true;
             }
@@ -170,7 +170,7 @@ public class WiFiDirectNetwork
     }
 
     public List<PeerDevice> getGroupDevices(){
-        return this.groupPeerDevices;
+        return NetworkManager.getInstance().getGroupDevices();
     }
 
     @Override
@@ -201,8 +201,6 @@ public class WiFiDirectNetwork
 
         StringBuilder peersStr = new StringBuilder();
 
-        //this.grouPeerDevices.clear();
-
         //Print Group Information
         //simWifiP2pInfo.print();
         this.setDeviceName(simWifiP2pInfo.getDeviceName());
@@ -216,9 +214,13 @@ public class WiFiDirectNetwork
                 peerDevice.setDeviceName(deviceName);
                 peerDevice.setIp(device.getVirtIp());
                 peerDevice.setPort(device.getVirtPort());
-                this.groupPeerDevices.add(peerDevice);
+
+                // add to group devices
+                NetworkManager.getInstance().addGroupDevice(peerDevice);
+
                 String devstr = "" + deviceName + " (" + ((device == null) ? "??" : device.getVirtIp()) + ":" + device.getVirtPort() + "); ";
                 peersStr.append(devstr);
+
 
                 task = new OutgoingCommTask(peerDevice.getIp(), peerDevice.getPort(), "ANNOUNCE", getDeviceName());
                 task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
