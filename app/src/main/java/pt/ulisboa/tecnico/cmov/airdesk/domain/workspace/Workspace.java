@@ -3,6 +3,11 @@ package pt.ulisboa.tecnico.cmov.airdesk.domain.workspace;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +29,11 @@ public class Workspace implements Parcelable {
 
     public Workspace() {
         this(-1, "", "", true, true);
+    }
+
+    private Workspace(String name, String owner, List<TextFile> files) {
+        this(-1, name, owner, true, true);
+        this.files = files;
     }
 
     public Workspace(long quota, String name, String owner, boolean isPrivate, boolean isLocal) {
@@ -200,6 +210,49 @@ public class Workspace implements Parcelable {
                 //FIXME:  ", clients=" + getClients() +
                 ", tags=" + getTags() +
                 '}';
+    }
+
+    public JSONObject toJson() {
+        JSONObject obj = new JSONObject();
+        JSONArray array = new JSONArray();
+
+        try {
+            obj.put("name", name);
+            for (TextFile file : files) {
+                array.put(file.toJson());
+            }
+            obj.put("files", array);
+        } catch (JSONException e) {
+            Log.e(TAG, "toJson() - could not add attribute to Json object\n\t" + e.getCause().toString());
+        }
+
+        return obj;
+    }
+
+    public static Workspace fromJson(String owner, JSONObject obj) {
+        Workspace ws = null;
+        List<TextFile> files = new ArrayList<>();
+
+        try {
+            String name = obj.getString("name");
+            JSONArray array = obj.getJSONArray("files");
+
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject arrayItem = array.getJSONObject(i);
+                TextFile file = TextFile.fromJson(name, arrayItem);
+
+                if (file != null) {
+                    files.add(file);
+                }
+            }
+
+            ws = new Workspace(name, owner, files);
+        } catch (JSONException e) {
+            Log.e(TAG, "fromJson() - could not add attribute to Json object\n\t" +
+                    e.getCause().toString());
+        }
+
+        return ws;
     }
 
     public Workspace(Parcel source) {
