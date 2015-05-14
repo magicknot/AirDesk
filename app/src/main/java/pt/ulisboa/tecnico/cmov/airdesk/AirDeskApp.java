@@ -4,7 +4,7 @@ import android.app.Application;
 
 import pt.ulisboa.tecnico.cmov.airdesk.manager.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.LocalWorkspaceManager;
-import pt.ulisboa.tecnico.cmov.airdesk.util.WifiDirect.WiFiDirectNetwork;
+import pt.ulisboa.tecnico.cmov.airdesk.io.WifiDirect.WiFiDirectNetwork;
 
 public class AirDeskApp extends Application {
 

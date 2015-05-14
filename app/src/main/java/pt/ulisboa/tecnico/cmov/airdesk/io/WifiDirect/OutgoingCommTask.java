@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.cmov.airdesk.util.WifiDirect;
+package pt.ulisboa.tecnico.cmov.airdesk.io.WifiDirect;
 
 
 import android.os.AsyncTask;
@@ -7,7 +7,6 @@ import android.util.Log;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.lang.reflect.Array;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 

@@ -6,11 +6,11 @@ import android.util.Log;
 import java.io.IOException;
 import java.util.List;
 
-import pt.ulisboa.tecnico.cmov.airdesk.data.AirdeskDataSource;
+import pt.ulisboa.tecnico.cmov.airdesk.io.database.AirdeskDataSource;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.TextFile;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.WorkspaceTag;
-import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
+import pt.ulisboa.tecnico.cmov.airdesk.io.FileManager;
 
 public class LocalWorkspaceManager extends WorkspaceManager {
     private static final String TAG = LocalWorkspaceManager.class.getSimpleName();

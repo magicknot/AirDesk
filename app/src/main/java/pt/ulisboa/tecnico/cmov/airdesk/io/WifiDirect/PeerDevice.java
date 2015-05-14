@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.cmov.airdesk.util.WifiDirect;
+package pt.ulisboa.tecnico.cmov.airdesk.io.WifiDirect;
 
 public class PeerDevice {
     private String deviceName;

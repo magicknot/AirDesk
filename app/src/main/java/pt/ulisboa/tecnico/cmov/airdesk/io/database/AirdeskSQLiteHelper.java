@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.cmov.airdesk.data;
+package pt.ulisboa.tecnico.cmov.airdesk.io.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

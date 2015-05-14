@@ -14,9 +14,9 @@ import android.widget.TextView;
 
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
-import pt.ulisboa.tecnico.cmov.airdesk.util.WifiDirect.OutgoingCommTask;
-import pt.ulisboa.tecnico.cmov.airdesk.util.WifiDirect.PeerDevice;
-import pt.ulisboa.tecnico.cmov.airdesk.util.WifiDirect.WiFiDirectNetwork;
+import pt.ulisboa.tecnico.cmov.airdesk.io.WifiDirect.OutgoingCommTask;
+import pt.ulisboa.tecnico.cmov.airdesk.io.WifiDirect.PeerDevice;
+import pt.ulisboa.tecnico.cmov.airdesk.io.WifiDirect.WiFiDirectNetwork;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.PeerDevicesAdapter;
 
 

@@ -14,7 +14,7 @@ import android.widget.Toast;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.ForeignWorkspaceManager;
-import pt.ulisboa.tecnico.cmov.airdesk.util.WifiDirect.WiFiDirectNetwork;
+import pt.ulisboa.tecnico.cmov.airdesk.io.WifiDirect.WiFiDirectNetwork;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.ViewPagerAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.view.SlidingTabLayout;

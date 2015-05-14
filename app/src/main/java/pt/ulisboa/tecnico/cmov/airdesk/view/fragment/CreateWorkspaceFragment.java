@@ -22,7 +22,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.ClientsAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.TagsAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.LocalWorkspaceManager;
-import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
+import pt.ulisboa.tecnico.cmov.airdesk.io.FileManager;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.WorkspaceTag;
 
 

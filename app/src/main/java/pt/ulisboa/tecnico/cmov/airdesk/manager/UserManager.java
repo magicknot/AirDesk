@@ -6,7 +6,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-import pt.ulisboa.tecnico.cmov.airdesk.data.AirdeskDataSource;
+import pt.ulisboa.tecnico.cmov.airdesk.io.database.AirdeskDataSource;
 
 public class UserManager {
     private static final String TAG = "AirdeskApp";
