@@ -14,10 +14,10 @@ public class WorkspacesMessage extends Message {
 
     private String owner_email;
 
-    private JSONObject workspaces;
+    private JSONArray workspaces;
 
-    public WorkspacesMessage(String type, String owner_email, JSONObject workspaces) {
-        super(type);
+    public WorkspacesMessage(String owner_email, JSONArray workspaces) {
+        super(TAG);
         this.owner_email = owner_email;
         this.workspaces = workspaces;
     }
@@ -26,7 +26,7 @@ public class WorkspacesMessage extends Message {
         return this.owner_email;
     }
 
-    public JSONObject getWorkspaces() {
+    public JSONArray getWorkspaces() {
         return this.workspaces;
     }
 

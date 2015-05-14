@@ -3,11 +3,14 @@ package pt.ulisboa.tecnico.cmov.airdesk.io.WifiDirect;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocket;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.NetworkManager;
 
 public class ReceiveCommTask extends AsyncTask<SimWifiP2pSocket, String, Void> {
     public static final String TAG = ReceiveCommTask.class.getSimpleName();
@@ -38,7 +41,10 @@ public class ReceiveCommTask extends AsyncTask<SimWifiP2pSocket, String, Void> {
 
     @Override
     protected void onProgressUpdate(String... values) {
+
         Log.i(TAG, values[0]+"\n");
+        NetworkManager.getInstance().receiveMessage(values[0]);
+
     }
 
     @Override

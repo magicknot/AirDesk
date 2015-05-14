@@ -193,6 +193,7 @@ public class WiFiDirectNetwork
         //simWifiP2pInfo.print();
 
         this.setDeviceName(simWifiP2pInfo.getDeviceName());
+        netman.setDeviceName(simWifiP2pInfo.getDeviceName());
 
         Log.i(TAG + "deviceName", this.getDeviceName());
 

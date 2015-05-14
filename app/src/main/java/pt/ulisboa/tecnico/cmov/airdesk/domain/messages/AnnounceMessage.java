@@ -11,19 +11,26 @@ public class AnnounceMessage extends Message {
 
     private String email;
 
+    private String deviceName;
+
     private String nickname;
 
     private JSONArray tags;
 
-    public AnnounceMessage(String email, String nickname, JSONArray tags) {
+    public AnnounceMessage(String email, String deviceName, String nickname, JSONArray tags) {
         super(TAG);
         this.email = email;
+        this.deviceName = deviceName;
         this.nickname = nickname;
         this.tags = tags;
     }
 
     public String getEmail() {
         return this.email;
+    }
+
+    public String getDeviceName() {
+        return deviceName;
     }
 
     public String getNickname() {
@@ -39,6 +46,7 @@ public class AnnounceMessage extends Message {
         JSONObject obj = super.toJson();
         try {
             obj.put("e-mail", email);
+            obj.put("deviceName", deviceName);
             obj.put("nickname", nickname);
             obj.put("tags", tags);
         } catch (JSONException e) {
@@ -47,4 +55,6 @@ public class AnnounceMessage extends Message {
 
         return obj;
     }
+
+
 }
