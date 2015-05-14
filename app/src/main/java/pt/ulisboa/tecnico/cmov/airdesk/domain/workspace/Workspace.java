@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.domain.TextFile;
-import pt.ulisboa.tecnico.cmov.airdesk.io.FileManager;
+import pt.ulisboa.tecnico.cmov.airdesk.io.FileStorage;
 
 public class Workspace implements Parcelable {
     public static final String TAG = "Workspace";
@@ -65,8 +65,8 @@ public class Workspace implements Parcelable {
     }
 
     public void setQuota(long quota, Context context) {
-        long minimumValue = FileManager.getUsedSpace(name, context);
-        long maximumValue = FileManager.getFreeSpace(context);
+        long minimumValue = FileStorage.getUsedSpace(name, context);
+        long maximumValue = FileStorage.getFreeSpace(context);
 
         if (quota >= minimumValue && quota <= maximumValue) {
             this.quota = quota;
@@ -158,11 +158,11 @@ public class Workspace implements Parcelable {
     }
 
     public void deleteWorkspaceDirectory(Context context) {
-        FileManager.deleteWorkspace(this.name, context);
+        FileStorage.deleteWorkspace(this.name, context);
     }
 
     public long getUsedSpaceByWorkspace(Context context) {
-        return FileManager.getUsedSpace(this.name, context);
+        return FileStorage.getUsedSpace(this.name, context);
     }
 
     public List<WorkspaceTag> getTags() {
