@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceAdapter;
-import pt.ulisboa.tecnico.cmov.airdesk.data.DataHolder;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.TextFile;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.WorkspaceTag;
@@ -47,7 +46,7 @@ public class ForeignWorkspaceManager extends WorkspaceManager {
 
 
         for (Workspace ws : LocalWorkspaceManager.getInstance().getWorkspaces()) {
-            if (ws.containClient(DataHolder.getInstance().getEmail())) {
+            if (ws.containClient(UserManager.getInstance().getEmail())) {
                 addWorkspace(ws.getOwner(), ws.getName(), ws.getQuota(), ws.isPrivate(), null, null);
             }
         }

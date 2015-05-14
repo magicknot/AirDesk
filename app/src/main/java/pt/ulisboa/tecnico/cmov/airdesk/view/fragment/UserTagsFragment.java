@@ -1,6 +1,5 @@
 package pt.ulisboa.tecnico.cmov.airdesk.view.fragment;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
@@ -15,7 +14,7 @@ import android.widget.TextView;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.UserTagsAdapter;
-import pt.ulisboa.tecnico.cmov.airdesk.data.DataHolder;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.UserManager;
 
 public class UserTagsFragment extends DialogFragment {
     private static final String TAG = UserTagsFragment.class.getSimpleName();
@@ -47,11 +46,11 @@ public class UserTagsFragment extends DialogFragment {
         // Get ListView object from xml
         listViewItems = (ListView) rootView.findViewById(R.id.tagList);
         mTagListAdapter = new UserTagsAdapter(inflater, R.layout.item_tag_grid);
-        mTagListAdapter.setListUserTags(DataHolder.getInstance().getPreferenceTags());
+        mTagListAdapter.setListUserTags(UserManager.getInstance().getPreferenceTags());
         listViewItems.setAdapter(mTagListAdapter);
 
         tName = (TextView) rootView.findViewById(R.id.textViewEmailNickname);
-        tName.setText(DataHolder.getInstance().getEmail());
+        tName.setText(UserManager.getInstance().getEmail());
 
         tItem = (EditText) rootView.findViewById(R.id.editTextNewItem);
         bAddItem = (ImageButton) rootView.findViewById(R.id.buttonAddItem);
@@ -85,7 +84,7 @@ public class UserTagsFragment extends DialogFragment {
                 // Do something in response to button click
                 Log.i(TAG, "[onCheckedChanged] Create");
 
-                DataHolder.getInstance().updatePreferenceTag(mTagListAdapter.getListUserTags());
+                UserManager.getInstance().updatePreferenceTag(mTagListAdapter.getListUserTags());
                 // FIXME Update Foreign Workspaces from network
 //                getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, getActivity().getIntent());
                 dismiss();

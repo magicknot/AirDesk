@@ -17,7 +17,6 @@ import java.lang.reflect.Field;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceAdapter;
-import pt.ulisboa.tecnico.cmov.airdesk.data.DataHolder;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.ForeignWorkspaceManager;
 
 public class ForeignWorkspaceTab extends Tab {

@@ -16,7 +16,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.ForeignWorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.util.WifiDirect.WiFiDirectNetwork;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.ViewPagerAdapter;
-import pt.ulisboa.tecnico.cmov.airdesk.data.DataHolder;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.view.SlidingTabLayout;
 import pt.ulisboa.tecnico.cmov.airdesk.view.fragment.UserTagsFragment;
 
@@ -75,8 +75,8 @@ public class AirdeskActivity extends ActionBarActivity {
         nickname = myPrefs.getString("userNickname", "userNickname");
         //currentUser = new User(email, nickname);
 
-        DataHolder.getInstance().setEmail(email);
-        DataHolder.getInstance().setNickname(nickname);
+        UserManager.getInstance().setEmail(email);
+        UserManager.getInstance().setNickname(nickname);
         //FIXME Remove when Network Implementation
         ForeignWorkspaceManager.getInstance().init(this);
         createWorkspaceTabs();

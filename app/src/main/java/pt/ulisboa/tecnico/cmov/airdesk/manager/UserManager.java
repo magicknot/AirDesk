@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.cmov.airdesk.data;
+package pt.ulisboa.tecnico.cmov.airdesk.manager;
 
 import android.content.Context;
 import android.util.Log;
@@ -6,10 +6,12 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DataHolder {
+import pt.ulisboa.tecnico.cmov.airdesk.data.AirdeskDataSource;
+
+public class UserManager {
     private static final String TAG = "AirdeskApp";
 
-    private static DataHolder holder = null;
+    private static UserManager holder = null;
 
     private Context context;
     private AirdeskDataSource db;
@@ -18,9 +20,9 @@ public class DataHolder {
     private String email;
     private List<String> userPreferenceTags;
 
-    public static DataHolder getInstance() {
+    public static UserManager getInstance() {
         if (holder == null) {
-            holder = new DataHolder();
+            holder = new UserManager();
         }
         return holder;
     }
