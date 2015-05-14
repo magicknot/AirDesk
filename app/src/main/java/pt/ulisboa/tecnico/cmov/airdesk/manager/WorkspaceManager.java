@@ -19,6 +19,16 @@ public abstract class WorkspaceManager {
         return workspaces;
     }
 
+    public Workspace getWorkspaceByName(String name) {
+        for (Workspace ws : workspaces) {
+            if (ws.getName().equals(name)) {
+                return ws;
+            }
+        }
+
+        return null;
+    }
+
     public abstract void addWorkspace(String owner, String name, long quota, boolean isNotPrivate,
                              List<WorkspaceTag> tags, List<String> clients);
 
@@ -28,7 +38,7 @@ public abstract class WorkspaceManager {
 
     protected abstract void updateWorkspaceFiles(Workspace workspace);
 
-    public abstract void createFile(Workspace workspace, String filename);
+    public abstract void createFile(String workspaceName, String filename);
 
     public abstract void writeFile(Workspace workspace, TextFile file, String content) throws IOException;
 

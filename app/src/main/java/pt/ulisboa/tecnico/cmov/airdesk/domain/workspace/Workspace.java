@@ -199,11 +199,11 @@ public class Workspace implements Parcelable {
     public String toString() {
         return "Workspace{" +
                 "workspaceId=" + getWorkspaceId() +
-                "quota=" + quota +
+                ", quota=" + quota +
                 ", name='" + getName() + '\'' +
                 ", owner=" + getOwner() +
-                //FIXME:  ", files=" + getFiles() +
-                //FIXME:  ", clients=" + getClients() +
+                ", files=" + getTextFiles() +
+                ", clients=" + getClients() +
                 ", tags=" + getTags() +
                 '}';
     }

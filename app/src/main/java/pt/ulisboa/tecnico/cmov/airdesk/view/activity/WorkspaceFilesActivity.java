@@ -53,7 +53,12 @@ public class WorkspaceFilesActivity extends ActionBarActivity implements Adapter
         if (b != null) {
             //i = b.getInt("EXTRA_SESSION_ID");
             //Log.i("WorkspaceFilesActivity", "onCreate: getParcelableExtra: " + i);
-            workspace = b.getParcelable("EXTRA_SESSION_ID");
+            Workspace temp = b.getParcelable("EXTRA_SESSION_ID");
+            if (temp.isLocal()) {
+                workspace = LocalWorkspaceManager.getInstance().getWorkspaceByName(temp.getName());
+            } else {
+                workspace = ForeignWorkspaceManager.getInstance().getWorkspaceByName(temp.getName());
+            }
             Log.i("WorkspaceFilesActivity", "onCreate: getParcelableExtra: " + workspace);
         }
 
@@ -190,7 +195,6 @@ public class WorkspaceFilesActivity extends ActionBarActivity implements Adapter
         Log.i(TAG, "onNewFileItemSelected : " + fileName);
         textFileAdapter.setTextFiles(this.workspace.getTextFiles());
         textFileAdapter.notifyDataSetChanged();
-
     }
 
 }

@@ -106,7 +106,7 @@ public class ForeignWorkspaceManager extends WorkspaceManager {
     }
 
     @Override
-    public void createFile(Workspace workspace, String filename) {
+    public void createFile(String workspaceName, String filename) {
         // TODO
     }
 

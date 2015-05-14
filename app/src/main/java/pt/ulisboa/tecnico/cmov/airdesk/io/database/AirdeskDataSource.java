@@ -81,7 +81,7 @@ public class AirdeskDataSource {
     public ArrayList<String> fetchAllUserTags() {
         String tag;
         Cursor cursor;
-        ArrayList<String> userTags = new ArrayList<String>();
+        ArrayList<String> userTags = new ArrayList<>();
 
         cursor = mDb.query(AirdeskDbContract.UserTagsTable.TABLE_NAME, AirdeskDbContract.userTagsAllColls, null, null, null, null, null);
         Log.i(TAG, "[fetchAllUserTags] Returned " + cursor.getCount() + " rows");
@@ -175,7 +175,7 @@ public class AirdeskDataSource {
         Cursor cursor;
         String where_clause;
 
-        ArrayList<Workspace> workspaces = new ArrayList<Workspace>();
+        ArrayList<Workspace> workspaces = new ArrayList<>();
         cursor = mDb.query(AirdeskDbContract.WorkspacesTable.TABLE_NAME, AirdeskDbContract.workspaceAllColls, null, null, null, null, null);
 
         Log.i(TAG, "Returned " + cursor.getCount() + " rows");
@@ -194,33 +194,43 @@ public class AirdeskDataSource {
             }
         }
 
-        for (int i = 0; i < workspaces.size(); i++) {
-            w = workspaces.get(i);
-            if (w.isPrivate()) {
-                //insert Clients
-                where_clause = AirdeskDbContract.WorkspaceClientsTable.COLUMN_WORKSPACE_KEY + "=" + String.valueOf(w.getWorkspaceId());
+        for (Workspace ws : workspaces) {
+            if (ws.isPrivate()) {
+                where_clause = AirdeskDbContract.WorkspaceClientsTable.COLUMN_WORKSPACE_KEY + "=" + String.valueOf(ws.getWorkspaceId());
                 cursor = mDb.query(AirdeskDbContract.WorkspaceClientsTable.TABLE_NAME, AirdeskDbContract.workspaceClientsAllColls, where_clause, null, null, null, null);
                 Log.i(TAG, AirdeskDbContract.WorkspaceClientsTable.TABLE_NAME + " Returned " + cursor.getCount() + " rows");
                 if (cursor.getCount() > 0) {
                     while (cursor.moveToNext()) {
                         u = cursor.getString(cursor.getColumnIndex(AirdeskDbContract.WorkspaceClientsTable.COLUMN_CLIENT_KEY));
-                        w.addClient(u);
+                        ws.addClient(u);
                     }
                 }
             } else {
-                //insert Tags
-                where_clause = AirdeskDbContract.WorkspaceTagsTable.COLUMN_WORKSPACE_KEY + "=" + String.valueOf(w.getWorkspaceId());
+                where_clause = AirdeskDbContract.WorkspaceTagsTable.COLUMN_WORKSPACE_KEY + "=" + String.valueOf(ws.getWorkspaceId());
                 cursor = mDb.query(AirdeskDbContract.WorkspaceTagsTable.TABLE_NAME, AirdeskDbContract.workspaceTagsAllColls, where_clause, null, null, null, null);
                 Log.i(TAG, AirdeskDbContract.WorkspaceTagsTable.TABLE_NAME + " Returned " + cursor.getCount() + " rows");
                 if (cursor.getCount() > 0) {
                     while (cursor.moveToNext()) {
                         t = new WorkspaceTag();
                         t.setTag(cursor.getString(cursor.getColumnIndex(AirdeskDbContract.WorkspaceTagsTable.COLUMN_TAG)));
-                        w.addTag(t);
+                        ws.addTag(t);
                     }
                 }
             }
+
+            where_clause = AirdeskDbContract.WorkspaceFilesTable.COLUMN_WORKSPACE_KEY + "=" + String.valueOf(ws.getWorkspaceId());
+            cursor = mDb.query(AirdeskDbContract.WorkspaceFilesTable.TABLE_NAME, AirdeskDbContract.workspaceFilesAllColls, where_clause, null, null, null, null);
+            Log.i(TAG, AirdeskDbContract.WorkspaceFilesTable.TABLE_NAME + " Returned " + cursor.getCount() + " rows");
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    String name = cursor.getString(cursor.getColumnIndex(AirdeskDbContract.WorkspaceFilesTable.COLUMN_FILE_NAME));
+                    String path = cursor.getString(cursor.getColumnIndex(AirdeskDbContract.WorkspaceFilesTable.COLUMN_PATH));
+                    String acl = cursor.getString(cursor.getColumnIndex(AirdeskDbContract.WorkspaceFilesTable.COLUMN_ACL));
+                    ws.addTextFile(new TextFile(name, path, acl));
+                }
+            }
         }
+
         cursor.close();
         return workspaces;
     }

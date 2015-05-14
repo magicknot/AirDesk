@@ -3,6 +3,7 @@ package pt.ulisboa.tecnico.cmov.airdesk.view.fragment;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,7 +50,12 @@ public class NewFileFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mWorkspace = getArguments().getParcelable("workspace");
+        Workspace temp = getArguments().getParcelable("workspace");
+        if (temp.isLocal()) {
+            mWorkspace = LocalWorkspaceManager.getInstance().getWorkspaceByName(temp.getName());
+        } else {
+            mWorkspace = ForeignWorkspaceManager.getInstance().getWorkspaceByName(temp.getName());
+        }
     }
 
     @Override
@@ -87,15 +93,15 @@ public class NewFileFragment extends DialogFragment {
 
     // May also be triggered from the Activity
     public void createFile() {
-
         String fileName = "";
         // Do something in response to button click
         if (!tName.getText().toString().trim().isEmpty()) {
             fileName = tName.getText().toString().trim();
+            Log.i(TAG, "createFile()\n\tworkspaceName = " + mWorkspace.getName() + "\n\tlocal? " + mWorkspace.isLocal() + "\n\tfilename = " + fileName);
             if (mWorkspace.isLocal()) {
-                LocalWorkspaceManager.getInstance().createFile(mWorkspace, fileName);
+                LocalWorkspaceManager.getInstance().createFile(mWorkspace.getName(), fileName);
             } else {
-                ForeignWorkspaceManager.getInstance().createFile(mWorkspace, fileName);
+                ForeignWorkspaceManager.getInstance().createFile(mWorkspace.getName(), fileName);
             }
         }
         dismiss();

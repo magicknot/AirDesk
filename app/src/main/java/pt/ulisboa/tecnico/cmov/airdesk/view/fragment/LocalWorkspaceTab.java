@@ -63,7 +63,7 @@ public class LocalWorkspaceTab extends Tab {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        switch (id){
+        switch (id) {
             case R.id.action_new_local_workspace:
                 Toast.makeText(getActivity().getBaseContext(),
                         "You selected action_new_local_workspace", Toast.LENGTH_SHORT).show();
@@ -82,7 +82,7 @@ public class LocalWorkspaceTab extends Tab {
         final int position = Integer.valueOf(v.getTag().toString());
 
         Log.w(getLogTag(), "onClick" + position);
-        PopupMenu popupMenu = new PopupMenu(getActivity(), v){
+        PopupMenu popupMenu = new PopupMenu(getActivity(), v) {
             @Override
             public boolean onMenuItemSelected(MenuBuilder menu, MenuItem item) {
                 FragmentManager fm;
@@ -107,7 +107,7 @@ public class LocalWorkspaceTab extends Tab {
                         return true;
 
                     case R.id.workspace_overflow_delete:
-                        Log.i(getLogTag(), " clicked. delete "+ getWorkspaceAdapter()
+                        Log.i(getLogTag(), " clicked. delete " + getWorkspaceAdapter()
                                 .getItem(position).toString());
 
                         Workspace ws = getWorkspaceAdapter().getItem(position);
@@ -155,7 +155,7 @@ public class LocalWorkspaceTab extends Tab {
             Field fMenuHelper = PopupMenu.class.getDeclaredField("mPopup");
             fMenuHelper.setAccessible(true);
             menuHelper = fMenuHelper.get(popupMenu);
-            argTypes = new Class[] { boolean.class };
+            argTypes = new Class[]{boolean.class};
             menuHelper.getClass().getDeclaredMethod("setForceShowIcon", argTypes).invoke(menuHelper,
                     true);
         } catch (Exception e) {

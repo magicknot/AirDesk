@@ -136,14 +136,19 @@ public class LocalWorkspaceManager extends WorkspaceManager {
         db.close();
     }
 
-
-
     @Override
-    public void createFile(Workspace workspace, String filename) {
+    public void createFile(String workspaceName, String filename) {
+        Workspace ws = getWorkspaceByName(workspaceName);
+
+        if (ws == null) {
+            Log.e(TAG, "createFile() - could not find workspace " + workspaceName);
+            return;
+        }
+
         TextFile file = new TextFile(filename, filename, "TODO_ACL"); //FIXME
-        if (workspace.addTextFile(file)) {
+        if (ws.addTextFile(file)) {
             FileStorage.save(file, context);
-            updateWorkspaceFiles(workspace);
+            updateWorkspaceFiles(ws);
         }
     }
 

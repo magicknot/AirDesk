@@ -4,7 +4,7 @@ import android.provider.BaseColumns;
 
 public final class AirdeskDbContract {
 
-    public static final  int    DATABASE_VERSION   = 8;
+    public static final  int    DATABASE_VERSION   = 10;
     public static final  String DATABASE_NAME      = "airdesk.db";
 
     // To prevent someone from accidentally instantiating the contract class,
@@ -110,16 +110,15 @@ public final class AirdeskDbContract {
     }
 
     public static final String[] workspaceTagsAllColls =  {WorkspaceTagsTable.COLUMN_WORKSPACE_KEY, WorkspaceTagsTable.COLUMN_TAG};
-
     /* Inner class for relation between Workspaces and Files table */
     public static abstract class WorkspaceFilesTable implements BaseColumns {
+
         public static final String TABLE_NAME       = "workspace_files";
         //columns
         public static final String COLUMN_WORKSPACE_KEY = "workspace_id";
         public static final String COLUMN_FILE_NAME = "file_name";
-        public static final String COLUMN_PATH = "path";
+        public static final String COLUMN_PATH = "file_path";
         public static final String COLUMN_ACL = "acl";
-
         public static final String CREATE_TABLE = "CREATE TABLE " +
                 TABLE_NAME + " (" +
                 COLUMN_WORKSPACE_KEY + " INTEGER NOT NULL, " +
@@ -129,6 +128,8 @@ public final class AirdeskDbContract {
                 "PRIMARY KEY (" + COLUMN_WORKSPACE_KEY  + ", " + COLUMN_FILE_NAME + "), " +
                 "FOREIGN KEY (" + COLUMN_WORKSPACE_KEY  + ") REFERENCES " + WorkspacesTable.TABLE_NAME + "( " +  WorkspacesTable._ID + " )" +
                 " )";
+
         public static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
     }
+    public static final String[] workspaceFilesAllColls =  {WorkspaceFilesTable.COLUMN_WORKSPACE_KEY, WorkspaceFilesTable.COLUMN_FILE_NAME, WorkspaceFilesTable.COLUMN_PATH, WorkspaceFilesTable.COLUMN_ACL};
 }
