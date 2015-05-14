@@ -65,14 +65,25 @@ public class LocalWorkspaceManager extends WorkspaceManager {
 
     @Override
     public boolean removeWorkspace(Workspace workspace) {
-        boolean isDeleted;
-
         db.open();
-        isDeleted = db.deleteWorkspace(workspace.getWorkspaceId());
+        boolean isDeleted = db.deleteWorkspace(workspace.getWorkspaceId());
+        if (isDeleted) {
+            workspaces.remove(workspace);
+            deleteWorkspaceDirectory(workspace);
+        }
         db.close();
-        Log.i(TAG, "isDeleted: " + Boolean.valueOf(isDeleted));
-        workspaces.remove(workspace);
+
         return isDeleted;
+    }
+
+    public void removeAllWorkspaces() {
+        for (Workspace ws : workspaces) {
+            removeWorkspace(ws);
+        }
+    }
+
+    private boolean deleteWorkspaceDirectory(Workspace workspace) {
+        return FileStorage.deleteWorkspace(workspace.getName(), context);
     }
 
     public void updateWorkspaceClients(Workspace workspace) {
@@ -124,6 +135,8 @@ public class LocalWorkspaceManager extends WorkspaceManager {
         db.updateWorkspaceFiles(workspace.getWorkspaceId(), workspace.getTextFiles());
         db.close();
     }
+
+
 
     @Override
     public void createFile(Workspace workspace, String filename) {
