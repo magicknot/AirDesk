@@ -18,6 +18,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.io.WifiDirect.OutgoingCommTask;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.PeerDevice;
 import pt.ulisboa.tecnico.cmov.airdesk.io.WifiDirect.WiFiDirectNetwork;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.PeerDevicesAdapter;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.NetworkManager;
 
 
 public class WifiDirectActivity extends ActionBarActivity
@@ -60,7 +61,7 @@ public class WifiDirectActivity extends ActionBarActivity
 
         groupDevicesAdapter = new PeerDevicesAdapter(getBaseContext(),
                 R.layout.item_peer_device_list,
-                WiFiDirectNetwork.getInstance().getGroupDevices());
+                NetworkManager.getInstance().getGroupDevices());
         // Inflate the layout with a GridView in it.
         ListView listViewGroupDevices = (ListView) findViewById(R.id.rememberGroupsList);
         listViewGroupDevices.setAdapter(groupDevicesAdapter);

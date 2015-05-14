@@ -7,6 +7,15 @@ public class PeerDevice {
     private String email;
     private String nickname;
 
+    public PeerDevice() {
+
+    }
+
+    public PeerDevice(String deviceName, String ip, int port) {
+        this.deviceName = deviceName;
+        this.ip = ip;
+        this.port = port;
+    }
 
     public String getDeviceName() {
         return deviceName;

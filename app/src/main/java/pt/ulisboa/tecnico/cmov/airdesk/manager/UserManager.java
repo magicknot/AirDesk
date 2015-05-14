@@ -111,27 +111,21 @@ public class UserManager {
         return this.userPreferenceTags;
     }
 
-    public JSONObject toJson() {
-        JSONObject obj = new JSONObject();
+    public JSONArray tagsToJson() {
         JSONArray array = new JSONArray();
 
         try {
-            obj.put("nickname", nickname);
-            obj.put("e-mail", email);
-
             for (String tag : userPreferenceTags) {
                 JSONObject arrayItem = new JSONObject();
                 arrayItem.put("name", tag);
                 array.put(arrayItem);
             }
-            obj.put("tags", array);
         } catch (JSONException e) {
             Log.e(TAG, "toJson() - could not add attribute to Json object\n\t" +
                     e.getCause().toString());
         }
 
-
-        return obj;
+        return array;
     }
 
 }
