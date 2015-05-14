@@ -12,6 +12,7 @@ import android.os.Messenger;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import pt.inesc.termite.wifidirect.SimWifiP2pBroadcast;
@@ -152,25 +153,8 @@ public class WiFiDirectNetwork
         peerDevices.add(peerDevice);
     }
 
-//    public void remove PeerDevices(PeerDevice peerDevice){
-//
-//    }
-
-    public boolean groupContainDevice(String deviceName) {
-        for (PeerDevice p : getGroupDevices()) {
-            if (p.getDeviceName().toLowerCase().equals(deviceName.toLowerCase())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public List<PeerDevice> getPeerDevices(){
         return this.peerDevices;
-    }
-
-    public List<PeerDevice> getGroupDevices(){
-        return NetworkManager.getInstance().getGroupDevices();
     }
 
     @Override
@@ -197,35 +181,46 @@ public class WiFiDirectNetwork
     @Override
     public void onGroupInfoAvailable(SimWifiP2pDeviceList simWifiP2pDeviceList, SimWifiP2pInfo simWifiP2pInfo) {
         PeerDevice peerDevice;
-        OutgoingCommTask task;
+        List<PeerDevice> newDevices = new ArrayList<>();
+        List<PeerDevice> toRemoveDevices = new ArrayList<>();
+
+        NetworkManager netman = NetworkManager.getInstance();
+        Collection<String> devsInNetwork = simWifiP2pInfo.getDevicesInNetwork();
 
         StringBuilder peersStr = new StringBuilder();
 
         //Print Group Information
         //simWifiP2pInfo.print();
+
         this.setDeviceName(simWifiP2pInfo.getDeviceName());
 
         Log.i(TAG + "deviceName", this.getDeviceName());
 
-        for (String deviceName : simWifiP2pInfo.getDevicesInNetwork()) {
-            if(!groupContainDevice(deviceName)){
-                SimWifiP2pDevice device = simWifiP2pDeviceList.getByName(deviceName);
-                peerDevice = new PeerDevice();
-                peerDevice.setDeviceName(deviceName);
-                peerDevice.setIp(device.getVirtIp());
-                peerDevice.setPort(device.getVirtPort());
+        // find new peers
+        for (String deviceName : devsInNetwork) {
+            if(!netman.groupContainDevice(deviceName)){
 
-                // add to group devices
-                NetworkManager.getInstance().addGroupDevice(peerDevice);
+                SimWifiP2pDevice device = simWifiP2pDeviceList.getByName(deviceName);
+                peerDevice = new PeerDevice(deviceName, device.getVirtIp(), device.getVirtPort());
+
+                newDevices.add(peerDevice);
 
                 String devstr = "" + deviceName + " (" + ((device == null) ? "??" : device.getVirtIp()) + ":" + device.getVirtPort() + "); ";
                 peersStr.append(devstr);
 
-
-                task = new OutgoingCommTask(peerDevice.getIp(), peerDevice.getPort(), "ANNOUNCE", getDeviceName());
-                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         }
+
+        // find peers to remove
+        for (PeerDevice pd : netman.getGroupDevices()) {
+            if(! devsInNetwork.contains(pd.getDeviceName())) {
+                toRemoveDevices.add(pd);
+            }
+        }
+
+        // update group peer list
+        netman.updateGroupPeerList(newDevices, toRemoveDevices);
+
         Log.i(TAG + " - onGroupInfoAvailable", peersStr.toString());
 
     }

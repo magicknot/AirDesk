@@ -29,27 +29,11 @@ public class ForeignWorkspaceManager extends WorkspaceManager {
 
     public void init(Context context) {
         super.context = context;
-
-        fetchWorkspaces();
         this.activeUsers = new HashMap<>();
     }
 
     public List<Workspace> getWorkspaces() {
-        fetchWorkspaces();
         return workspaces;
-    }
-
-    // TODO Network
-    public void fetchWorkspaces() {
-        if (workspaces == null)
-            workspaces = new ArrayList<>();
-
-
-        for (Workspace ws : LocalWorkspaceManager.getInstance().getWorkspaces()) {
-            if (ws.containClient(UserManager.getInstance().getEmail())) {
-                addWorkspace(ws.getOwner(), ws.getName(), ws.getQuota(), ws.isPrivate(), null, null);
-            }
-        }
     }
 
     @Override
@@ -84,6 +68,10 @@ public class ForeignWorkspaceManager extends WorkspaceManager {
         } else {
             return false;
         }
+    }
+
+    public void remoteWorkspaceByOwnerEmail(String email) {
+        //TODO: Implement this!
     }
 
     @Override
