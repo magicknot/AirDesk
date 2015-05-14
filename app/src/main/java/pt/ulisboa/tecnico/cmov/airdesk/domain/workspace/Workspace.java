@@ -157,10 +157,6 @@ public class Workspace implements Parcelable {
         return files.remove(file);
     }
 
-    public void deleteWorkspaceDirectory(Context context) {
-        FileStorage.deleteWorkspace(this.name, context);
-    }
-
     public long getUsedSpaceByWorkspace(Context context) {
         return FileStorage.getUsedSpace(this.name, context);
     }

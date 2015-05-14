@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
+import pt.ulisboa.tecnico.cmov.airdesk.io.database.AirdeskDbContract;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.ForeignWorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.io.WifiDirect.WiFiDirectNetwork;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.ViewPagerAdapter;
@@ -83,6 +84,16 @@ public class AirdeskActivity extends ActionBarActivity {
         Log.i(TAG, "User Login: " + nickname + "/" + email);
     }
 
+    private void exitApplication(){
+        SharedPreferences pref = getSharedPreferences("MyPrefsFile", 0);
+        pref.edit().clear().commit();
+        this.deleteDatabase(AirdeskDbContract.DATABASE_NAME);
+        finish();
+        System.exit(0);
+
+        // delete Files
+    }
+
     private void createWorkspaceTabs(){
         // Creating The Toolbar and setting it as the Toolbar for the activity
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
@@ -151,8 +162,9 @@ public class AirdeskActivity extends ActionBarActivity {
                 Log.i(TAG, "User Login: " + nickname + "/" + email);
                 Toast.makeText(getBaseContext(), "User Login: " + nickname + "/" + email, Toast.LENGTH_SHORT).show();
                 return true;
-            case R.id.action_user:
-                Toast.makeText(getBaseContext(), "You selected action_user", Toast.LENGTH_SHORT).show();
+            case R.id.action_logout:
+                Toast.makeText(getBaseContext(), "Logout...", Toast.LENGTH_SHORT).show();
+                this.exitApplication();
                 return true;
             case R.id.wifi_on:
                 Toast.makeText(getBaseContext(), "Wifi On", Toast.LENGTH_SHORT).show();
