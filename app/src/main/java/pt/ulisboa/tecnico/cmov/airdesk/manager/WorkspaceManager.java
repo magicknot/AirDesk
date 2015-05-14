@@ -2,8 +2,6 @@ package pt.ulisboa.tecnico.cmov.airdesk.manager;
 
 import android.content.Context;
 
-import org.w3c.dom.Text;
-
 import java.io.IOException;
 import java.util.List;
 
