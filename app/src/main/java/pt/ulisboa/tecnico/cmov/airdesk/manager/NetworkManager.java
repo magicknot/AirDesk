@@ -118,26 +118,17 @@ public class NetworkManager {
             if (pd.getDeviceName().toLowerCase().equals(message.getDeviceName().toLowerCase())) {
                 pd.setEmail(message.getEmail());
                 pd.setNickname(message.getNickname());
-                JSONArray tagsArray = message.getTags();
-                List<String> tags = new ArrayList<>();
+                pd.importTagsFromJson(message.getTags());
 
-                try {
-                    for (int i = 0; i < tagsArray.length(); i++) {
-                        tags.add(tagsArray.getJSONObject(i).getString("name"));
-                    }
-                } catch (JSONException e) {
-                    Log.e(TAG, "toJson() - could not read attribute to Json object\n\t" +
-                            e.getCause().toString());
-                }
-
-                pd.setTags(tags);
-
-                JSONArray array = LocalWorkspaceManager.getInstance().toJson(message.getEmail(),
-                        tags);
-
-                if (array.length() > 0) {
+                // send updated workspaces list
+                if (pd.getTags().size() > 0) {
                     WorkspacesMessage wmsg = new WorkspacesMessage(
-                            UserManager.getInstance().getEmail(), array);
+                            UserManager.getInstance().getEmail(),
+                            LocalWorkspaceManager.getInstance().toJson(
+                                    message.getEmail(),
+                                    pd.getTags()
+                            )
+                    );
 
                     sendMessage(pd, wmsg);
                 }
@@ -152,14 +143,26 @@ public class NetworkManager {
 
         pd.importTagsFromJson(message.getTags());
 
-        // TODO: update workspaces
+        // send updated workspaces list
+        if (pd.getTags().size() > 0) {
+            WorkspacesMessage wmsg = new WorkspacesMessage(
+                    UserManager.getInstance().getEmail(),
+                    LocalWorkspaceManager.getInstance().toJson(
+                            message.getEmail(),
+                            pd.getTags()
+                    )
+            );
 
+            sendMessage(pd, wmsg);
+        }
     }
 
     private void receiveRequestFileMessage(RequestFileMessage message) {
         TextFile file = new TextFile(message.getName(), message.getWorkspace_name(), "TEST_ACL");
         FileMessage fmsg = new FileMessage(
                 message.getName(),
+                UserManager.getInstance().getEmail(),
+                message.getWorkspace_name(),
                 LocalWorkspaceManager.getInstance().readFile(file),
                 file.getACL()
         );

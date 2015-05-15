@@ -9,6 +9,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import pt.ulisboa.tecnico.cmov.airdesk.manager.LocalWorkspaceManager;
+
 public class PeerDevice {
     private static final String TAG = "PeerDevice";
     private String deviceName;
@@ -86,6 +88,7 @@ public class PeerDevice {
 
             }
             this.setTags(updatedTags);
+            LocalWorkspaceManager.getInstance().toJson(this.getEmail(), updatedTags);
         } catch (JSONException e) {
             Log.e(TAG, "importTagsFromJson() - could not read attribute to Json object\n\t" +
                     e.getCause().toString());

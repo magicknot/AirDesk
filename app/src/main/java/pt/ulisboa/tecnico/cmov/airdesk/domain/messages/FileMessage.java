@@ -9,16 +9,28 @@ public class FileMessage extends Message {
     public static final String TAG = "FILE";
 
     private String name;
+    private String owner_email;
+    private String workspace_name;
 
     private String content;
 
     private String acl;
 
-    public FileMessage(String name, String content, String acl) {
+    public FileMessage(String name, String owner_email, String workspace_name, String content, String acl) {
         super(TAG);
         this.name = name;
+        this.owner_email = owner_email;
+        this.workspace_name = workspace_name;
         this.content = content;
         this.acl = acl;
+    }
+
+    public String getOwner_email() {
+        return owner_email;
+    }
+
+    public String getWorkspace_name() {
+        return workspace_name;
     }
 
     public String getName() {
@@ -38,6 +50,8 @@ public class FileMessage extends Message {
         JSONObject obj = super.toJson();
         try {
             obj.put("name", name);
+            obj.put("owner_email", owner_email);
+            obj.put("workspace_name", workspace_name);
             obj.put("content", content);
             obj.put("acl", acl);
         } catch (JSONException e) {
@@ -46,4 +60,6 @@ public class FileMessage extends Message {
 
         return obj;
     }
+
+
 }
