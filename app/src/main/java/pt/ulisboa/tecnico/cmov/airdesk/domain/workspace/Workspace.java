@@ -11,11 +11,12 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 
 import pt.ulisboa.tecnico.cmov.airdesk.domain.TextFile;
 import pt.ulisboa.tecnico.cmov.airdesk.io.FileStorage;
 
-public class Workspace implements Parcelable {
+public class Workspace extends Observable implements Parcelable {
     public static final String TAG = "Workspace";
     private long workspaceId;
     private long quota;
@@ -145,7 +146,12 @@ public class Workspace implements Parcelable {
         if (files.contains(file)) {
             return false;
         } else {
-            return files.add(file);
+            boolean result = files.add(file);
+            // mark as value changed
+            setChanged();
+            // trigger notification
+            notifyObservers();
+            return result;
         }
     }
 
@@ -154,7 +160,12 @@ public class Workspace implements Parcelable {
     }
 
     public boolean removeTextFile(TextFile file) {
-        return files.remove(file);
+        boolean result = files.remove(file);
+        // mark as value changed
+        setChanged();
+        // trigger notification
+        notifyObservers();
+        return result;
     }
 
     public long getUsedSpaceByWorkspace(Context context) {

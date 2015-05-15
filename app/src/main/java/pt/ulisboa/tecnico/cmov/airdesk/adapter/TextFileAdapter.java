@@ -10,12 +10,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.TextFile;
 import pt.ulisboa.tecnico.cmov.airdesk.view.activity.WorkspaceFilesActivity;
 
-public class TextFileAdapter extends BaseAdapter {
+public class TextFileAdapter extends BaseAdapter implements Observer {
     private final LayoutInflater layoutInflater;
     private final int resourceId;
     private final WorkspaceFilesActivity filesActivity;
@@ -27,6 +29,7 @@ public class TextFileAdapter extends BaseAdapter {
         this.filesActivity = filesActivity;
         this.layoutInflater = LayoutInflater.from(context);
         this.files = files;
+
     }
 
     public static class ViewHolder {
@@ -85,6 +88,11 @@ public class TextFileAdapter extends BaseAdapter {
     public void bindView(ViewHolder holder, int position) {
         holder.image.setImageResource(R.drawable.ic_action_overflow);
         holder.title.setText(getItem(position).getName());
+    }
+
+    @Override
+    public void update(Observable observable, Object data) {
+        notifyDataSetChanged();
     }
 
 }
