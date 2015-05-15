@@ -52,8 +52,6 @@ public class WiFiDirectNetwork
         this.deviceName = deviceName;
     }
 
-
-
     public WiFiDirectNetwork(Context context) {
         this.appContext = context;
         this.peerDevices = new ArrayList<>();
@@ -137,7 +135,6 @@ public class WiFiDirectNetwork
     public boolean isWiFiDirectOn(){
         return mBound;
     }
-
 
     public void refreshPeerDevices(){
         if(isWiFiDirectOn())

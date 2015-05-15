@@ -184,11 +184,13 @@ public class LocalWorkspaceManager extends WorkspaceManager {
 
     }
 
-    public JSONArray toJson() {
+    public JSONArray toJson(String email) {
         JSONArray array = new JSONArray();
 
         for (Workspace ws : workspaces) {
-            array.put(ws.toJson());
+            if (ws.getClients().contains(email)) {
+                array.put(ws.toJson());
+            }
         }
 
         return array;

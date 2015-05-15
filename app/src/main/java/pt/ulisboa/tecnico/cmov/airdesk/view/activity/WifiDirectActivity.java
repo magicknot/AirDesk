@@ -108,7 +108,7 @@ public class WifiDirectActivity extends ActionBarActivity
         Log.i(TAG, "title of " + position + "th element clicked ("
                 + peer.getDeviceName() + " [" + peer.getIp() + ":" + peer.getPort() + "])");
 
-        task = new OutgoingCommTask(peer.getIp(), peer.getPort(), "PING", "Ping", peer.getDeviceName());
+        task = new OutgoingCommTask(peer.getIp(), peer.getPort(), "Ping", peer.getDeviceName());
         task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 }

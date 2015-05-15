@@ -54,12 +54,6 @@ public class NetworkManager {
         this.groupPeerDevices.add(p);
     }
 
-    /*
-    public void sendAnnounce(AnnounceMessage message) {
-
-    }
-    */
-
     public void sendWorkspaces(WorkspacesMessage message) {
 
     }
@@ -85,6 +79,7 @@ public class NetworkManager {
     }
 
     private void receiveAnnounceMessage(AnnounceMessage message) {
+        Log.d(TAG, "receiveAnnounceMessage() - start");
         for(PeerDevice pd: this.groupPeerDevices){
             if (pd.getDeviceName().toLowerCase().equals(message.getDeviceName().toLowerCase())) {
                 pd.setEmail(message.getEmail());
@@ -92,18 +87,21 @@ public class NetworkManager {
 
                 WorkspacesMessage wmsg = new WorkspacesMessage(
                     UserManager.getInstance().getEmail(),
-                    LocalWorkspaceManager.getInstance().toJson()
+                    LocalWorkspaceManager.getInstance().toJson(message.getEmail())
                 );
 
                 sendMessage(pd, wmsg);
             }
         }
 
+        Log.d(TAG, "receiveAnnounceMessage() - done");
     }
 
     private void sendMessage(PeerDevice peerDevice, Message message) {
+        Log.i(TAG, "sending message " + message.getType() + " to " + peerDevice.getEmail());
         OutgoingCommTask task;
-        task = new OutgoingCommTask(peerDevice.getIp(), peerDevice.getPort(), message.getType(), message.toJson().toString());
+        task = new OutgoingCommTask(peerDevice.getIp(), peerDevice.getPort(),
+                message.toJson().toString());
         task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
@@ -125,7 +123,6 @@ public class NetworkManager {
         for(PeerDevice pd : toRemoveDevices) {
             ForeignWorkspaceManager.getInstance().removeWorkspaceByOwner(pd.getEmail());
         }
-
     }
 
     public boolean groupContainDevice(String deviceName) {
@@ -144,30 +141,33 @@ public class NetworkManager {
         try {
             jsonObj = new JSONObject(message);
         } catch (JSONException e) {
-            Log.i(TAG, "Message string cannot be converted to JSONObject - " + message + "\n");
+            Log.e(TAG, "receiveMessage() - Message string cannot be converted to JSONObject - " +
+                    message + "\n");
             return;
         }
 
         try {
             messageType = jsonObj.getString("type");
         } catch (JSONException e) {
-            Log.i(TAG, "Message does not have type field - " + message + "\n");
+            Log.e(TAG, "receiveMessage() - Message does not have type field - " + message + "\n");
             return;
         }
+
+        Log.d(TAG, "receiveMessage() - messageType = " + messageType);
 
         switch (messageType) {
             case AnnounceMessage.TAG:
                 try {
                     this.receiveAnnounceMessage(
                             new AnnounceMessage(
-                                    jsonObj.getString("email"),
+                                    jsonObj.getString("e-mail"),
                                     jsonObj.getString("deviceName"),
                                     jsonObj.getString("nickname"),
                                     jsonObj.getJSONArray("tags")
                             )
                     );
                 } catch (JSONException e) {
-                    Log.i(TAG, "Error extracting message fields - " + message + "\n");
+                    Log.i(TAG, "receiveMessage() - Error extracting message fields - " + message + "\n");
                 }
                 break;
 
