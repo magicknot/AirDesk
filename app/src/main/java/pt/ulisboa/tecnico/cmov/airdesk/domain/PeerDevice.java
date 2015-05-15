@@ -1,8 +1,16 @@
 package pt.ulisboa.tecnico.cmov.airdesk.domain;
 
+import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class PeerDevice {
+    private static final String TAG = "PeerDevice";
     private String deviceName;
     private String ip;
     private int port;
@@ -66,6 +74,22 @@ public class PeerDevice {
 
     public void setTags(List<String> tags) {
         this.tags = tags;
+    }
+
+    public void importTagsFromJson(JSONArray tags) {
+        List<String> updatedTags = new ArrayList<>();
+        try {
+            for (int i = 0; i < tags.length(); i++) {
+                JSONObject arrayItem = tags.getJSONObject(i);
+
+                updatedTags.add(arrayItem.getString("name"));
+
+            }
+            this.setTags(updatedTags);
+        } catch (JSONException e) {
+            Log.e(TAG, "importTagsFromJson() - could not read attribute to Json object\n\t" +
+                    e.getCause().toString());
+        }
     }
 
     @Override

@@ -148,6 +148,11 @@ public class NetworkManager {
     }
 
     private void receiveUserTagsMessage(UserTagsMessage message) {
+        PeerDevice pd = this.getPeerDeviceByEmail(message.getEmail());
+
+        pd.importTagsFromJson(message.getTags());
+
+        // TODO: update workspaces
 
     }
 
