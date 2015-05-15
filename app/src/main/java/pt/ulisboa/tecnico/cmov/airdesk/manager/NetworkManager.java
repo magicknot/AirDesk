@@ -23,7 +23,6 @@ import pt.ulisboa.tecnico.cmov.airdesk.domain.messages.RequestFileMessage;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.messages.UserTagsMessage;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.messages.WorkspacesMessage;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
-import pt.ulisboa.tecnico.cmov.airdesk.io.WifiDirect.AsyncResponse;
 import pt.ulisboa.tecnico.cmov.airdesk.io.WifiDirect.OutgoingCommTask;
 import pt.ulisboa.tecnico.cmov.airdesk.io.WifiDirect.OutgoingCommTaskWithResponse;
 
@@ -34,8 +33,6 @@ public class NetworkManager {
     private String deviceName;
 
     private static NetworkManager holder = null;
-
-    private Message message;
 
     public static NetworkManager getInstance() {
         if (holder == null) {
@@ -92,13 +89,15 @@ public class NetworkManager {
         }
     }
 
-    public void sendFile(FileMessage message) {
+    public void sendFile(Workspace workspace, TextFile file, String content) {
+        PeerDevice pd = getPeerDeviceByEmail(workspace.getOwner());
+        FileMessage message = new FileMessage(file.getName(), workspace.getOwner(),
+                workspace.getName(), content, file.getACL());
 
-        //PeerDevice pd = getPeerDeviceByEmail(email);
-
-        //if (pd != null ) {
-        //    this.sendMessage(pd, fmsg);
-        //}
+        if (pd != null) {
+            Log.i(TAG, "sendFile() - sending file " + file.toString() + " to " + pd.getEmail());
+            this.sendMessage(pd, message);
+        }
 
     }
 
@@ -117,7 +116,7 @@ public class NetworkManager {
             if (msg == null) {
                 Log.d(TAG, "sendRequestFileMessage() - IS NULL");
             } else {
-                fmsg = (FileMessage)msg;
+                fmsg = (FileMessage) msg;
                 Log.d(TAG, "sendRequestFileMessage() - " + fmsg.toJson().toString());
                 return fmsg.getContent();
             }
@@ -204,19 +203,15 @@ public class NetworkManager {
 
     // decide what happens when we receive a file
     private void receiveFileMessage(FileMessage message) {
-        Workspace ws = LocalWorkspaceManager.getInstance().getWorkspaceByName(message.getWorkspace_name());
+        Workspace ws = LocalWorkspaceManager.getInstance().getWorkspaceByName(message.getWorkspaceName());
 
         // if workspace AND file exist, then...
         if (ws != null) {
             TextFile textFile = ws.getTextFile(message.getName());
             if (textFile != null) {
-
                 try {
                     // save file locally
-                    LocalWorkspaceManager.getInstance().writeFile(
-                            ws,
-                            textFile,
-                            message.getContent());
+                    LocalWorkspaceManager.getInstance().writeFile(ws, textFile, message.getContent());
 
                 } catch (IOException e) {
                     Log.e(TAG, "receiveFileMessage() - CABUM: error saving file - " +
@@ -363,18 +358,14 @@ public class NetworkManager {
 
             case FileMessage.TAG:
                 try {
-                    FileMessage fmsg = new FileMessage(
-                            jsonObj.getString("name"),
-                            jsonObj.getString("owner_email"),
-                            jsonObj.getString("workspace_name"),
-                            jsonObj.getString("content"),
-                            jsonObj.getString("acl")
-                    );
+                    FileMessage fmsg = new FileMessage(jsonObj.getString("name"),
+                            jsonObj.getString("owner_email"), jsonObj.getString("workspace_name"),
+                            jsonObj.getString("content"), jsonObj.getString("acl"));
 
-                    if (LocalWorkspaceManager.getInstance().getWorkspaceByName(fmsg.getWorkspace_name()) != null) {
+                    if (LocalWorkspaceManager.getInstance().getWorkspaceByName(fmsg.getWorkspaceName()) != null) {
                         this.receiveFileMessage(fmsg);
                     } else {
-                        Log.d(TAG,"receiveMessage() -" + fmsg.toJson().toString() );
+                        Log.d(TAG, "receiveMessage() -" + fmsg.toJson().toString());
                         return fmsg;
                     }
 

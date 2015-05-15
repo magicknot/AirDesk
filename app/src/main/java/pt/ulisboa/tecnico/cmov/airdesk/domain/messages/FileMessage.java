@@ -10,26 +10,26 @@ public class FileMessage extends Message {
 
     private String name;
     private String owner_email;
-    private String workspace_name;
+    private String workspaceName;
     private String content;
 
     private String acl;
 
-    public FileMessage(String name, String owner_email, String workspace_name, String content, String acl) {
+    public FileMessage(String name, String owner_email, String workspaceName, String content, String acl) {
         super(TAG);
         this.name = name;
         this.owner_email = owner_email;
-        this.workspace_name = workspace_name;
+        this.workspaceName = workspaceName;
         this.content = content;
         this.acl = acl;
     }
 
-    public String getOwner_email() {
+    public String getOwnerEmail() {
         return owner_email;
     }
 
-    public String getWorkspace_name() {
-        return workspace_name;
+    public String getWorkspaceName() {
+        return workspaceName;
     }
 
     public String getName() {
@@ -50,7 +50,7 @@ public class FileMessage extends Message {
         try {
             obj.put("name", name);
             obj.put("owner_email", owner_email);
-            obj.put("workspace_name", workspace_name);
+            obj.put("workspace_name", workspaceName);
             obj.put("content", content);
             obj.put("acl", acl);
         } catch (JSONException e) {

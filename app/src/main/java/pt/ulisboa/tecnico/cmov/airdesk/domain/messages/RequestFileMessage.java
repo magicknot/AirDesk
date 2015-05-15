@@ -28,7 +28,7 @@ public class RequestFileMessage extends Message {
     public String getWorkspace_name() {
         return this.workspace_name;
     }
-    public String getRequestor_email() {
+    public String getRequestorEmail() {
         return requestor_email;
     }
 

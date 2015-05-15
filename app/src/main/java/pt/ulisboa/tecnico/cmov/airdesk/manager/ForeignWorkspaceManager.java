@@ -59,8 +59,6 @@ public class ForeignWorkspaceManager extends WorkspaceManager {
 
     @Override
     public boolean removeWorkspace(Workspace workspace) {
-        Workspace localWs = null;
-
         //TODO: Send Message unSubscribe
         //apenas remove localmente, necessário notificar owner para remover workspace
         for (Workspace ws : workspaces) {
@@ -118,7 +116,7 @@ public class ForeignWorkspaceManager extends WorkspaceManager {
 
     @Override
     public void writeFile(Workspace workspace, TextFile file, String content) throws IOException {
-        // TODO
+        NetworkManager.getInstance().sendFile(workspace, file, content);
     }
 
     @Override
