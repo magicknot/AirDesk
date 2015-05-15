@@ -14,9 +14,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.domain.PeerDevice;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.messages.AnnounceMessage;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.messages.FileMessage;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.messages.Message;
-import pt.ulisboa.tecnico.cmov.airdesk.domain.messages.RemoveWorkspaceMessage;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.messages.UserTagsMessage;
-import pt.ulisboa.tecnico.cmov.airdesk.domain.messages.WorkspaceTagsMessage;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.messages.WorkspacesMessage;
 import pt.ulisboa.tecnico.cmov.airdesk.io.WifiDirect.OutgoingCommTask;
 
@@ -55,20 +53,27 @@ public class NetworkManager {
         this.groupPeerDevices.add(p);
     }
 
-    public void sendWorkspaces(WorkspacesMessage message) {
+    public void sendWorkspaces(String email, JSONArray workspaces) {
+        WorkspacesMessage wmsg = new WorkspacesMessage(
+                email,
+                workspaces
+        );
+        for (PeerDevice pd: this.groupPeerDevices){
+            if (pd.getEmail().toLowerCase().equals(email.toLowerCase())) {
+                this.sendMessage(pd, wmsg);
+            }
+        }
 
     }
 
-    public void sendRemoveWorkspace(RemoveWorkspaceMessage message) {
-
-    }
-
-    public void sendUserTags(UserTagsMessage message) {
-
-    }
-
-    public void sendWorkspaceTags(WorkspaceTagsMessage message) {
-
+    public void sendUserTags() {
+        UserTagsMessage amsg = new UserTagsMessage(
+                UserManager.getInstance().getEmail(),
+                UserManager.getInstance().tagsToJson()
+        );
+        for(PeerDevice pd: this.groupPeerDevices) {
+            sendMessage(pd, amsg);
+        }
     }
 
     public void sendFile(FileMessage message) {
@@ -176,7 +181,13 @@ public class NetworkManager {
                 break;
 
             case WorkspacesMessage.TAG:
+                try {
+                    ForeignWorkspaceManager.getInstance().fromJson(jsonObj.getString("owner_email"), jsonObj.getJSONArray("workspaces"));
+                } catch (JSONException e) {
+                    Log.i(TAG, "Error extracting message fields - " + message + "\n");
+                }
                 break;
+
         }
 
     }

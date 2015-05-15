@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.cmov.airdesk.domain.messages;
 
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -10,9 +11,9 @@ public class UserTagsMessage extends Message {
 
     private String email;
 
-    private JSONObject tags;
+    private JSONArray tags;
 
-    public UserTagsMessage(String email, JSONObject tags) {
+    public UserTagsMessage(String email, JSONArray tags) {
         super(TAG);
         this.email = email;
         this.tags = tags;
@@ -22,7 +23,7 @@ public class UserTagsMessage extends Message {
         return this.email;
     }
 
-    public JSONObject getTags() {
+    public JSONArray getTags() {
         return this.tags;
     }
 
