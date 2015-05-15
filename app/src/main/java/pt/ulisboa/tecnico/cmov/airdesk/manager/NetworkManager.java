@@ -15,6 +15,7 @@ import java.util.List;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.PeerDevice;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.TextFile;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.messages.AnnounceMessage;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.messages.CreateFileMessage;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.messages.FileMessage;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.messages.Message;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.messages.RequestFileMessage;
@@ -81,7 +82,7 @@ public class NetworkManager {
 
     }
 
-    public void sendUserTags() {
+    public void sendUserTagsMessage() {
         UserTagsMessage amsg = new UserTagsMessage(
                 UserManager.getInstance().getEmail(),
                 UserManager.getInstance().tagsToJson()
@@ -101,7 +102,7 @@ public class NetworkManager {
 
     }
 
-    public void sendRequestFile(String filename, Workspace workspace) {
+    public void sendRequestFileMessage(String filename, Workspace workspace) {
         RequestFileMessage rfmsg = new RequestFileMessage(
                 filename,
                 workspace.getName(),
@@ -112,6 +113,18 @@ public class NetworkManager {
         if (pd != null) {
             this.sendMessage(pd, rfmsg);
         }
+    }
+
+    public void sendCreateFileMessage(String email, String workspace_name, String filename) {
+        CreateFileMessage cfmsg = new CreateFileMessage(filename, workspace_name);
+        PeerDevice pd = this.getPeerDeviceByEmail(email);
+        if (pd != null) {
+            this.sendMessage(pd, cfmsg);
+        }
+    }
+
+    public void receiveCreateFileMessage(CreateFileMessage message) {
+        LocalWorkspaceManager.getInstance().createFile(message.getWorkspace_name(), message.getName());
     }
 
     private void receiveAnnounceMessage(AnnounceMessage message) {
@@ -323,6 +336,19 @@ public class NetworkManager {
                                     jsonObj.getString("workspace_name"),
                                     jsonObj.getString("content"),
                                     jsonObj.getString("acl")
+                            )
+                    );
+                } catch (JSONException e) {
+                    Log.i(TAG, "receiveMessage() - Error extracting message fields - " + message + "\n");
+                }
+                break;
+
+            case CreateFileMessage.TAG:
+                try {
+                    this.receiveCreateFileMessage(
+                            new CreateFileMessage(
+                                    jsonObj.getString("name"),
+                                    jsonObj.getString("workspace_name")
                             )
                     );
                 } catch (JSONException e) {
