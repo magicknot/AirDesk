@@ -85,6 +85,7 @@ public class WifiDirectActivity extends ActionBarActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_search_devices) {
+            Log.i(TAG, "Refreshing device list...");
             WiFiDirectNetwork.getInstance().refreshPeerDevices();
             peerDevicesAdapter.notifyDataSetChanged();
             WiFiDirectNetwork.getInstance().refreshGroupDevices();

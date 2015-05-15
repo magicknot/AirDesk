@@ -7,7 +7,6 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.UnknownHostException;
-import java.util.Arrays;
 
 import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocket;
 
@@ -61,8 +60,8 @@ public class OutgoingCommTask extends AsyncTask<String, Void, String> {
             Log.i(TAG, "onPostExecute: NULL");
         }
         else {
-            mComm = new ReceiveCommTask();
-            mComm.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mCliSocket);
+            //mComm = new ReceiveCommTask();
+            //mComm.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mCliSocket);
         }
     }
 }

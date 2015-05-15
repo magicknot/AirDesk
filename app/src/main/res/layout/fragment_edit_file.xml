@@ -18,6 +18,7 @@
             android:layout_gravity="top"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="false"
+            android:layout_centerVertical="false"
             android:layout_above="@+id/buttonSave" />
 
         <Button
