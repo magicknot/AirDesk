@@ -44,16 +44,6 @@ public class NetworkManager {
         return this.groupPeerDevices;
     }
 
-    public PeerDevice getPeerDeviceByName(String email) {
-        for (PeerDevice device : groupPeerDevices) {
-            if (device.getEmail().equals(email)) {
-                return device;
-            }
-        }
-
-        return null;
-    }
-
     public String getDeviceName() {
         return this.deviceName;
     }
@@ -66,15 +56,25 @@ public class NetworkManager {
         this.groupPeerDevices.add(p);
     }
 
+    public PeerDevice getPeerDeviceByEmail(String email) {
+        for (PeerDevice pd: this.groupPeerDevices) {
+            if(pd.getEmail().toLowerCase().equals(email.toLowerCase())) {
+                return pd;
+            }
+        }
+        return null;
+    }
+
     public void sendWorkspaces(String email, JSONArray workspaces) {
         WorkspacesMessage wmsg = new WorkspacesMessage(
                 email,
                 workspaces
         );
-        for (PeerDevice pd : this.groupPeerDevices) {
-            if (pd.getEmail().toLowerCase().equals(email.toLowerCase())) {
-                this.sendMessage(pd, wmsg);
-            }
+
+        PeerDevice pd = getPeerDeviceByEmail(email);
+
+        if (pd != null ) {
+            this.sendMessage(pd, wmsg);
         }
 
     }
@@ -84,12 +84,18 @@ public class NetworkManager {
                 UserManager.getInstance().getEmail(),
                 UserManager.getInstance().tagsToJson()
         );
-        for (PeerDevice pd : this.groupPeerDevices) {
+        for(PeerDevice pd: this.groupPeerDevices) {
             sendMessage(pd, amsg);
         }
     }
 
     public void sendFile(FileMessage message) {
+
+        //PeerDevice pd = getPeerDeviceByEmail(email);
+
+        //if (pd != null ) {
+        //    this.sendMessage(pd, fmsg);
+        //}
 
     }
 
@@ -99,11 +105,10 @@ public class NetworkManager {
                 workspace.getName(),
                 UserManager.getInstance().getEmail()
         );
+        PeerDevice pd = getPeerDeviceByEmail(workspace.getOwner());
 
-        for (PeerDevice pd : this.groupPeerDevices) {
-            if (pd.getEmail().toLowerCase().equals(workspace.getOwner().toLowerCase())) {
-                sendMessage(pd, rfmsg);
-            }
+        if (pd != null ) {
+            this.sendMessage(pd, rfmsg);
         }
     }
 
@@ -153,12 +158,11 @@ public class NetworkManager {
                 file.getACL()
         );
 
-        for (PeerDevice pd : this.groupPeerDevices) {
-            if (pd.getEmail().toLowerCase().equals(message.getRequestor_email().toLowerCase())) {
-                this.sendMessage(pd, fmsg);
-            }
-        }
+        PeerDevice pd = getPeerDeviceByEmail(message.getRequestor_email());
 
+        if (pd != null ) {
+            this.sendMessage(pd, fmsg);
+        }
 
     }
 
