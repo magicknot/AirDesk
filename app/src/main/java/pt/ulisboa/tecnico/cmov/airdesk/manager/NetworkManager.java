@@ -11,11 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.domain.PeerDevice;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.TextFile;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.messages.AnnounceMessage;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.messages.FileMessage;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.messages.Message;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.messages.RequestFileMessage;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.messages.UserTagsMessage;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.messages.WorkspacesMessage;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.io.WifiDirect.OutgoingCommTask;
 
 public class NetworkManager {
@@ -80,8 +83,18 @@ public class NetworkManager {
 
     }
 
-    public void sendRequestFile(String filename) {
+    public void sendRequestFile(String filename, Workspace workspace) {
+        RequestFileMessage rfmsg = new RequestFileMessage(
+                filename,
+                workspace.getName(),
+                UserManager.getInstance().getEmail()
+        );
 
+        for(PeerDevice pd: this.groupPeerDevices) {
+            if(pd.getEmail().toLowerCase().equals(workspace.getOwner().toLowerCase())) {
+                sendMessage(pd, rfmsg);
+            }
+        }
     }
 
     private void receiveAnnounceMessage(AnnounceMessage message) {
@@ -104,6 +117,27 @@ public class NetworkManager {
         }
 
         Log.d(TAG, "receiveAnnounceMessage() - done");
+    }
+
+    private void receiveUserTagsMessage(UserTagsMessage message) {
+
+    }
+
+    private void receiveRequestFileMessage(RequestFileMessage message) {
+        TextFile file = new TextFile(message.getName(), message.getWorkspace_name(), "TEST_ACL");
+        FileMessage fmsg = new FileMessage(
+                message.getName(),
+                LocalWorkspaceManager.getInstance().readFile(file),
+                file.getACL()
+        );
+
+        for (PeerDevice pd: this.groupPeerDevices) {
+            if (pd.getEmail().toLowerCase().equals(message.getRequestor_email().toLowerCase())) {
+                this.sendMessage(pd, fmsg);
+            }
+        }
+
+
     }
 
     private void sendMessage(PeerDevice peerDevice, Message message) {
@@ -185,6 +219,33 @@ public class NetworkManager {
                     ForeignWorkspaceManager.getInstance().fromJson(jsonObj.getString("owner_email"), jsonObj.getJSONArray("workspaces"));
                 } catch (JSONException e) {
                     Log.i(TAG, "Error extracting message fields - " + message + "\n");
+                }
+                break;
+
+            case UserTagsMessage.TAG:
+                try {
+                    this.receiveUserTagsMessage(
+                            new UserTagsMessage(
+                                    jsonObj.getString("e-mail"),
+                                    jsonObj.getJSONArray("tags")
+                            )
+                    );
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                break;
+
+            case RequestFileMessage.TAG:
+                try {
+                    this.receiveRequestFileMessage(
+                            new RequestFileMessage(
+                                    jsonObj.getString("name"),
+                                    jsonObj.getString("workspace_name"),
+                                    jsonObj.getString("requestor_email")
+                            )
+                    );
+                } catch (JSONException e) {
+                    Log.i(TAG, "receiveMessage() - Error extracting message fields - " + message + "\n");
                 }
                 break;
 
