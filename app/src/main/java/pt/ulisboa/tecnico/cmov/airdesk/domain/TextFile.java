@@ -64,6 +64,15 @@ public class TextFile implements Parcelable {
     }
 
     @Override
+    public String toString() {
+        return "TextFile{" +
+                "name='" + name + '\'' +
+                ", path='" + path + '\'' +
+                ", acl='" + acl + '\'' +
+                '}';
+    }
+
+    @Override
     public int describeContents() {
         return hashCode();
     }

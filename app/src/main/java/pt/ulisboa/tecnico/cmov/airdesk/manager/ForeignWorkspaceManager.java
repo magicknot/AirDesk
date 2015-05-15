@@ -65,31 +65,29 @@ public class ForeignWorkspaceManager extends WorkspaceManager {
         //apenas remove localmente, necessário notificar owner para remover workspace
         for (Workspace ws : workspaces) {
             if (ws.getName().equals(workspace.getName())) {
-                localWs = ws;
-                break;
+                workspaces.remove(ws);
+                setChanged();
+                notifyObservers();
+                return true;
             }
         }
-        if (localWs != null) {
-            workspaces.remove(workspace);
-            // mark as value changed
-            setChanged();
-            // trigger notification
-            notifyObservers();
-            return true;
-        } else {
-            return false;
-        }
+        return false;
     }
 
     public void removeWorkspaceByOwner(String email) {
+        Log.d(TAG, "removeWorkspaceByOwner(" + email + ")");
         for (Workspace ws : workspaces) {
+            Log.d(TAG, "removeWorkspaceByOwner() - checking " + ws.toString());
             if (ws.getOwner().equals(email)) {
                 workspaces.remove(ws);
                 // mark as value changed
                 setChanged();
                 // trigger notification
-                notifyObservers();
             }
+        }
+
+        if (hasChanged()) {
+            notifyObservers();
         }
     }
 

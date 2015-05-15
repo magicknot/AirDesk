@@ -59,7 +59,7 @@ public class WorkspaceFilesActivity extends ActionBarActivity implements Adapter
             } else {
                 workspace = ForeignWorkspaceManager.getInstance().getWorkspaceByName(temp.getName());
             }
-            Log.i("WorkspaceFilesActivity", "onCreate: getParcelableExtra: " + workspace);
+            Log.d("WorkspaceFilesActivity", "onCreate: getParcelableExtra: " + workspace);
         }
 
         // This is the adapter we use to populate the grid.
@@ -71,7 +71,7 @@ public class WorkspaceFilesActivity extends ActionBarActivity implements Adapter
         listView.setAdapter(textFileAdapter);
         listView.setOnItemClickListener(this);
 
-        Log.i("WorkspaceFilesActivity", "onCreate: end");
+        Log.d("WorkspaceFilesActivity", "onCreate: end");
     }
 
     @Override
@@ -192,7 +192,7 @@ public class WorkspaceFilesActivity extends ActionBarActivity implements Adapter
             fragment.setText(link);
         }
     */
-        Log.i(TAG, "onNewFileItemSelected : " + fileName);
+        Log.d(TAG, "onNewFileItemSelected : " + fileName);
         textFileAdapter.setTextFiles(this.workspace.getTextFiles());
         textFileAdapter.notifyDataSetChanged();
     }

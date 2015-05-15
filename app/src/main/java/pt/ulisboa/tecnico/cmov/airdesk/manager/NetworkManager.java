@@ -65,18 +65,13 @@ public class NetworkManager {
         return null;
     }
 
-    public void sendWorkspaces(String email, JSONArray workspaces) {
-        WorkspacesMessage wmsg = new WorkspacesMessage(
-                email,
-                workspaces
-        );
-
-        PeerDevice pd = getPeerDeviceByEmail(email);
+    public void sendWorkspaces(String client, JSONArray workspaces) {
+        WorkspacesMessage wmsg = new WorkspacesMessage(UserManager.getInstance().getEmail(), workspaces);
+        PeerDevice pd = getPeerDeviceByEmail(client);
 
         if (pd != null) {
             this.sendMessage(pd, wmsg);
         }
-
     }
 
     public void sendUserTags() {
@@ -176,7 +171,7 @@ public class NetworkManager {
     }
 
     private void sendMessage(PeerDevice peerDevice, Message message) {
-        Log.i(TAG, "sending message " + message.getType() + " to " + peerDevice.getEmail());
+        Log.i(TAG, "sending message " + message.toJson().toString() + " to " + peerDevice.getEmail());
         OutgoingCommTask task;
         task = new OutgoingCommTask(peerDevice.getIp(), peerDevice.getPort(),
                 message.toJson().toString());

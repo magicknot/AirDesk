@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.cmov.airdesk.manager;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,7 +29,9 @@ public abstract class WorkspaceManager extends Observable {
     }
 
     public Workspace getWorkspaceByName(String name) {
+        Log.d(TAG, "getWorkspaceByName(" + name + ")");
         for (Workspace ws : workspaces) {
+            Log.d(TAG, "\tgetWorkspaceByName() - " + ws.toString());
             if (ws.getName().equals(name)) {
                 return ws;
             }

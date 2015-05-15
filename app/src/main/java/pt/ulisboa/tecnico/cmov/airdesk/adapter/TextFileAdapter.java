@@ -18,6 +18,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.domain.TextFile;
 import pt.ulisboa.tecnico.cmov.airdesk.view.activity.WorkspaceFilesActivity;
 
 public class TextFileAdapter extends BaseAdapter implements Observer {
+    public static final String TAG = "TextFileAdapter";
     private final LayoutInflater layoutInflater;
     private final int resourceId;
     private final WorkspaceFilesActivity filesActivity;
@@ -58,7 +59,7 @@ public class TextFileAdapter extends BaseAdapter implements Observer {
 
     @Override
     public View getView(int position, View view, ViewGroup parent) {
-        Log.i("FileWorkspaceAdapter", "getView started (received i=" + position + ")");
+        Log.d(TAG, "getView started (received i=" + position + ")");
 
         final View currentView;
         final ViewHolder holder;
@@ -79,7 +80,7 @@ public class TextFileAdapter extends BaseAdapter implements Observer {
             holder = (ViewHolder) currentView.getTag();
         }
         bindView(holder, position);
-        Log.i("WorkspaceAdapter", " int: " + position + ", View: " + currentView.toString() +
+        Log.d(TAG, " int: " + position + ", View: " + currentView.toString() +
                 ", ViewGroup: " + parent.toString());
 
         return currentView;

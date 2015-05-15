@@ -145,12 +145,11 @@ public class LocalWorkspaceManager extends WorkspaceManager {
         db.updateWorkspaceFiles(workspace.getWorkspaceId(), workspace.getTextFiles());
         db.close();
 
-        String email = UserManager.getInstance().getEmail();
         NetworkManager nm = NetworkManager.getInstance();
 
         for (String client : workspace.getClients()) {
             nm.sendWorkspaces(client,
-                    holder.toJson(email, nm.getPeerDeviceByEmail(client).getTags()));
+                    holder.toJson(client, nm.getPeerDeviceByEmail(client).getTags()));
         }
     }
 
