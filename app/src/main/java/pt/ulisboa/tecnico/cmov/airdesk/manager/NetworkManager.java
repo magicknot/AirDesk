@@ -118,7 +118,6 @@ public class NetworkManager {
             if (pd.getDeviceName().toLowerCase().equals(message.getDeviceName().toLowerCase())) {
                 pd.setEmail(message.getEmail());
                 pd.setNickname(message.getNickname());
-
                 JSONArray tagsArray = message.getTags();
                 List<String> tags = new ArrayList<>();
 
@@ -130,6 +129,8 @@ public class NetworkManager {
                     Log.e(TAG, "toJson() - could not read attribute to Json object\n\t" +
                             e.getCause().toString());
                 }
+
+                pd.setTags(tags);
 
                 JSONArray array = LocalWorkspaceManager.getInstance().toJson(message.getEmail(),
                         tags);
