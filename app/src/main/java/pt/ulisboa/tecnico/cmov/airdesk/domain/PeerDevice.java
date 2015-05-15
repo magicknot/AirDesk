@@ -82,13 +82,9 @@ public class PeerDevice {
         List<String> updatedTags = new ArrayList<>();
         try {
             for (int i = 0; i < tags.length(); i++) {
-                JSONObject arrayItem = tags.getJSONObject(i);
-
-                updatedTags.add(arrayItem.getString("name"));
-
+                updatedTags.add(tags.getJSONObject(i).getString("name"));
             }
             this.setTags(updatedTags);
-            LocalWorkspaceManager.getInstance().toJson(this.getEmail(), updatedTags);
         } catch (JSONException e) {
             Log.e(TAG, "importTagsFromJson() - could not read attribute to Json object\n\t" +
                     e.getCause().toString());

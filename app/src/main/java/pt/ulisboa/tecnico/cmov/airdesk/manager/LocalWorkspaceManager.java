@@ -42,6 +42,8 @@ public class LocalWorkspaceManager extends WorkspaceManager {
         this.db.close();
     }
 
+    //----- WORKSPACES
+
     @Override
     public void addWorkspace(String owner, String name, long quota, boolean isNotPrivate,
                              List<WorkspaceTag> tags, List<String> clients) {
@@ -147,10 +149,12 @@ public class LocalWorkspaceManager extends WorkspaceManager {
         NetworkManager nm = NetworkManager.getInstance();
 
         for (String client : workspace.getClients()) {
-            nm.sendWorkspaces(UserManager.getInstance().getEmail(),
+            nm.sendWorkspaces(client,
                     holder.toJson(email, nm.getPeerDeviceByEmail(client).getTags()));
         }
     }
+
+    //----- FILES
 
     @Override
     public void createFile(String workspaceName, String filename) {
@@ -197,12 +201,21 @@ public class LocalWorkspaceManager extends WorkspaceManager {
         return FileStorage.read(file, context);
     }
 
+    //----- CLIENTS
+
+    public boolean isClient(String email) {
+        for (Workspace ws : workspaces) {
+            if (ws.getClients().contains(email))
+                return true;
+        }
+
+        return false;
+    }
+
+    //----- JSON
+
     public JSONArray toJson(String email, List<String> tags) {
         JSONArray array = new JSONArray();
-
-        for (String tag : tags) {
-            tags.add(tag);
-        }
 
         for (Workspace ws : workspaces) {
             if (ws.getClients().contains(email) || ws.containAnyTags(tags)) {

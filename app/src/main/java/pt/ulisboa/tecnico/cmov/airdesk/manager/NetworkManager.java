@@ -121,11 +121,11 @@ public class NetworkManager {
                 pd.importTagsFromJson(message.getTags());
 
                 // send updated workspaces list
-                if (pd.getTags().size() > 0) {
+                if (pd.getTags().size() > 0 || LocalWorkspaceManager.getInstance().isClient(pd.getEmail())) {
                     WorkspacesMessage wmsg = new WorkspacesMessage(
                             UserManager.getInstance().getEmail(),
                             LocalWorkspaceManager.getInstance().toJson(
-                                    message.getEmail(),
+                                    pd.getEmail(),
                                     pd.getTags()
                             )
                     );
@@ -148,7 +148,7 @@ public class NetworkManager {
             WorkspacesMessage wmsg = new WorkspacesMessage(
                     UserManager.getInstance().getEmail(),
                     LocalWorkspaceManager.getInstance().toJson(
-                            message.getEmail(),
+                            pd.getEmail(),
                             pd.getTags()
                     )
             );
