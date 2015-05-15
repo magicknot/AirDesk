@@ -148,7 +148,7 @@ public class LocalWorkspaceManager extends WorkspaceManager {
 
         for (String client : workspace.getClients()) {
             nm.sendWorkspaces(UserManager.getInstance().getEmail(),
-                    holder.toJson(email, nm.getPeerDeviceByEmail(email).getTags()));
+                    holder.toJson(email, nm.getPeerDeviceByEmail(client).getTags()));
         }
     }
 
