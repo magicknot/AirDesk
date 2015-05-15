@@ -4,9 +4,11 @@ import android.content.Context;
 import android.util.Log;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.io.FileStorage;
@@ -184,11 +186,21 @@ public class LocalWorkspaceManager extends WorkspaceManager {
 
     }
 
-    public JSONArray toJson(String email) {
+    public JSONArray toJson(String email, JSONArray tagsArray) {
         JSONArray array = new JSONArray();
+        List<String> tags = new ArrayList<>();
+
+        try {
+            for (int i = 0; i < tagsArray.length(); i++) {
+                tags.add(tagsArray.getString(i));
+            }
+        } catch (JSONException e) {
+            Log.e(TAG, "toJson() - could not read attribute to Json object\n\t" +
+                    e.getCause().toString());
+        }
 
         for (Workspace ws : workspaces) {
-            if (ws.getClients().contains(email)) {
+            if (ws.getClients().contains(email) || ws.containAnyTags(tags)) {
                 array.put(ws.toJson());
             }
         }

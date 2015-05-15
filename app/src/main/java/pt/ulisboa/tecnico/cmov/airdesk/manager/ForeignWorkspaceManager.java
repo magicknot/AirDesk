@@ -1,6 +1,11 @@
 package pt.ulisboa.tecnico.cmov.airdesk.manager;
 
 import android.content.Context;
+import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -116,5 +121,21 @@ public class ForeignWorkspaceManager extends WorkspaceManager {
     @Override
     public void deleteFile(Workspace workspace, TextFile file) {
         // TODO
+    }
+
+    public static void fromJson(String owner, JSONArray array) {
+        List<Workspace> newWorkspaces = new ArrayList<>();
+        getInstance().removeWorkspaceByOwner(owner);
+
+        try {
+            for (int i = 0; i < array.length(); i++) {
+                newWorkspaces.add(Workspace.fromJson(owner, array.getJSONObject(i)));
+            }
+        } catch (JSONException e) {
+            Log.e(TAG, "fromJson() - could not read attribute to Json object\n\t" +
+                    e.getCause().toString());
+        }
+
+        getInstance().workspaces.addAll(newWorkspaces);
     }
 }

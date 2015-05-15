@@ -3,6 +3,7 @@ package pt.ulisboa.tecnico.cmov.airdesk.manager;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -80,17 +81,20 @@ public class NetworkManager {
 
     private void receiveAnnounceMessage(AnnounceMessage message) {
         Log.d(TAG, "receiveAnnounceMessage() - start");
-        for(PeerDevice pd: this.groupPeerDevices){
+        for (PeerDevice pd : this.groupPeerDevices) {
             if (pd.getDeviceName().toLowerCase().equals(message.getDeviceName().toLowerCase())) {
                 pd.setEmail(message.getEmail());
                 pd.setNickname(message.getNickname());
 
-                WorkspacesMessage wmsg = new WorkspacesMessage(
-                    UserManager.getInstance().getEmail(),
-                    LocalWorkspaceManager.getInstance().toJson(message.getEmail())
-                );
+                JSONArray array = LocalWorkspaceManager.getInstance().toJson(message.getEmail(),
+                        message.getTags());
 
-                sendMessage(pd, wmsg);
+                if (array.length() > 0) {
+                    WorkspacesMessage wmsg = new WorkspacesMessage(
+                            UserManager.getInstance().getEmail(), array);
+
+                    sendMessage(pd, wmsg);
+                }
             }
         }
 
@@ -115,12 +119,12 @@ public class NetworkManager {
         );
 
         // send announces to new devices
-        for(PeerDevice pd : newDevices) {
+        for (PeerDevice pd : newDevices) {
             this.addGroupDevice(pd);
             this.sendMessage(pd, amsg);
         }
 
-        for(PeerDevice pd : toRemoveDevices) {
+        for (PeerDevice pd : toRemoveDevices) {
             ForeignWorkspaceManager.getInstance().removeWorkspaceByOwner(pd.getEmail());
         }
     }
@@ -173,7 +177,6 @@ public class NetworkManager {
 
             case WorkspacesMessage.TAG:
                 break;
-
         }
 
     }

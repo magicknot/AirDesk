@@ -292,4 +292,15 @@ public class Workspace implements Parcelable {
         }
     };
 
+    public boolean containAnyTags(List<String> newTags) {
+        for (String newTag : newTags) {
+            for (WorkspaceTag tag : tags) {
+                if (newTag.equals(tag.getTag())) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 }
