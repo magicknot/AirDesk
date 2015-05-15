@@ -23,8 +23,6 @@ public class ForeignWorkspaceManager extends WorkspaceManager {
 
     private static ForeignWorkspaceManager holder = null;
 
-    private Map<String, WorkspaceAdapter> activeUsers;
-
     public static ForeignWorkspaceManager getInstance() {
         if (holder == null) {
             holder = new ForeignWorkspaceManager();
@@ -35,7 +33,6 @@ public class ForeignWorkspaceManager extends WorkspaceManager {
     public void init(Context context) {
         super.context = context;
         this.workspaces = new ArrayList<>();
-        this.activeUsers = new HashMap<>();
     }
 
     public List<Workspace> getWorkspaces() {

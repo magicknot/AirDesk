@@ -17,6 +17,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.io.database.AirdeskDbContract;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.ForeignWorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.io.WifiDirect.WiFiDirectNetwork;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.ViewPagerAdapter;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.LocalWorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.view.SlidingTabLayout;
 import pt.ulisboa.tecnico.cmov.airdesk.view.fragment.UserTagsFragment;
@@ -85,8 +86,8 @@ public class AirdeskActivity extends ActionBarActivity {
 
     private void exitApplication() {
         SharedPreferences pref = getSharedPreferences("MyPrefsFile", 0);
-        pref.edit().clear().commit();
-        this.deleteDatabase(AirdeskDbContract.DATABASE_NAME);
+        pref.edit().clear().apply();
+        LocalWorkspaceManager.getInstance().removeAllWorkspaces();
         finish();
         System.exit(0);
 
