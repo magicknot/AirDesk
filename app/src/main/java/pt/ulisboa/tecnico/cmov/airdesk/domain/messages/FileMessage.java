@@ -11,7 +11,6 @@ public class FileMessage extends Message {
     private String name;
     private String owner_email;
     private String workspace_name;
-
     private String content;
 
     private String acl;
@@ -60,6 +59,5 @@ public class FileMessage extends Message {
 
         return obj;
     }
-
 
 }

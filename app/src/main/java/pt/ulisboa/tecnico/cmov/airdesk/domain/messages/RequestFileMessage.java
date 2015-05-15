@@ -20,6 +20,7 @@ public class RequestFileMessage extends Message {
 
     }
 
+
     public String getName() {
         return this.name;
     }

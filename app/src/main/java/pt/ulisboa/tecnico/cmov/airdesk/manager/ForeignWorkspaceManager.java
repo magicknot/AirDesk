@@ -123,7 +123,8 @@ public class ForeignWorkspaceManager extends WorkspaceManager {
 
     @Override
     public String readFile(TextFile file) {
-        return "TODO"; //TODO
+        return NetworkManager.getInstance().sendRequestFileMessage(file.getName(),
+                this.getWorkspaceByName(file.getPath()));
     }
 
     @Override

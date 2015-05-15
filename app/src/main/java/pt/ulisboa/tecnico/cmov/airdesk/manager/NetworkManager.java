@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import pt.ulisboa.tecnico.cmov.airdesk.domain.PeerDevice;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.TextFile;
@@ -22,7 +23,9 @@ import pt.ulisboa.tecnico.cmov.airdesk.domain.messages.RequestFileMessage;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.messages.UserTagsMessage;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.messages.WorkspacesMessage;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
+import pt.ulisboa.tecnico.cmov.airdesk.io.WifiDirect.AsyncResponse;
 import pt.ulisboa.tecnico.cmov.airdesk.io.WifiDirect.OutgoingCommTask;
+import pt.ulisboa.tecnico.cmov.airdesk.io.WifiDirect.OutgoingCommTaskWithResponse;
 
 public class NetworkManager {
     private static final String TAG = "NetworkManager";
@@ -31,6 +34,8 @@ public class NetworkManager {
     private String deviceName;
 
     private static NetworkManager holder = null;
+
+    private Message message;
 
     public static NetworkManager getInstance() {
         if (holder == null) {
@@ -97,17 +102,29 @@ public class NetworkManager {
 
     }
 
-    public void sendRequestFileMessage(String filename, Workspace workspace) {
-        RequestFileMessage rfmsg = new RequestFileMessage(
-                filename,
-                workspace.getName(),
-                UserManager.getInstance().getEmail()
-        );
+    public String sendRequestFileMessage(String filename, Workspace workspace) {
+        RequestFileMessage rfmsg = new RequestFileMessage(filename, workspace.getName(),
+                UserManager.getInstance().getEmail());
+
         PeerDevice pd = getPeerDeviceByEmail(workspace.getOwner());
+        Message msg;
+        FileMessage fmsg;
 
         if (pd != null) {
-            this.sendMessage(pd, rfmsg);
+
+            msg = this.sendMessageWithResponse(pd, rfmsg);
+
+            if (msg == null) {
+                Log.d(TAG, "sendRequestFileMessage() - IS NULL");
+            } else {
+                fmsg = (FileMessage)msg;
+                Log.d(TAG, "sendRequestFileMessage() - " + fmsg.toJson().toString());
+                return fmsg.getContent();
+            }
+
         }
+
+        return null;
     }
 
     public void sendCreateFileMessage(String email, String workspaceName, String filename) {
@@ -178,22 +195,11 @@ public class NetworkManager {
     }
 
 
-    private void receiveRequestFileMessage(RequestFileMessage message) {
+    private FileMessage receiveRequestFileMessage(RequestFileMessage message) {
         TextFile file = new TextFile(message.getName(), message.getWorkspace_name(), "TEST_ACL");
-        FileMessage fmsg = new FileMessage(
-                message.getName(),
-                UserManager.getInstance().getEmail(),
-                message.getWorkspace_name(),
-                LocalWorkspaceManager.getInstance().readFile(file),
-                file.getACL()
-        );
-
-        PeerDevice pd = getPeerDeviceByEmail(message.getRequestor_email());
-
-        if (pd != null) {
-            this.sendMessage(pd, fmsg);
-        }
-
+        return new FileMessage(message.getName(), UserManager.getInstance().getEmail(),
+                message.getWorkspace_name(), LocalWorkspaceManager.getInstance().readFile(file),
+                file.getACL());
     }
 
     // decide what happens when we receive a file
@@ -218,8 +224,34 @@ public class NetworkManager {
                 }
             }
         }
+    }
 
+    // generic function to send messages to other peers
+    private Message sendMessageWithResponse(PeerDevice peerDevice, Message message) {
+        Log.i(TAG, "sending message " + message.toJson().toString() + " to " + peerDevice.getEmail());
+        OutgoingCommTaskWithResponse task;
 
+        task = new OutgoingCommTaskWithResponse(peerDevice.getIp(), peerDevice.getPort(),
+                message.toJson().toString());
+
+//        task.response = new AsyncResponse() {
+//            @Override
+//            public void processFinish(String output) {
+//                Log.d(TAG, "sendMessageWithResponse() -> processFinish() " + output);
+//                holder.message = receiveMessage(output);
+//            }
+//        };
+
+//        task.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+        try {
+            String result = task.execute().get();
+            Log.d(TAG, "sendMessageWithResponse() - got result: " + result);
+            return receiveMessage(result);
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     // generic function to send messages to other peers
@@ -260,7 +292,7 @@ public class NetworkManager {
         return false;
     }
 
-    public void receiveMessage(String message) {
+    public Message receiveMessage(String message) {
         JSONObject jsonObj;
         String messageType;
 
@@ -269,14 +301,14 @@ public class NetworkManager {
         } catch (JSONException e) {
             Log.e(TAG, "receiveMessage() - Message string cannot be converted to JSONObject - " +
                     message + "\n");
-            return;
+            return null;
         }
 
         try {
             messageType = jsonObj.getString("type");
         } catch (JSONException e) {
             Log.e(TAG, "receiveMessage() - Message does not have type field - " + message + "\n");
-            return;
+            return null;
         }
 
         Log.d(TAG, "receiveMessage() - messageType = " + messageType);
@@ -301,6 +333,7 @@ public class NetworkManager {
                 try {
                     ForeignWorkspaceManager.fromJson(jsonObj.getString("owner_email"), jsonObj.getJSONArray("workspaces"));
                 } catch (JSONException e) {
+                    Log.i(TAG, "receiveMessage() - Error extracting message fields - " + message + "\n");
                     Log.e(TAG, "Error extracting message fields - " + message + "\n");
                 }
                 break;
@@ -315,10 +348,14 @@ public class NetworkManager {
                 break;
 
             case RequestFileMessage.TAG:
-                try {
-                    this.receiveRequestFileMessage(new RequestFileMessage(jsonObj.getString("name"),
-                            jsonObj.getString("workspace_name"),
-                            jsonObj.getString("requestor_email")));
+                try { // here we return the message to be sent back in the same socket
+                    return this.receiveRequestFileMessage(
+                            new RequestFileMessage(
+                                    jsonObj.getString("name"),
+                                    jsonObj.getString("workspace_name"),
+                                    jsonObj.getString("requestor_email")
+                            )
+                    );
                 } catch (JSONException e) {
                     Log.e(TAG, "receiveMessage() - Error extracting message fields - " + message + "\n");
                 }
@@ -326,9 +363,22 @@ public class NetworkManager {
 
             case FileMessage.TAG:
                 try {
-                    this.receiveFileMessage(new FileMessage(jsonObj.getString("name"),
-                            jsonObj.getString("owner_email"), jsonObj.getString("workspace_name"),
-                            jsonObj.getString("content"), jsonObj.getString("acl")));
+                    FileMessage fmsg = new FileMessage(
+                            jsonObj.getString("name"),
+                            jsonObj.getString("owner_email"),
+                            jsonObj.getString("workspace_name"),
+                            jsonObj.getString("content"),
+                            jsonObj.getString("acl")
+                    );
+
+                    if (LocalWorkspaceManager.getInstance().getWorkspaceByName(fmsg.getWorkspace_name()) != null) {
+                        this.receiveFileMessage(fmsg);
+                    } else {
+                        Log.d(TAG,"receiveMessage() -" + fmsg.toJson().toString() );
+                        return fmsg;
+                    }
+
+
                 } catch (JSONException e) {
                     Log.e(TAG, "receiveMessage() - Error extracting message fields - " + message + "\n");
                 }
@@ -352,7 +402,7 @@ public class NetworkManager {
                 }
 
         }
-
+        return null;
     }
 
 }
