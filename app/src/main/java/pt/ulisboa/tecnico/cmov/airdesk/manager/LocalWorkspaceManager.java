@@ -97,6 +97,8 @@ public class LocalWorkspaceManager extends WorkspaceManager {
     public void updateWorkspace(Workspace workspace) {
         Workspace currentWS = getWorkspaceByName(workspace.getName());
 
+
+
         db.open();
         db.updateLocalWorkspace(workspace.getWorkspaceId(), workspace.getName(),
                 workspace.getOwner(), workspace.getQuota(), workspace.isPrivate(),
@@ -109,6 +111,8 @@ public class LocalWorkspaceManager extends WorkspaceManager {
     public void updateWorkspaceClients(Workspace workspace, List<String> listClients) {
         int i;
 
+        Workspace ws;
+
         db.open();
         db.updateLocalWorkspaceClients(workspace.getWorkspaceId(), listClients);
         db.close();
@@ -118,7 +122,23 @@ public class LocalWorkspaceManager extends WorkspaceManager {
 
         if (i < workspaces.size()
                 && workspaces.get(i).getWorkspaceId() == workspace.getWorkspaceId()) {
-            workspaces.get(i).setClients(listClients);
+            ws = workspaces.get(i);
+
+            List<String> oldClients = ws.getClients();
+            ws.setClients(listClients);
+
+            oldClients.removeAll(listClients);
+            NetworkManager nm = NetworkManager.getInstance();
+
+            for (String client : oldClients) {
+                nm.sendWorkspaces(client, holder.toJson(client,
+                        nm.getPeerDeviceByEmail(client).getTags()));
+            }
+
+            for (String client : workspace.getClients()) {
+                nm.sendWorkspaces(client, holder.toJson(client,
+                        nm.getPeerDeviceByEmail(client).getTags()));
+            }
         }
     }
 

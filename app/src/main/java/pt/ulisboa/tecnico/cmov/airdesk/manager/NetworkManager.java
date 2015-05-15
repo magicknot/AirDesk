@@ -161,7 +161,7 @@ public class NetworkManager {
                 pd.importTagsFromJson(message.getTags());
 
                 // send updated workspaces list
-                if (pd.getTags().size() > 0 || LocalWorkspaceManager.getInstance().isClient(pd.getEmail())) {
+                if (LocalWorkspaceManager.getInstance().isClient(pd.getEmail())) {
                     WorkspacesMessage wmsg = new WorkspacesMessage(
                             UserManager.getInstance().getEmail(),
                             LocalWorkspaceManager.getInstance().toJson(pd.getEmail(), pd.getTags()));
