@@ -59,13 +59,13 @@ public class ForeignWorkspaceManager extends WorkspaceManager {
 
     @Override
     public boolean removeWorkspace(Workspace workspace) {
-        //TODO: Send Message unSubscribe
-        //apenas remove localmente, necessário notificar owner para remover workspace
+
         for (Workspace ws : workspaces) {
             if (ws.getName().equals(workspace.getName())) {
                 workspaces.remove(ws);
                 setChanged();
                 notifyObservers();
+                NetworkManager.getInstance().sendUnsubscribeWorkspace(ws.getName());
                 return true;
             }
         }
