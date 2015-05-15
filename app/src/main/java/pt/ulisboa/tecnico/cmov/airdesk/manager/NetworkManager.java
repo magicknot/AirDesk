@@ -6,7 +6,9 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -157,6 +159,7 @@ public class NetworkManager {
         }
     }
 
+
     private void receiveRequestFileMessage(RequestFileMessage message) {
         TextFile file = new TextFile(message.getName(), message.getWorkspace_name(), "TEST_ACL");
         FileMessage fmsg = new FileMessage(
@@ -175,6 +178,33 @@ public class NetworkManager {
 
     }
 
+    // decide what happens when we receive a file
+    private void receiveFileMessage(FileMessage message) {
+        Workspace ws = LocalWorkspaceManager.getInstance().getWorkspaceByName(message.getWorkspace_name());
+
+        // if workspace AND file exist, then...
+        if (ws != null) {
+            TextFile textFile = ws.getTextFile(message.getName());
+            if (textFile != null) {
+
+                try {
+                    // save file locally
+                    LocalWorkspaceManager.getInstance().writeFile(
+                            ws,
+                            textFile,
+                            message.getContent());
+
+                } catch (IOException e) {
+                    Log.e(TAG, "receiveFileMessage() - CABUM: error saving file - " +
+                            message + "\n");
+                }
+            }
+        }
+
+
+    }
+
+    // generic function to send messages to other peers
     private void sendMessage(PeerDevice peerDevice, Message message) {
         Log.i(TAG, "sending message " + message.getType() + " to " + peerDevice.getEmail());
         OutgoingCommTask task;
@@ -277,6 +307,22 @@ public class NetworkManager {
                                     jsonObj.getString("name"),
                                     jsonObj.getString("workspace_name"),
                                     jsonObj.getString("requestor_email")
+                            )
+                    );
+                } catch (JSONException e) {
+                    Log.i(TAG, "receiveMessage() - Error extracting message fields - " + message + "\n");
+                }
+                break;
+
+            case FileMessage.TAG:
+                try {
+                    this.receiveFileMessage(
+                            new FileMessage(
+                                    jsonObj.getString("name"),
+                                    jsonObj.getString("owner_email"),
+                                    jsonObj.getString("workspace_name"),
+                                    jsonObj.getString("content"),
+                                    jsonObj.getString("acl")
                             )
                     );
                 } catch (JSONException e) {
