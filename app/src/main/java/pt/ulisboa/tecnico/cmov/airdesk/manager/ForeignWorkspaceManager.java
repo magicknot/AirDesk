@@ -112,7 +112,8 @@ public class ForeignWorkspaceManager extends WorkspaceManager {
 
     @Override
     public void createFile(String workspaceName, String filename) {
-
+        Workspace ws = holder.getWorkspaceByName(workspaceName);
+        NetworkManager.getInstance().sendCreateFileMessage(ws.getOwner(), workspaceName, filename);
     }
 
     @Override
