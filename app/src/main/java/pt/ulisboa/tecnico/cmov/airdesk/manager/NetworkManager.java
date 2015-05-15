@@ -20,6 +20,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.domain.messages.DeleteFileMessage;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.messages.FileMessage;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.messages.Message;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.messages.RequestFileMessage;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.messages.UnsubscribeWorkspaceMessage;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.messages.UserTagsMessage;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.messages.WorkspacesMessage;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
@@ -87,6 +88,20 @@ public class NetworkManager {
         for (PeerDevice pd : this.groupPeerDevices) {
             sendMessage(pd, amsg);
         }
+    }
+
+    public void sendUnsubscribeWorkspace(String workspaceName) {
+        UnsubscribeWorkspaceMessage umsg = new UnsubscribeWorkspaceMessage(
+                UserManager.getInstance().getEmail(),
+                workspaceName
+        );
+
+        PeerDevice pd = getPeerDeviceByEmail(UserManager.getInstance().getEmail());
+
+        if (pd != null) {
+            this.sendMessage(pd, umsg);
+        }
+
     }
 
     public void sendFile(Workspace workspace, TextFile file, String content) {
@@ -209,6 +224,7 @@ public class NetworkManager {
         if (ws != null) {
             TextFile textFile = ws.getTextFile(message.getName());
             if (textFile != null) {
+
                 try {
                     // save file locally
                     LocalWorkspaceManager.getInstance().writeFile(ws, textFile, message.getContent());
@@ -391,6 +407,17 @@ public class NetworkManager {
                 } catch (JSONException e) {
                     Log.i(TAG, "Error extracting message fields - " + message + "\n");
                 }
+                break;
+
+            case UnsubscribeWorkspaceMessage.TAG:
+                try {
+                    Workspace ws = LocalWorkspaceManager.getInstance().getWorkspaceByName(jsonObj.getString("workspaceName"));
+                    ws.removeClient(jsonObj.getString("e-mail"));
+                    LocalWorkspaceManager.getInstance().updateWorkspaceClients(ws, ws.getClients());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                break;
 
         }
         return null;
