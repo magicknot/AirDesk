@@ -44,6 +44,16 @@ public class NetworkManager {
         return this.groupPeerDevices;
     }
 
+    public PeerDevice getPeerDeviceByName(String email) {
+        for (PeerDevice device : groupPeerDevices) {
+            if (device.getEmail().equals(email)) {
+                return device;
+            }
+        }
+
+        return null;
+    }
+
     public String getDeviceName() {
         return this.deviceName;
     }
@@ -61,7 +71,7 @@ public class NetworkManager {
                 email,
                 workspaces
         );
-        for (PeerDevice pd: this.groupPeerDevices){
+        for (PeerDevice pd : this.groupPeerDevices) {
             if (pd.getEmail().toLowerCase().equals(email.toLowerCase())) {
                 this.sendMessage(pd, wmsg);
             }
@@ -74,7 +84,7 @@ public class NetworkManager {
                 UserManager.getInstance().getEmail(),
                 UserManager.getInstance().tagsToJson()
         );
-        for(PeerDevice pd: this.groupPeerDevices) {
+        for (PeerDevice pd : this.groupPeerDevices) {
             sendMessage(pd, amsg);
         }
     }
@@ -90,8 +100,8 @@ public class NetworkManager {
                 UserManager.getInstance().getEmail()
         );
 
-        for(PeerDevice pd: this.groupPeerDevices) {
-            if(pd.getEmail().toLowerCase().equals(workspace.getOwner().toLowerCase())) {
+        for (PeerDevice pd : this.groupPeerDevices) {
+            if (pd.getEmail().toLowerCase().equals(workspace.getOwner().toLowerCase())) {
                 sendMessage(pd, rfmsg);
             }
         }
@@ -104,8 +114,20 @@ public class NetworkManager {
                 pd.setEmail(message.getEmail());
                 pd.setNickname(message.getNickname());
 
+                JSONArray tagsArray = message.getTags();
+                List<String> tags = new ArrayList<>();
+
+                try {
+                    for (int i = 0; i < tagsArray.length(); i++) {
+                        tags.add(tagsArray.getJSONObject(i).getString("name"));
+                    }
+                } catch (JSONException e) {
+                    Log.e(TAG, "toJson() - could not read attribute to Json object\n\t" +
+                            e.getCause().toString());
+                }
+
                 JSONArray array = LocalWorkspaceManager.getInstance().toJson(message.getEmail(),
-                        message.getTags());
+                        tags);
 
                 if (array.length() > 0) {
                     WorkspacesMessage wmsg = new WorkspacesMessage(
@@ -131,7 +153,7 @@ public class NetworkManager {
                 file.getACL()
         );
 
-        for (PeerDevice pd: this.groupPeerDevices) {
+        for (PeerDevice pd : this.groupPeerDevices) {
             if (pd.getEmail().toLowerCase().equals(message.getRequestor_email().toLowerCase())) {
                 this.sendMessage(pd, fmsg);
             }
@@ -216,7 +238,7 @@ public class NetworkManager {
 
             case WorkspacesMessage.TAG:
                 try {
-                    ForeignWorkspaceManager.getInstance().fromJson(jsonObj.getString("owner_email"), jsonObj.getJSONArray("workspaces"));
+                    ForeignWorkspaceManager.fromJson(jsonObj.getString("owner_email"), jsonObj.getJSONArray("workspaces"));
                 } catch (JSONException e) {
                     Log.i(TAG, "Error extracting message fields - " + message + "\n");
                 }

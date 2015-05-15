@@ -4,10 +4,8 @@ import android.content.Context;
 import android.util.Log;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.domain.TextFile;
@@ -71,6 +69,12 @@ public class LocalWorkspaceManager extends WorkspaceManager {
         workspaces.add(lw);
     }
 
+    public void removeAllWorkspaces() {
+        for (Workspace ws : workspaces) {
+            removeWorkspace(ws);
+        }
+    }
+
     @Override
     public boolean removeWorkspace(Workspace workspace) {
         db.open();
@@ -84,17 +88,13 @@ public class LocalWorkspaceManager extends WorkspaceManager {
         return isDeleted;
     }
 
-    public void removeAllWorkspaces() {
-        for (Workspace ws : workspaces) {
-            removeWorkspace(ws);
-        }
-    }
-
     private boolean deleteWorkspaceDirectory(Workspace workspace) {
         return FileStorage.deleteWorkspace(workspace.getName(), context);
     }
 
-    public void updateWorkspaceClients(Workspace workspace) {
+    public void updateWorkspace(Workspace workspace) {
+        Workspace currentWS = getWorkspaceByName(workspace.getName());
+
         db.open();
         db.updateLocalWorkspace(workspace.getWorkspaceId(), workspace.getName(),
                 workspace.getOwner(), workspace.getQuota(), workspace.isPrivate(),
@@ -142,6 +142,14 @@ public class LocalWorkspaceManager extends WorkspaceManager {
         db.open();
         db.updateWorkspaceFiles(workspace.getWorkspaceId(), workspace.getTextFiles());
         db.close();
+
+        String email = UserManager.getInstance().getEmail();
+        NetworkManager nm = NetworkManager.getInstance();
+
+        for (String client : workspace.getClients()) {
+            nm.sendWorkspaces(UserManager.getInstance().getEmail(),
+                    holder.toJson(email, nm.getPeerDeviceByName(email).getTags()));
+        }
     }
 
     @Override
@@ -153,11 +161,22 @@ public class LocalWorkspaceManager extends WorkspaceManager {
             return;
         }
 
-        TextFile file = new TextFile(filename, filename, "TODO_ACL"); //FIXME
+        TextFile file = new TextFile(filename, workspaceName, "TODO_ACL"); //FIXME
         if (ws.addTextFile(file)) {
             FileStorage.save(file, context);
             updateWorkspaceFiles(ws);
         }
+    }
+
+    @Override
+    public void deleteFile(Workspace workspace, TextFile file) {
+        if (workspace.removeTextFile(file)) {
+            FileStorage.delete(file, context);
+            updateWorkspaceFiles(workspace);
+        } else {
+            Log.e(TAG, "deleteFile() - could not delete file " + file.getName());
+        }
+
     }
 
     @Override
@@ -178,28 +197,11 @@ public class LocalWorkspaceManager extends WorkspaceManager {
         return FileStorage.read(file, context);
     }
 
-    @Override
-    public void deleteFile(Workspace workspace, TextFile file) {
-        if (workspace.removeTextFile(file)) {
-            FileStorage.delete(file, context);
-            updateWorkspaceFiles(workspace);
-        } else {
-            Log.e(TAG, "deleteFile() - could not delete file " + file.getName());
-        }
-
-    }
-
-    public JSONArray toJson(String email, JSONArray tagsArray) {
+    public JSONArray toJson(String email, List<String> tags) {
         JSONArray array = new JSONArray();
-        List<String> tags = new ArrayList<>();
 
-        try {
-            for (int i = 0; i < tagsArray.length(); i++) {
-                tags.add(tagsArray.getString(i));
-            }
-        } catch (JSONException e) {
-            Log.e(TAG, "toJson() - could not read attribute to Json object\n\t" +
-                    e.getCause().toString());
+        for (String tag : tags) {
+            tags.add(tag);
         }
 
         for (Workspace ws : workspaces) {

@@ -1,11 +1,14 @@
 package pt.ulisboa.tecnico.cmov.airdesk.domain;
 
+import java.util.List;
+
 public class PeerDevice {
     private String deviceName;
     private String ip;
     private int port;
     private String email;
     private String nickname;
+    private List<String> tags;
 
     public PeerDevice() {
 
@@ -57,14 +60,23 @@ public class PeerDevice {
         this.nickname = nickname;
     }
 
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
+    }
+
     @Override
     public String toString() {
         return "PeerDevice{" +
-                "deviceName='"+deviceName + '\'' +
+                "deviceName='" + deviceName + '\'' +
                 ", ip='" + ip + '\'' +
                 ", port='" + port + '\'' +
                 ", email='" + email + '\'' +
                 ", nickname='" + nickname + '\'' +
+                ", tags='" + tags + '\'' +
                 '}';
     }
 }

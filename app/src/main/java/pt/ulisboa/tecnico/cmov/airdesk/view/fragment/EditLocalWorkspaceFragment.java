@@ -156,7 +156,7 @@ public class EditLocalWorkspaceFragment extends DialogFragment {
                 mWorkspace.setQuota(Long.parseLong(tQuota.getText().toString()), getActivity().getBaseContext());
                 Log.i(TAG, "onClick - updateLocalWorkspaceClients - isPrivate: " +
                         String.valueOf(mWorkspace.isPrivate()));
-                LocalWorkspaceManager.getInstance().updateWorkspaceClients(mWorkspace);
+                LocalWorkspaceManager.getInstance().updateWorkspace(mWorkspace);
                 getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK,
                         getActivity().getIntent());
 
