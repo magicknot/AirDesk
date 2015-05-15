@@ -6,7 +6,6 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,6 +15,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.domain.PeerDevice;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.TextFile;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.messages.AnnounceMessage;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.messages.CreateFileMessage;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.messages.DeleteFileMessage;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.messages.FileMessage;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.messages.Message;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.messages.RequestFileMessage;
@@ -110,16 +110,30 @@ public class NetworkManager {
         }
     }
 
-    public void sendCreateFileMessage(String email, String workspace_name, String filename) {
-        CreateFileMessage cfmsg = new CreateFileMessage(filename, workspace_name);
+    public void sendCreateFileMessage(String email, String workspaceName, String filename) {
+        CreateFileMessage cfmsg = new CreateFileMessage(filename, workspaceName);
         PeerDevice pd = this.getPeerDeviceByEmail(email);
         if (pd != null) {
             this.sendMessage(pd, cfmsg);
         }
     }
 
+    public void sendDeleteFileMessage(String email, String workspaceName, String filename) {
+        DeleteFileMessage message = new DeleteFileMessage(filename, workspaceName);
+        PeerDevice device = this.getPeerDeviceByEmail(email);
+
+        if (device != null) {
+            this.sendMessage(device, message);
+        }
+    }
+
     public void receiveCreateFileMessage(CreateFileMessage message) {
-        LocalWorkspaceManager.getInstance().createFile(message.getWorkspace_name(), message.getName());
+        LocalWorkspaceManager.getInstance().createFile(message.getWorkspaceName(), message.getName());
+    }
+
+    public void receiveDeleteFileMessage(DeleteFileMessage message) {
+        Workspace ws = LocalWorkspaceManager.getInstance().getWorkspaceByName(message.getWorkspaceName());
+        LocalWorkspaceManager.getInstance().deleteFile(ws, ws.getTextFile(message.getName()));
     }
 
     private void receiveAnnounceMessage(AnnounceMessage message) {
@@ -134,11 +148,7 @@ public class NetworkManager {
                 if (pd.getTags().size() > 0 || LocalWorkspaceManager.getInstance().isClient(pd.getEmail())) {
                     WorkspacesMessage wmsg = new WorkspacesMessage(
                             UserManager.getInstance().getEmail(),
-                            LocalWorkspaceManager.getInstance().toJson(
-                                    pd.getEmail(),
-                                    pd.getTags()
-                            )
-                    );
+                            LocalWorkspaceManager.getInstance().toJson(pd.getEmail(), pd.getTags()));
 
                     sendMessage(pd, wmsg);
                 }
@@ -283,7 +293,7 @@ public class NetworkManager {
                             )
                     );
                 } catch (JSONException e) {
-                    Log.i(TAG, "receiveMessage() - Error extracting message fields - " + message + "\n");
+                    Log.e(TAG, "receiveMessage() - Error extracting message fields - " + message + "\n");
                 }
                 break;
 
@@ -291,65 +301,55 @@ public class NetworkManager {
                 try {
                     ForeignWorkspaceManager.fromJson(jsonObj.getString("owner_email"), jsonObj.getJSONArray("workspaces"));
                 } catch (JSONException e) {
-                    Log.i(TAG, "Error extracting message fields - " + message + "\n");
+                    Log.e(TAG, "Error extracting message fields - " + message + "\n");
                 }
                 break;
 
             case UserTagsMessage.TAG:
                 try {
-                    this.receiveUserTagsMessage(
-                            new UserTagsMessage(
-                                    jsonObj.getString("e-mail"),
-                                    jsonObj.getJSONArray("tags")
-                            )
-                    );
+                    this.receiveUserTagsMessage(new UserTagsMessage(jsonObj.getString("e-mail"),
+                            jsonObj.getJSONArray("tags")));
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    Log.e(TAG, "Error extracting message fields - " + message + "\n");
                 }
                 break;
 
             case RequestFileMessage.TAG:
                 try {
-                    this.receiveRequestFileMessage(
-                            new RequestFileMessage(
-                                    jsonObj.getString("name"),
-                                    jsonObj.getString("workspace_name"),
-                                    jsonObj.getString("requestor_email")
-                            )
-                    );
+                    this.receiveRequestFileMessage(new RequestFileMessage(jsonObj.getString("name"),
+                            jsonObj.getString("workspace_name"),
+                            jsonObj.getString("requestor_email")));
                 } catch (JSONException e) {
-                    Log.i(TAG, "receiveMessage() - Error extracting message fields - " + message + "\n");
+                    Log.e(TAG, "receiveMessage() - Error extracting message fields - " + message + "\n");
                 }
                 break;
 
             case FileMessage.TAG:
                 try {
-                    this.receiveFileMessage(
-                            new FileMessage(
-                                    jsonObj.getString("name"),
-                                    jsonObj.getString("owner_email"),
-                                    jsonObj.getString("workspace_name"),
-                                    jsonObj.getString("content"),
-                                    jsonObj.getString("acl")
-                            )
-                    );
+                    this.receiveFileMessage(new FileMessage(jsonObj.getString("name"),
+                            jsonObj.getString("owner_email"), jsonObj.getString("workspace_name"),
+                            jsonObj.getString("content"), jsonObj.getString("acl")));
                 } catch (JSONException e) {
-                    Log.i(TAG, "receiveMessage() - Error extracting message fields - " + message + "\n");
+                    Log.e(TAG, "receiveMessage() - Error extracting message fields - " + message + "\n");
                 }
                 break;
 
             case CreateFileMessage.TAG:
                 try {
-                    this.receiveCreateFileMessage(
-                            new CreateFileMessage(
-                                    jsonObj.getString("name"),
-                                    jsonObj.getString("workspace_name")
-                            )
-                    );
+                    this.receiveCreateFileMessage(new CreateFileMessage(jsonObj.getString("name"),
+                            jsonObj.getString("workspace_name")));
                 } catch (JSONException e) {
-                    Log.i(TAG, "receiveMessage() - Error extracting message fields - " + message + "\n");
+                    Log.e(TAG, "receiveMessage() - Error extracting message fields - " + message + "\n");
                 }
                 break;
+
+            case DeleteFileMessage.TAG:
+                try {
+                    this.receiveDeleteFileMessage(new DeleteFileMessage(jsonObj.getString("name"),
+                            jsonObj.getString("workspace_name")));
+                } catch (JSONException e) {
+                    Log.i(TAG, "Error extracting message fields - " + message + "\n");
+                }
 
         }
 

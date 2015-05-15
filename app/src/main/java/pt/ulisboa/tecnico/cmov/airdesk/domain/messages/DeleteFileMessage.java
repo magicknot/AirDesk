@@ -5,13 +5,13 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class CreateFileMessage extends Message {
-    public static final String TAG = "CREATE_FILE";
+public class DeleteFileMessage extends Message {
+    public static final String TAG = "DELETE_FILE";
 
     private String name;
     private String workspace_name;
 
-    public CreateFileMessage(String name, String workspace_name) {
+    public DeleteFileMessage(String name, String workspace_name) {
         super(TAG);
         this.name = name;
         this.workspace_name = workspace_name;

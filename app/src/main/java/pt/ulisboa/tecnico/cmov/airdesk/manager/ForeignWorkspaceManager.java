@@ -128,7 +128,8 @@ public class ForeignWorkspaceManager extends WorkspaceManager {
 
     @Override
     public void deleteFile(Workspace workspace, TextFile file) {
-        // TODO
+        NetworkManager.getInstance().sendDeleteFileMessage(workspace.getOwner(), workspace.getName(),
+                file.getName());
     }
 
     public static void fromJson(String owner, JSONArray array) {

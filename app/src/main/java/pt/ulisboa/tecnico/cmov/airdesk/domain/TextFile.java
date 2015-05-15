@@ -6,7 +6,6 @@ import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 public class TextFile implements Parcelable {
     public static final String TAG = "TEXT_FILE";
