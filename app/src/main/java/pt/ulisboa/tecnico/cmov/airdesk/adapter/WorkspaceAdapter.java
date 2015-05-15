@@ -9,12 +9,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
-import pt.ulisboa.tecnico.cmov.airdesk.view.fragment.Tab;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.ForeignWorkspaceManager;
+import pt.ulisboa.tecnico.cmov.airdesk.view.fragment.Tab;
 
-public class WorkspaceAdapter extends BaseAdapter {
+public class WorkspaceAdapter extends BaseAdapter implements Observer {
 
     public static class ViewHolder {
         public ImageView image;
@@ -37,6 +40,7 @@ public class WorkspaceAdapter extends BaseAdapter {
         this.resourceId = resourceId;
         this.workspaces = workspaces;
         this.layoutInflater = LayoutInflater.from(context);
+        ForeignWorkspaceManager.getInstance().addObserver(this);
     }
 
     @Override
@@ -82,6 +86,11 @@ public class WorkspaceAdapter extends BaseAdapter {
 
         holder.image.setImageResource(R.drawable.ic_action_overflow);
         holder.title.setText(w.getName());
+    }
+
+    @Override
+    public void update(Observable observable, Object data) {
+        notifyDataSetChanged();
     }
 
 }

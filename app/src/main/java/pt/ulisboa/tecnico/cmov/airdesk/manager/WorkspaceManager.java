@@ -3,17 +3,25 @@ package pt.ulisboa.tecnico.cmov.airdesk.manager;
 import android.content.Context;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 
+import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.TextFile;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.WorkspaceTag;
 
-public abstract class WorkspaceManager {
+public abstract class WorkspaceManager extends Observable {
     private static final String TAG = "AirdeskApp";
 
     protected Context context;
     protected List<Workspace> workspaces;
+    protected List<WorkspaceAdapter> observers;
+
+    public WorkspaceManager() {
+        observers = new ArrayList<>();
+    }
 
     public List<Workspace> getWorkspaces() {
         return workspaces;

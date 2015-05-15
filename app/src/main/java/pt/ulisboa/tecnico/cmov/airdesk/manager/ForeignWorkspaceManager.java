@@ -5,15 +5,11 @@ import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.TextFile;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.WorkspaceTag;
@@ -22,6 +18,10 @@ public class ForeignWorkspaceManager extends WorkspaceManager {
     private static final String TAG = ForeignWorkspaceManager.class.getSimpleName();
 
     private static ForeignWorkspaceManager holder = null;
+
+    public ForeignWorkspaceManager() {
+        super();
+    }
 
     public static ForeignWorkspaceManager getInstance() {
         if (holder == null) {
@@ -51,6 +51,10 @@ public class ForeignWorkspaceManager extends WorkspaceManager {
         }
         Workspace ws = new Workspace(quota, name, owner, false, false);
         workspaces.add(ws);
+        // mark as value changed
+        setChanged();
+        // trigger notification
+        notifyObservers();
     }
 
     @Override
@@ -67,6 +71,10 @@ public class ForeignWorkspaceManager extends WorkspaceManager {
         }
         if (localWs != null) {
             workspaces.remove(workspace);
+            // mark as value changed
+            setChanged();
+            // trigger notification
+            notifyObservers();
             return true;
         } else {
             return false;
@@ -77,6 +85,10 @@ public class ForeignWorkspaceManager extends WorkspaceManager {
         for (Workspace ws : workspaces) {
             if (ws.getOwner().equals(email)) {
                 workspaces.remove(ws);
+                // mark as value changed
+                setChanged();
+                // trigger notification
+                notifyObservers();
             }
         }
     }
@@ -122,7 +134,7 @@ public class ForeignWorkspaceManager extends WorkspaceManager {
 
     public static void fromJson(String owner, JSONArray array) {
         List<Workspace> newWorkspaces = new ArrayList<>();
-        getInstance().removeWorkspaceByOwner(owner);
+        holder.removeWorkspaceByOwner(owner);
 
         try {
             for (int i = 0; i < array.length(); i++) {
@@ -133,6 +145,11 @@ public class ForeignWorkspaceManager extends WorkspaceManager {
                     e.getCause().toString());
         }
 
-        getInstance().workspaces.addAll(newWorkspaces);
+        holder.workspaces.addAll(newWorkspaces);
+        // mark as value changed
+        holder.setChanged();
+        // trigger notification
+        holder.notifyObservers();
+
     }
 }

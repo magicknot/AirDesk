@@ -5,17 +5,16 @@ import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import pt.ulisboa.tecnico.cmov.airdesk.io.FileStorage;
-import pt.ulisboa.tecnico.cmov.airdesk.io.database.AirdeskDataSource;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.TextFile;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.WorkspaceTag;
+import pt.ulisboa.tecnico.cmov.airdesk.io.FileStorage;
+import pt.ulisboa.tecnico.cmov.airdesk.io.database.AirdeskDataSource;
 
 public class LocalWorkspaceManager extends WorkspaceManager {
     private static final String TAG = LocalWorkspaceManager.class.getSimpleName();
@@ -23,6 +22,10 @@ public class LocalWorkspaceManager extends WorkspaceManager {
     private static LocalWorkspaceManager holder = null;
 
     private AirdeskDataSource db;
+
+    public LocalWorkspaceManager() {
+        super();
+    }
 
     public static LocalWorkspaceManager getInstance() {
         if (holder == null) {
