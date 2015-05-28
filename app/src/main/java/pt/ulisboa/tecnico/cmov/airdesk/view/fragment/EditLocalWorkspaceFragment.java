@@ -151,12 +151,14 @@ public class EditLocalWorkspaceFragment extends DialogFragment {
             public void onClick(View v) {
                 // Do something in response to button click
                 Log.i(TAG, "[onCheckedChanged] Create");
-                mWorkspace.setClients(mClientsListAdapter.getListWorkspaceClients());
-                mWorkspace.setTags(mTagListAdapter.getListWorkspacesTags());
                 mWorkspace.setQuota(Long.parseLong(tQuota.getText().toString()), getActivity().getBaseContext());
                 Log.i(TAG, "onClick - updateLocalWorkspaceClients - isPrivate: " +
                         String.valueOf(mWorkspace.isPrivate()));
-                LocalWorkspaceManager.getInstance().updateWorkspace(mWorkspace);
+                if (mWorkspace.isLocal()) {
+                    LocalWorkspaceManager.getInstance().updateWorkspaceClients(mWorkspace, mClientsListAdapter.getListWorkspaceClients());
+                } else {
+                    LocalWorkspaceManager.getInstance().updateWorkspaceTags(mWorkspace, mTagListAdapter.getListWorkspacesTags());
+                }
                 getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK,
                         getActivity().getIntent());
 

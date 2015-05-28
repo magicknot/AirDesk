@@ -63,6 +63,8 @@ public class UserManager {
         db.close();
         this.userPreferenceTags.add(newTag);
         //TODO notify network
+
+        NetworkManager.getInstance().sendUserTagsMessage();
     }
 
     public void removePreferenceTag(String preferenceTag) {
@@ -79,6 +81,8 @@ public class UserManager {
             }
             i++;
         }
+
+        NetworkManager.getInstance().sendUserTagsMessage();
     }
 
     public void updatePreferenceTag(List<String> newPreferenceTags) {
@@ -99,6 +103,7 @@ public class UserManager {
         Log.i(TAG, "[updatePreferenceTag]removeTags:" + removeTags);
 
         //TODO notify network
+        NetworkManager.getInstance().sendUserTagsMessage();
 
         db.open();
         db.updateUserTag(newPreferenceTags);

@@ -9,7 +9,9 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 import pt.ulisboa.tecnico.cmov.airdesk.domain.PeerDevice;
@@ -24,6 +26,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.domain.messages.UnsubscribeWorkspaceMessa
 import pt.ulisboa.tecnico.cmov.airdesk.domain.messages.UserTagsMessage;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.messages.WorkspacesMessage;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
+import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.WorkspaceTag;
 import pt.ulisboa.tecnico.cmov.airdesk.io.WifiDirect.OutgoingCommTask;
 import pt.ulisboa.tecnico.cmov.airdesk.io.WifiDirect.OutgoingCommTaskWithResponse;
 
@@ -69,6 +72,20 @@ public class NetworkManager {
             }
         }
         return null;
+    }
+
+    public Set<PeerDevice> getPeerDevicesByTags(List<WorkspaceTag> tags) {
+        Set<PeerDevice> result = new HashSet<>();
+
+        for (WorkspaceTag tag : tags) {
+            for (PeerDevice pd : this.groupPeerDevices) {
+                if (pd.getTags().contains(tag.getTag())) {
+                    result.add(pd);
+                }
+            }
+
+        }
+        return result;
     }
 
     public void sendWorkspaces(String client, JSONArray workspaces) {

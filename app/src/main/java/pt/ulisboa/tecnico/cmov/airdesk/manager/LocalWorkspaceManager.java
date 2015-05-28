@@ -6,8 +6,10 @@ import android.util.Log;
 import org.json.JSONArray;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
+import pt.ulisboa.tecnico.cmov.airdesk.domain.PeerDevice;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.TextFile;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.domain.workspace.WorkspaceTag;
@@ -69,6 +71,10 @@ public class LocalWorkspaceManager extends WorkspaceManager {
         lw = db.insertWorkspace(lw);
         db.close();
         workspaces.add(lw);
+        for (String client : lw.getClients()) {
+            NetworkManager.getInstance().sendWorkspaces(client, holder.toJson(client,
+                    NetworkManager.getInstance().getPeerDeviceByEmail(client).getTags()));
+        }
     }
 
     public void removeAllWorkspaces() {
@@ -94,26 +100,15 @@ public class LocalWorkspaceManager extends WorkspaceManager {
         return FileStorage.deleteWorkspace(workspace.getName(), context);
     }
 
-    public void updateWorkspace(Workspace workspace) {
-        Workspace currentWS = getWorkspaceByName(workspace.getName());
-
-
-
-        db.open();
-        db.updateLocalWorkspace(workspace.getWorkspaceId(), workspace.getName(),
-                workspace.getOwner(), workspace.getQuota(), workspace.isPrivate(),
-                workspace.isLocal());
-        db.updateLocalWorkspaceTags(workspace.getWorkspaceId(), workspace.getTags());
-        db.updateLocalWorkspaceClients(workspace.getWorkspaceId(), workspace.getClients());
-        db.close();
-    }
-
     public void updateWorkspaceClients(Workspace workspace, List<String> listClients) {
         int i;
 
         Workspace ws;
 
         db.open();
+        db.updateLocalWorkspace(workspace.getWorkspaceId(), workspace.getName(),
+                workspace.getOwner(), workspace.getQuota(), workspace.isPrivate(),
+                workspace.isLocal());
         db.updateLocalWorkspaceClients(workspace.getWorkspaceId(), listClients);
         db.close();
         for (i = 0; i < workspaces.size()
@@ -147,6 +142,9 @@ public class LocalWorkspaceManager extends WorkspaceManager {
         int i;
 
         db.open();
+        db.updateLocalWorkspace(workspace.getWorkspaceId(), workspace.getName(),
+                workspace.getOwner(), workspace.getQuota(), workspace.isPrivate(),
+                workspace.isLocal());
         db.updateLocalWorkspaceTags(workspace.getWorkspaceId(), listTags);
         db.close();
         for (i = 0; i < workspaces.size()
@@ -155,7 +153,31 @@ public class LocalWorkspaceManager extends WorkspaceManager {
 
         if (i < workspaces.size()
                 && workspaces.get(i).getWorkspaceId() == workspace.getWorkspaceId()) {
-            workspaces.get(i).setTags(listTags);
+            Workspace ws = workspaces.get(i);
+
+            List<WorkspaceTag> oldTags = ws.getTags();
+            ws.setTags(listTags);
+
+            oldTags.removeAll(listTags);
+            NetworkManager nm = NetworkManager.getInstance();
+
+            for (PeerDevice pd : nm.getPeerDevicesByTags(oldTags)) {
+                List<String> tags = new ArrayList<>();
+
+                for (WorkspaceTag tag : oldTags)
+                    tags.add(tag.getTag());
+
+                nm.sendWorkspaces(pd.getEmail(), holder.toJson(pd.getEmail(), tags));
+            }
+
+            for (PeerDevice pd : nm.getPeerDevicesByTags(listTags)) {
+                List<String> tags = new ArrayList<>();
+
+                for (WorkspaceTag tag : listTags)
+                    tags.add(tag.getTag());
+
+                nm.sendWorkspaces(pd.getEmail(), holder.toJson(pd.getEmail(), tags));
+            }
         }
     }
 
